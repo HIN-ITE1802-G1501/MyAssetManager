@@ -9,7 +9,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.PopupMenu;
+import android.widget.Spinner;
+
+import java.util.ArrayList;
 
 
 public class ActivityMain extends Activity implements FragmentUsers.OnFragmentInteractionListener {
@@ -19,6 +24,8 @@ public class ActivityMain extends Activity implements FragmentUsers.OnFragmentIn
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        initializeUserList();
+        initializeCategoryList();
     }
 
 
@@ -42,6 +49,35 @@ public class ActivityMain extends Activity implements FragmentUsers.OnFragmentIn
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void initializeUserList()
+    {
+        ListView lvUsers = (ListView)findViewById(R.id.lvUsers);
+        ArrayList<User> userArray = new ArrayList<User>();
+        ArrayAdapter<User> adapterInstance;
+        adapterInstance = new ArrayAdapter<User>(this, android.R.layout.simple_list_item_1, userArray);
+        adapterInstance.add(new User("Test", "Kurt-Erik", "Karlsen"));
+        adapterInstance.add(new User("Test", "Kurt-Erik", "Karlsen"));
+        adapterInstance.add(new User("Test", "Kurt-Erik", "Karlsen"));
+        adapterInstance.add(new User("Test", "Kurt-Erik", "Karlsen"));
+        lvUsers.setAdapter(adapterInstance);
+    }
+
+    private void initializeCategoryList()
+    {
+        Spinner spCategories = (Spinner)findViewById(R.id.spCategories);
+        ArrayList<Category> categoryArray = new ArrayList<Category>();
+
+        ArrayAdapter<Category> adapterInstance;
+
+        adapterInstance = new ArrayAdapter<Category>(this, android.R.layout.simple_list_item_1, categoryArray);
+        adapterInstance.add(new Category("Tablet"));
+        adapterInstance.add(new Category("Phone"));
+        adapterInstance.add(new Category("Tablet"));
+        adapterInstance.add(new Category("PC"));
+
+        spCategories.setAdapter(adapterInstance);
     }
 
 

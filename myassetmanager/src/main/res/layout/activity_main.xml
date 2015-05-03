@@ -77,9 +77,9 @@ android:weightSum="1">
     </TableRow>
 </TableLayout>
     <fragment
+        android:name="no.hin.student.myassetmanager.FragmentUsers"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:name="no.hin.student.myassetmanager.FragmentUsers"
         android:id="@+id/fragment"
         android:padding="3dp"
         tools:layout="@layout/fragment_users" />

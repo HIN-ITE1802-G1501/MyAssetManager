@@ -2,10 +2,7 @@
     <string name="app_name">Min Utstyrs Oversikt</string>
 
     <string name="action_assets">Utstyr</string>
-    <string name="action_users">Users</string>
+    <string name="action_users">Brukere</string>
     <string name="action_loan">Utlån</string>
-    <string name="action_settings">Instillinger</string>
-
-<!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="action_settings">Innstillinger</string>
 </resources>
