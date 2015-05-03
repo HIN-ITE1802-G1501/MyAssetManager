@@ -77,10 +77,10 @@ android:weightSum="1">
     </TableRow>
 </TableLayout>
     <fragment
-        android:name="no.hin.student.myassetmanager.FragmentUsers"
+        android:name="no.hin.student.myassetmanager.Fragments.FragmentList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/fragment"
         android:padding="3dp"
-        tools:layout="@layout/fragment_users" />
+        tools:layout="@layout/fragment_list" />
 </LinearLayout>

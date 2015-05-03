@@ -5,4 +5,10 @@
     <string name="action_users">Brukere</string>
     <string name="action_loan">Utlån</string>
     <string name="action_settings">Innstillinger</string>
+
+    <string name="action_edit">Endre</string>
+    <string name="action_delete">Slett</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

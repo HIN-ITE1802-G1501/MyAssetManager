@@ -1,4 +1,4 @@
-package no.hin.student.myassetmanager;
+package no.hin.student.myassetmanager.Classes;
 
 public class Category {
     private String name;
