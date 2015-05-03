@@ -1,12 +1,19 @@
 package no.hin.student.myassetmanager;
 
+
 import android.app.Activity;
+import android.net.Uri;
 import android.os.Bundle;
+
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.PopupMenu;
 
 
-public class MainActivity extends Activity {
+public class ActivityMain extends Activity implements FragmentUsers.OnFragmentInteractionListener {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,5 +42,20 @@ public class MainActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
+
+
+
+    public void showMenuMain(View v) {
+        PopupMenu popup = new PopupMenu(this, v);
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.menu_main, popup.getMenu());
+        popup.show();
     }
 }
