@@ -35,6 +35,10 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
     private static final int MENU_CONTEXT_ASSET_EDIT = 10102;
     private static final int MENU_CONTEXT_ASSET_DELETE = 10103;
 
+    private static final int MENU_BUTTON_SHOW_ASSETS = 10201;
+    private static final int MENU_BUTTON_SHOW_USERS = 10202;
+    private static final int MENU_BUTTON_SHOW_HISTORY = 10203;
+
     private static final String TAG = "MyAssetManger-log";
 
     private ArrayAdapter<Category> adapterInstanceCategory;
@@ -43,8 +47,7 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        initializeCategoryList();
-        initializeFilterSpinner();
+        findViewById(R.id.btnMenu).setOnClickListener(mGlobal_OnClickListener);
     }
 
 
@@ -57,39 +60,15 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
 
-        if (id == R.id.action_delete) {
-            Log.d("Test","Jippp");
+        if (id == R.id.action_settings) {
+            Log.d(TAG, "Starting settings from MainMenu");
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    private void initializeUserList()
-    {
-        ListView lvList = (ListView)findViewById(R.id.lvList);
-        ArrayList<User> userArray = new ArrayList<User>();
-        ArrayAdapter<User> adapterInstance;
-        adapterInstance = new ArrayAdapter<User>(this, android.R.layout.simple_list_item_1, userArray);
-        adapterInstance.add(new User("Test", "Kurt-Erik", "Karlsen"));
-        adapterInstance.add(new User("Test", "Kurt-Erik", "Karlsen"));
-        adapterInstance.add(new User("Test", "Kurt-Erik", "Karlsen"));
-        adapterInstance.add(new User("Test", "Kurt-Erik", "Karlsen"));
-        lvList.setAdapter(adapterInstance);
-    }
-
-    private void initializeAssetList()
-    {
-        ListView lvList = (ListView)findViewById(R.id.lvList);
-        ArrayList<Asset> userArray = new ArrayList<Asset>();
-        ArrayAdapter<Asset> adapterInstance;
-        adapterInstance = new ArrayAdapter<Asset>(this, android.R.layout.simple_list_item_1, userArray);
-        lvList.setAdapter(adapterInstance);
-    }
 
     private void initializeCategoryList()
     {
@@ -104,7 +83,6 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
 
         lvList.setAdapter(adapterInstanceCategory);
         lvList.setOnItemClickListener(mGlobal_OnItemClickListener);
-        findViewById(R.id.btnMenu).setOnClickListener(mGlobal_OnClickListener);
         registerForContextMenu(lvList);
     }
 
@@ -130,15 +108,36 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
             switch(v.getId()) {
                 case R.id.btnMenu:
                     PopupMenu popup = new PopupMenu(getApplication(), v);
-                    MenuInflater inflater = popup.getMenuInflater();
-                    inflater.inflate(R.menu.menu_activity_main, popup.getMenu());
+                    popup.getMenu().add(Menu.NONE, MENU_BUTTON_SHOW_ASSETS, Menu.NONE, R.string.MENU_BUTTON_SHOW_ASSETS).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
+                    popup.getMenu().add(Menu.NONE, MENU_BUTTON_SHOW_USERS, Menu.NONE, R.string.MENU_BUTTON_SHOW_USERS).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
+                    popup.getMenu().add(Menu.NONE, MENU_BUTTON_SHOW_HISTORY, Menu.NONE, R.string.MENU_BUTTON_SHOW_HISTORY).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
                     popup.show();
-                    Log.d(TAG,"test test");
+                    Log.d(TAG, "Adding menu to button.");
                     break;
             }
         }
     };
 
+
+    final MenuItem.OnMenuItemClickListener mGlobal_OnMenuItemClickListener = new MenuItem.OnMenuItemClickListener() {
+        @Override
+        public boolean onMenuItemClick(MenuItem menuItem) {
+            switch (menuItem.getItemId()) {
+                case MENU_BUTTON_SHOW_ASSETS:
+                    Log.d(TAG, "Showing assets");
+                    initializeCategoryList();
+                    initializeFilterSpinner();
+                    return true;
+                case MENU_BUTTON_SHOW_USERS:
+                    Log.d(TAG, "Showing assets");
+                    initializeCategoryList();
+                    initializeFilterSpinner();
+                    return true;
+                default:
+                    return true;
+            }
+        }
+    };
 
     final AdapterView.OnItemClickListener mGlobal_OnItemClickListener = new AdapterView.OnItemClickListener() {
         public void onItemClick(AdapterView<?> adapterView, View row, int position, long index) {
@@ -166,7 +165,7 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
-        
+
         switch (item.getItemId()) {
             case MENU_CONTEXT_ASSET_SHOW:
                 if (adapterInstanceCategory.getItem(info.position).getClass().equals(Category.class) ) {
@@ -174,8 +173,7 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
                 } else Log.d(TAG, "Funker ikke å finne klassen");
                 return true;
             case MENU_CONTEXT_ASSET_DELETE:
-                Log.d(TAG, "removing item pos=" + info.position);
-                adapterInstanceCategory.remove(adapterInstanceCategory.getItem(info.position));
+                Category.deleteCategory(adapterInstanceCategory, adapterInstanceCategory.getItem(info.position));
                 return true;
             default:
                 return super.onContextItemSelected(item);

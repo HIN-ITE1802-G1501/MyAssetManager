@@ -13,4 +13,9 @@
     <string name="MENU_CONTEXT_ASSET_EDIT">Rediger</string>
     <string name="MENU_CONTEXT_ASSET_DELETE">Slett</string>
 
+    <string name="MENU_BUTTON_SHOW_ASSETS">Utstyr</string>
+    <string name="MENU_BUTTON_SHOW_USERS">Brukere</string>
+    <string name="MENU_BUTTON_SHOW_HISTORY">Historie</string>
+
+    <string name="LOGTAG">Test</string>
 </resources>
