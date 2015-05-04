@@ -109,6 +109,8 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
         adapterInstanceCategory.add(new Category("Switch"));
         adapterInstanceCategory.add(new Category("Server"));
         lvList.setAdapter(adapterInstanceCategory);
+        lvList.setOnItemClickListener(mGlobal_OnItemClickListener);
+        findViewById(R.id.btnMenu).setOnClickListener(mGlobal_OnClickListener);
         registerForContextMenu(lvList);
     }
 
@@ -132,28 +134,38 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
     }
 
 
-    public void showMenuMain(View v) {
-        PopupMenu popup = new PopupMenu(this, v);
-        MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.menu_activity_main, popup.getMenu());
-        popup.show();
-    }
+    final View.OnClickListener mGlobal_OnClickListener = new View.OnClickListener() {
+        public void onClick(final View v) {
+            switch(v.getId()) {
+                case R.id.btnMenu:
+                    PopupMenu popup = new PopupMenu(getApplication(), v);
+                    MenuInflater inflater = popup.getMenuInflater();
+                    inflater.inflate(R.menu.menu_activity_main, popup.getMenu());
+                    popup.show();
+                    Log.d(TAG,"test test");
+                    break;
+            }
+        }
+    };
 
 
+    final AdapterView.OnItemClickListener mGlobal_OnItemClickListener = new AdapterView.OnItemClickListener() {
+        public void onItemClick(AdapterView<?> adapterView, View row, int position, long index) {
+            Log.d(TAG, "Klikker på item");
+        }
+    };
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-
         if (v.getId()==R.id.lvList) {
             super.onCreateContextMenu(menu, v, menuInfo);
             AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
             String title = ((Category) adapterInstanceCategory.getItem(info.position)).toString();
 
             menu.setHeaderTitle(title);
-
-            menu.setHeaderTitle("Handlinger");
-            menu.add( Menu.NONE, MENU_CONTEXT_DELETE_EDIT, Menu.NONE, "Rediger");
-            menu.add(Menu.NONE, MENU_CONTEXT_DELETE_ASSET, Menu.NONE, "Slett");
+            menu.add(Menu.NONE, MENU_CONTEXT_DELETE_EDIT, Menu.NONE, "Vis");
+            menu.add(Menu.NONE, MENU_CONTEXT_DELETE_EDIT, Menu.NONE, "Rediger ");
+            menu.add(Menu.NONE, MENU_CONTEXT_DELETE_ASSET, Menu.NONE, "Slett" );
         }
     }
 
