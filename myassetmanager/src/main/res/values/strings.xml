@@ -9,6 +9,8 @@
     <string name="action_edit">Endre</string>
     <string name="action_delete">Slett</string>
 
-<!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="MENU_CONTEXT_ASSET_SHOW">Vis</string>
+    <string name="MENU_CONTEXT_ASSET_EDIT">Rediger</string>
+    <string name="MENU_CONTEXT_ASSET_DELETE">Slett</string>
+
 </resources>

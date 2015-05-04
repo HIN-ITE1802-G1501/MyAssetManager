@@ -17,7 +17,6 @@ import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -32,11 +31,11 @@ import no.hin.student.myassetmanager.R;
 
 public class ActivityMain extends Activity implements FragmentUser.OnFragmentInteractionListener, FragmentAsset.OnFragmentInteractionListener, FragmentList.OnFragmentInteractionListener {
 
+    private static final int MENU_CONTEXT_ASSET_SHOW = 10101;
+    private static final int MENU_CONTEXT_ASSET_EDIT = 10102;
+    private static final int MENU_CONTEXT_ASSET_DELETE = 10103;
 
-    private static final int MENU_CONTEXT_DELETE_ASSET = 10101;
-    private static final int MENU_CONTEXT_DELETE_EDIT = 10102;
     private static final String TAG = "MyAssetManger-log";
-
 
     private ArrayAdapter<Category> adapterInstanceCategory;
 
@@ -89,10 +88,6 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
         ArrayList<Asset> userArray = new ArrayList<Asset>();
         ArrayAdapter<Asset> adapterInstance;
         adapterInstance = new ArrayAdapter<Asset>(this, android.R.layout.simple_list_item_1, userArray);
-        adapterInstance.add(new Asset("Lumia 640"));
-        adapterInstance.add(new Asset("Lumia 1020"));
-        adapterInstance.add(new Asset("Lumia 930"));
-        adapterInstance.add(new Asset("Lumia 820"));
         lvList.setAdapter(adapterInstance);
     }
 
@@ -101,13 +96,12 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
         final TextView tvTitle = (TextView)findViewById(R.id.tvTitle);
         tvTitle.setText("Kategorier");
         final ListView lvList = (ListView)findViewById(R.id.lvList);
-        ArrayList<Category> userArray = new ArrayList<Category>();
 
-        adapterInstanceCategory = new ArrayAdapter<Category>(this, android.R.layout.simple_list_item_1, userArray);
-        adapterInstanceCategory.add(new Category("PC"));
-        adapterInstanceCategory.add(new Category("Telefon"));
-        adapterInstanceCategory.add(new Category("Switch"));
-        adapterInstanceCategory.add(new Category("Server"));
+        ArrayList<Category> categoryArray = new ArrayList<Category>();
+
+        adapterInstanceCategory = new ArrayAdapter<Category>(this, android.R.layout.simple_list_item_1, categoryArray);
+        Category.showCategories(adapterInstanceCategory);
+
         lvList.setAdapter(adapterInstanceCategory);
         lvList.setOnItemClickListener(mGlobal_OnItemClickListener);
         findViewById(R.id.btnMenu).setOnClickListener(mGlobal_OnClickListener);
@@ -121,9 +115,6 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
         ArrayList<Category> categoryArray = new ArrayList<Category>();
         ArrayAdapter<Category> adapterInstance;
         adapterInstance = new ArrayAdapter<Category>(this, android.R.layout.simple_list_item_1, categoryArray);
-        adapterInstance.add(new Category("Alle"));
-        adapterInstance.add(new Category("Tilgjengelig"));
-        adapterInstance.add(new Category("Utlånt"));
         spFilter.setAdapter(adapterInstance);
     }
 
@@ -151,30 +142,38 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
 
     final AdapterView.OnItemClickListener mGlobal_OnItemClickListener = new AdapterView.OnItemClickListener() {
         public void onItemClick(AdapterView<?> adapterView, View row, int position, long index) {
-            Log.d(TAG, "Klikker på item");
+            Log.d(TAG, "Klikker på item " + adapterInstanceCategory.getItem(position).toString());
         }
     };
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        if (v.getId()==R.id.lvList) {
-            super.onCreateContextMenu(menu, v, menuInfo);
-            AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-            String title = ((Category) adapterInstanceCategory.getItem(info.position)).toString();
+        switch (v.getId()) {
+            case R.id.lvList:
 
-            menu.setHeaderTitle(title);
-            menu.add(Menu.NONE, MENU_CONTEXT_DELETE_EDIT, Menu.NONE, "Vis");
-            menu.add(Menu.NONE, MENU_CONTEXT_DELETE_EDIT, Menu.NONE, "Rediger ");
-            menu.add(Menu.NONE, MENU_CONTEXT_DELETE_ASSET, Menu.NONE, "Slett" );
+                super.onCreateContextMenu(menu, v, menuInfo);
+                AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+                String title = ((Category) adapterInstanceCategory.getItem(info.position)).toString();
+
+                menu.setHeaderTitle(title);
+                menu.add(Menu.NONE, MENU_CONTEXT_ASSET_SHOW, Menu.NONE, R.string.MENU_CONTEXT_ASSET_SHOW);
+                menu.add(Menu.NONE, MENU_CONTEXT_ASSET_EDIT, Menu.NONE, R.string.MENU_CONTEXT_ASSET_EDIT);
+                menu.add(Menu.NONE, MENU_CONTEXT_ASSET_DELETE, Menu.NONE, R.string.MENU_CONTEXT_ASSET_DELETE);
+                break;
         }
     }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+        
         switch (item.getItemId()) {
-            case MENU_CONTEXT_DELETE_ASSET:
-                AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+            case MENU_CONTEXT_ASSET_SHOW:
+                if (adapterInstanceCategory.getItem(info.position).getClass().equals(Category.class) ) {
+                    Log.d(TAG, "Dette funker!! Har funnet klassen");
+                } else Log.d(TAG, "Funker ikke å finne klassen");
+                return true;
+            case MENU_CONTEXT_ASSET_DELETE:
                 Log.d(TAG, "removing item pos=" + info.position);
                 adapterInstanceCategory.remove(adapterInstanceCategory.getItem(info.position));
                 return true;
