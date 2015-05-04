@@ -33,6 +33,13 @@ import no.hin.student.myassetmanager.R;
 public class ActivityMain extends Activity implements FragmentUser.OnFragmentInteractionListener, FragmentAsset.OnFragmentInteractionListener, FragmentList.OnFragmentInteractionListener {
 
 
+    private static final int MENU_CONTEXT_DELETE_ASSET = 10101;
+    private static final int MENU_CONTEXT_DELETE_EDIT = 10102;
+    private static final String TAG = "MyAssetManger-log";
+
+
+    private ArrayAdapter<Category> adapterInstanceCategory;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,36 +98,18 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
 
     private void initializeCategoryList()
     {
-        TextView tvTitle = (TextView)findViewById(R.id.tvTitle);
+        final TextView tvTitle = (TextView)findViewById(R.id.tvTitle);
         tvTitle.setText("Kategorier");
         final ListView lvList = (ListView)findViewById(R.id.lvList);
         ArrayList<Category> userArray = new ArrayList<Category>();
-        ArrayAdapter<Category> adapterInstance;
-        adapterInstance = new ArrayAdapter<Category>(this, android.R.layout.simple_list_item_1, userArray);
-        adapterInstance.add(new Category("PC"));
-        adapterInstance.add(new Category("Telefon"));
-        adapterInstance.add(new Category("Switch"));
-        adapterInstance.add(new Category("Server"));
-        lvList.setAdapter(adapterInstance);
-        lvList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> arg0, View arg1,int arg2, long arg3) {
-                PopupMenu popup = new PopupMenu(ActivityMain.this, lvList);
-                MenuInflater inflater = popup.getMenuInflater();
-                inflater.inflate(R.menu.menu_list_actions, popup.getMenu());
 
-                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    public boolean onMenuItemClick(MenuItem item) {
-                        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
-                        Log.d("Test","test");
-                        Toast.makeText(ActivityMain.this,"You Clicked : " + item.getTitle(),Toast.LENGTH_SHORT).show();
-                        return true;
-                    }
-                });
-                popup.show();
-                return false;
-            }
-        });
+        adapterInstanceCategory = new ArrayAdapter<Category>(this, android.R.layout.simple_list_item_1, userArray);
+        adapterInstanceCategory.add(new Category("PC"));
+        adapterInstanceCategory.add(new Category("Telefon"));
+        adapterInstanceCategory.add(new Category("Switch"));
+        adapterInstanceCategory.add(new Category("Server"));
+        lvList.setAdapter(adapterInstanceCategory);
+        registerForContextMenu(lvList);
     }
 
 
@@ -150,4 +139,35 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
         popup.show();
     }
 
+
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+
+        if (v.getId()==R.id.lvList) {
+            super.onCreateContextMenu(menu, v, menuInfo);
+            AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+            String title = ((Category) adapterInstanceCategory.getItem(info.position)).toString();
+
+            menu.setHeaderTitle(title);
+
+            menu.setHeaderTitle("Handlinger");
+            menu.add( Menu.NONE, MENU_CONTEXT_DELETE_EDIT, Menu.NONE, "Rediger");
+            menu.add(Menu.NONE, MENU_CONTEXT_DELETE_ASSET, Menu.NONE, "Slett");
+        }
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case MENU_CONTEXT_DELETE_ASSET:
+                AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+                Log.d(TAG, "removing item pos=" + info.position);
+                adapterInstanceCategory.remove(adapterInstanceCategory.getItem(info.position));
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
+    }
 }
