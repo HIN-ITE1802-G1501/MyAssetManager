@@ -20,6 +20,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import no.hin.student.myassetmanager.Classes.Category;
+import no.hin.student.myassetmanager.Classes.Equipment;
 import no.hin.student.myassetmanager.Classes.MyObjects;
 import no.hin.student.myassetmanager.Classes.User;
 import no.hin.student.myassetmanager.Fragments.FragmentAsset;
@@ -42,7 +43,8 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
 
     private ArrayAdapter<Category> adapterInstanceCategory;
     private ArrayAdapter<User> adapterInstanceUser;
-    private ArrayAdapter<? extends MyObjects> adapterInstance;
+    private ArrayAdapter<Equipment> adapterInstanceEquipment;
+    //private ArrayAdapter<? extends MyObjects> adapterInstance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +99,20 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
             User.showUsers(adapterInstanceUser);
 
             lvList.setAdapter(adapterInstanceUser);
+            lvList.setOnItemClickListener(mGlobal_OnItemClickListener);
+            registerForContextMenu(lvList);
+        }
+
+        if (classType.equals(Equipment.class)) {
+            ((TextView)findViewById(R.id.tvTitle)).setText("Utstyr");
+            final ListView lvList = (ListView)findViewById(R.id.lvList);
+
+            ArrayList<Equipment> equipmentArray = new ArrayList<Equipment>();
+
+            adapterInstanceEquipment = new ArrayAdapter<Equipment>(this, android.R.layout.simple_list_item_1, equipmentArray);
+            Equipment.showEquipment(adapterInstanceEquipment);
+
+            lvList.setAdapter(adapterInstanceEquipment);
             lvList.setOnItemClickListener(mGlobal_OnItemClickListener);
             registerForContextMenu(lvList);
         }
@@ -157,7 +173,11 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
 
     final AdapterView.OnItemClickListener mGlobal_OnItemClickListener = new AdapterView.OnItemClickListener() {
         public void onItemClick(AdapterView<?> adapterView, View row, int position, long index) {
-            Log.d(TAG, "Klikker på item " + adapterInstanceCategory.getItem(position).toString());
+            Log.d(TAG, "Clicking on equipment " + adapterInstanceCategory.getItem(position).toString());
+            if (adapterInstanceCategory.getItem(position).getClass().equals(Category.class)) {
+                initializeList(Equipment.class);
+                initializeFilterSpinner();
+            }
         }
     };
 
