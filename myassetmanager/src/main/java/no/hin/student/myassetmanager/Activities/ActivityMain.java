@@ -30,9 +30,9 @@ import no.hin.student.myassetmanager.R;
 
 public class ActivityMain extends Activity implements FragmentUser.OnFragmentInteractionListener, FragmentAsset.OnFragmentInteractionListener, FragmentList.OnFragmentInteractionListener {
 
-    private static final int MENU_CONTEXT_ASSET_SHOW = 10101;
-    private static final int MENU_CONTEXT_ASSET_EDIT = 10102;
-    private static final int MENU_CONTEXT_ASSET_DELETE = 10103;
+    private static final int MENU_CONTEXT_LIST_SHOW = 10101;
+    private static final int MENU_CONTEXT_LIST_EDIT = 10102;
+    private static final int MENU_CONTEXT_LIST_DELETE = 10103;
 
     private static final int MENU_BUTTON_SHOW_ASSETS = 10201;
     private static final int MENU_BUTTON_SHOW_USERS = 10202;
@@ -170,9 +170,9 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
                 String title = ((Category) adapterInstanceCategory.getItem(info.position)).toString();
 
                 menu.setHeaderTitle(title);
-                menu.add(Menu.NONE, MENU_CONTEXT_ASSET_SHOW, Menu.NONE, R.string.MENU_CONTEXT_ASSET_SHOW);
-                menu.add(Menu.NONE, MENU_CONTEXT_ASSET_EDIT, Menu.NONE, R.string.MENU_CONTEXT_ASSET_EDIT);
-                menu.add(Menu.NONE, MENU_CONTEXT_ASSET_DELETE, Menu.NONE, R.string.MENU_CONTEXT_ASSET_DELETE);
+                menu.add(Menu.NONE, MENU_CONTEXT_LIST_SHOW, Menu.NONE, R.string.MENU_CONTEXT_LIST_SHOW);
+                menu.add(Menu.NONE, MENU_CONTEXT_LIST_EDIT, Menu.NONE, R.string.MENU_CONTEXT_LIST_EDIT);
+                menu.add(Menu.NONE, MENU_CONTEXT_LIST_DELETE, Menu.NONE, R.string.MENU_CONTEXT_LIST_DELETE);
                 break;
         }
     }
@@ -182,13 +182,22 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
 
         switch (item.getItemId()) {
-            case MENU_CONTEXT_ASSET_SHOW:
+            case MENU_CONTEXT_LIST_SHOW:
                 if (adapterInstanceCategory.getItem(info.position).getClass().equals(Category.class) ) {
-                    Log.d(TAG, "Dette funker!! Har funnet klassen");
-                } else Log.d(TAG, "Funker ikke å finne klassen");
+                    Log.d(TAG, "Working to filter on generic!");
+                }
                 return true;
-            case MENU_CONTEXT_ASSET_DELETE:
-                Category.deleteCategory(adapterInstanceCategory, adapterInstanceCategory.getItem(info.position));
+            case MENU_CONTEXT_LIST_DELETE:
+                if ((adapterInstanceCategory != null) &&(adapterInstanceCategory.getItem(info.position).getClass().equals(Category.class))) {
+                    Log.d(TAG, "Menu context delete category");
+                    Category.deleteCategory(adapterInstanceCategory, adapterInstanceCategory.getItem(info.position));
+                }
+                if ((adapterInstanceUser != null) &&(adapterInstanceUser.getItem(info.position).getClass().equals(User.class))) {
+                    Log.d(TAG, "Menu context delete category");
+                    User.deleteUser(adapterInstanceUser, adapterInstanceUser.getItem(info.position));
+                }
+
+
                 return true;
             default:
                 return super.onContextItemSelected(item);

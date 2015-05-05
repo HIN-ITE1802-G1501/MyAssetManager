@@ -9,9 +9,9 @@
     <string name="action_edit">Endre</string>
     <string name="action_delete">Slett</string>
 
-    <string name="MENU_CONTEXT_ASSET_SHOW">Vis</string>
-    <string name="MENU_CONTEXT_ASSET_EDIT">Rediger</string>
-    <string name="MENU_CONTEXT_ASSET_DELETE">Slett</string>
+    <string name="MENU_CONTEXT_LIST_SHOW">Vis</string>
+    <string name="MENU_CONTEXT_LIST_EDIT">Rediger</string>
+    <string name="MENU_CONTEXT_LIST_DELETE">Slett</string>
 
     <string name="MENU_BUTTON_SHOW_ASSETS">Utstyr</string>
     <string name="MENU_BUTTON_SHOW_USERS">Brukere</string>
