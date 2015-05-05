@@ -1,7 +1,13 @@
 package no.hin.student.myassetmanager.Classes;
 
 
+import android.content.res.Resources;
+import android.util.Log;
+import android.widget.ArrayAdapter;
+
 import com.google.gson.Gson;
+
+import no.hin.student.myassetmanager.R;
 
 /**
  * Created by wfa on 07.04.2015.
@@ -27,6 +33,17 @@ public class Equipment extends MyObjects {
         this.it_no = "";
         this.aquired = "";
         this.image = null;
+    }
+
+    public Equipment(int e_id, String type, String brand, String model, String description, String it_no, String aquired) {
+        this.e_id = e_id;
+        this.type = type;
+        this.brand = brand;
+        this.model = model;
+        this.description = description;
+        this.it_no = it_no;
+        this.aquired = aquired;
+        this.image = image;
     }
 
     public Equipment(int e_id, String type, String brand, String model, String description, String it_no, String aquired, byte[] image) {
@@ -118,6 +135,18 @@ public class Equipment extends MyObjects {
 
     public void setImage(byte[] image) {
         this.image = image;
+    }
+
+
+    public static void showEquipment(ArrayAdapter<Equipment> adapterInstance) {
+        adapterInstance.add(new Equipment(1, "Telefon", "Microsoft", "Lumia 930", "Windows telefon", "IT-1321", ""));
+        adapterInstance.add(new Equipment(2, "Telefon", "Microsoft", "Lumia 1020", "Windows telefon", "IT-1323", ""));
+        adapterInstance.add(new Equipment(3, "Telefon", "Microsoft", "Lumia 830", "Windows telefon", "IT-1332", ""));
+    }
+
+    public static void deleteEquipment(ArrayAdapter<Equipment> adapterInstanceCategory, Equipment equipment) {
+        Log.d(adapterInstanceCategory.getContext().getString(R.string.LOGTAG), "Delete equipment from list and database");
+        adapterInstanceCategory.remove(equipment);
     }
 
     @Override

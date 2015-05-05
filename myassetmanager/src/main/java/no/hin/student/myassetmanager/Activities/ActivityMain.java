@@ -42,6 +42,7 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
 
     private ArrayAdapter<Category> adapterInstanceCategory;
     private ArrayAdapter<User> adapterInstanceUser;
+    private ArrayAdapter<? extends MyObjects> adapterInstance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,7 +145,7 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
                     initializeFilterSpinner();
                     return true;
                 case MENU_BUTTON_SHOW_USERS:
-                    Log.d(TAG, "Showing assets");
+                    Log.d(TAG, "Showing users");
                     initializeList(User.class);
                     initializeFilterSpinner();
                     return true;
