@@ -4,7 +4,7 @@ import android.util.Log;
 import android.widget.ArrayAdapter;
 
 
-public class Category {
+public class Category extends MyObjects {
     private int id;
     private String name;
 

@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -20,8 +19,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import no.hin.student.myassetmanager.Classes.Asset;
 import no.hin.student.myassetmanager.Classes.Category;
+import no.hin.student.myassetmanager.Classes.MyObjects;
 import no.hin.student.myassetmanager.Classes.User;
 import no.hin.student.myassetmanager.Fragments.FragmentAsset;
 import no.hin.student.myassetmanager.Fragments.FragmentList;
@@ -42,6 +41,7 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
     private static final String TAG = "MyAssetManger-log";
 
     private ArrayAdapter<Category> adapterInstanceCategory;
+    private ArrayAdapter<User> adapterInstanceUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,20 +70,35 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
     }
 
 
-    private void initializeCategoryList()
+    private <T extends MyObjects> void initializeList(Class<T> classType)
     {
-        final TextView tvTitle = (TextView)findViewById(R.id.tvTitle);
-        tvTitle.setText("Kategorier");
-        final ListView lvList = (ListView)findViewById(R.id.lvList);
+        if (classType.equals(Category.class)) {
+            ((TextView)findViewById(R.id.tvTitle)).setText("Kategorier");
+            final ListView lvList = (ListView)findViewById(R.id.lvList);
 
-        ArrayList<Category> categoryArray = new ArrayList<Category>();
+            ArrayList<Category> categoryArray = new ArrayList<Category>();
 
-        adapterInstanceCategory = new ArrayAdapter<Category>(this, android.R.layout.simple_list_item_1, categoryArray);
-        Category.showCategories(adapterInstanceCategory);
+            adapterInstanceCategory = new ArrayAdapter<Category>(this, android.R.layout.simple_list_item_1, categoryArray);
+            Category.showCategories(adapterInstanceCategory);
 
-        lvList.setAdapter(adapterInstanceCategory);
-        lvList.setOnItemClickListener(mGlobal_OnItemClickListener);
-        registerForContextMenu(lvList);
+            lvList.setAdapter(adapterInstanceCategory);
+            lvList.setOnItemClickListener(mGlobal_OnItemClickListener);
+            registerForContextMenu(lvList);
+        }
+
+        if (classType.equals(User.class)) {
+            ((TextView)findViewById(R.id.tvTitle)).setText("Brukere");
+            final ListView lvList = (ListView)findViewById(R.id.lvList);
+
+            ArrayList<User> userArray = new ArrayList<User>();
+
+            adapterInstanceUser = new ArrayAdapter<User>(this, android.R.layout.simple_list_item_1, userArray);
+            User.showUsers(adapterInstanceUser);
+
+            lvList.setAdapter(adapterInstanceUser);
+            lvList.setOnItemClickListener(mGlobal_OnItemClickListener);
+            registerForContextMenu(lvList);
+        }
     }
 
 
@@ -125,12 +140,12 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
             switch (menuItem.getItemId()) {
                 case MENU_BUTTON_SHOW_ASSETS:
                     Log.d(TAG, "Showing assets");
-                    initializeCategoryList();
+                    initializeList(Category.class);
                     initializeFilterSpinner();
                     return true;
                 case MENU_BUTTON_SHOW_USERS:
                     Log.d(TAG, "Showing assets");
-                    initializeCategoryList();
+                    initializeList(User.class);
                     initializeFilterSpinner();
                     return true;
                 default:

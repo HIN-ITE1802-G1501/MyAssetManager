@@ -1,6 +1,6 @@
 package no.hin.student.myassetmanager.Classes;
 
-public class Asset {
+public class Asset extends MyObjects {
     private int id;
     private String name;
 
