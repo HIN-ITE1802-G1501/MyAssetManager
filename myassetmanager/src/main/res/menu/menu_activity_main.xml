@@ -2,7 +2,7 @@
     <item android:id="@+id/action_assets" android:title="@string/action_assets"
         android:orderInCategory="100" android:showAsAction="always" />
     <item android:id="@+id/action_users" android:title="@string/action_users"
-        android:orderInCategory="100" android:showAsAction="always" />
+        android:orderInCategory="100" android:showAsAction="always"  />
     <item android:id="@+id/action_loan" android:title="@string/action_loan"
-        android:orderInCategory="100" android:showAsAction="always" />
+        android:orderInCategory="100" android:showAsAction="always"  />
 </menu>

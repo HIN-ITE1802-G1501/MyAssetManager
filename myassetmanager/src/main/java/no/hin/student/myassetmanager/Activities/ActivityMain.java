@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -17,12 +16,11 @@ import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import no.hin.student.myassetmanager.Classes.Asset;
 import no.hin.student.myassetmanager.Classes.Category;
+import no.hin.student.myassetmanager.Classes.MyObjects;
 import no.hin.student.myassetmanager.Classes.User;
 import no.hin.student.myassetmanager.Fragments.FragmentAsset;
 import no.hin.student.myassetmanager.Fragments.FragmentList;
@@ -32,13 +30,24 @@ import no.hin.student.myassetmanager.R;
 
 public class ActivityMain extends Activity implements FragmentUser.OnFragmentInteractionListener, FragmentAsset.OnFragmentInteractionListener, FragmentList.OnFragmentInteractionListener {
 
+    private static final int MENU_CONTEXT_LIST_SHOW = 10101;
+    private static final int MENU_CONTEXT_LIST_EDIT = 10102;
+    private static final int MENU_CONTEXT_LIST_DELETE = 10103;
+
+    private static final int MENU_BUTTON_SHOW_ASSETS = 10201;
+    private static final int MENU_BUTTON_SHOW_USERS = 10202;
+    private static final int MENU_BUTTON_SHOW_HISTORY = 10203;
+
+    private static final String TAG = "MyAssetManger-log";
+
+    private ArrayAdapter<Category> adapterInstanceCategory;
+    private ArrayAdapter<User> adapterInstanceUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        initializeCategoryList();
-        initializeFilterSpinner();
+        findViewById(R.id.btnMenu).setOnClickListener(mGlobal_OnClickListener);
     }
 
 
@@ -51,76 +60,45 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
 
-        if (id == R.id.action_delete) {
-            Log.d("Test","Jippp");
+        if (id == R.id.action_settings) {
+            Log.d(TAG, "Starting settings from MainMenu");
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    private void initializeUserList()
-    {
-        ListView lvList = (ListView)findViewById(R.id.lvList);
-        ArrayList<User> userArray = new ArrayList<User>();
-        ArrayAdapter<User> adapterInstance;
-        adapterInstance = new ArrayAdapter<User>(this, android.R.layout.simple_list_item_1, userArray);
-        adapterInstance.add(new User("Test", "Kurt-Erik", "Karlsen"));
-        adapterInstance.add(new User("Test", "Kurt-Erik", "Karlsen"));
-        adapterInstance.add(new User("Test", "Kurt-Erik", "Karlsen"));
-        adapterInstance.add(new User("Test", "Kurt-Erik", "Karlsen"));
-        lvList.setAdapter(adapterInstance);
-    }
 
-    private void initializeAssetList()
+    private <T extends MyObjects> void initializeList(Class<T> classType)
     {
-        ListView lvList = (ListView)findViewById(R.id.lvList);
-        ArrayList<Asset> userArray = new ArrayList<Asset>();
-        ArrayAdapter<Asset> adapterInstance;
-        adapterInstance = new ArrayAdapter<Asset>(this, android.R.layout.simple_list_item_1, userArray);
-        adapterInstance.add(new Asset("Lumia 640"));
-        adapterInstance.add(new Asset("Lumia 1020"));
-        adapterInstance.add(new Asset("Lumia 930"));
-        adapterInstance.add(new Asset("Lumia 820"));
-        lvList.setAdapter(adapterInstance);
-    }
+        if (classType.equals(Category.class)) {
+            ((TextView)findViewById(R.id.tvTitle)).setText("Kategorier");
+            final ListView lvList = (ListView)findViewById(R.id.lvList);
 
-    private void initializeCategoryList()
-    {
-        TextView tvTitle = (TextView)findViewById(R.id.tvTitle);
-        tvTitle.setText("Kategorier");
-        final ListView lvList = (ListView)findViewById(R.id.lvList);
-        ArrayList<Category> userArray = new ArrayList<Category>();
-        ArrayAdapter<Category> adapterInstance;
-        adapterInstance = new ArrayAdapter<Category>(this, android.R.layout.simple_list_item_1, userArray);
-        adapterInstance.add(new Category("PC"));
-        adapterInstance.add(new Category("Telefon"));
-        adapterInstance.add(new Category("Switch"));
-        adapterInstance.add(new Category("Server"));
-        lvList.setAdapter(adapterInstance);
-        lvList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> arg0, View arg1,int arg2, long arg3) {
-                PopupMenu popup = new PopupMenu(ActivityMain.this, lvList);
-                MenuInflater inflater = popup.getMenuInflater();
-                inflater.inflate(R.menu.menu_list_actions, popup.getMenu());
+            ArrayList<Category> categoryArray = new ArrayList<Category>();
 
-                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    public boolean onMenuItemClick(MenuItem item) {
-                        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
-                        Log.d("Test","test");
-                        Toast.makeText(ActivityMain.this,"You Clicked : " + item.getTitle(),Toast.LENGTH_SHORT).show();
-                        return true;
-                    }
-                });
-                popup.show();
-                return false;
-            }
-        });
+            adapterInstanceCategory = new ArrayAdapter<Category>(this, android.R.layout.simple_list_item_1, categoryArray);
+            Category.showCategories(adapterInstanceCategory);
+
+            lvList.setAdapter(adapterInstanceCategory);
+            lvList.setOnItemClickListener(mGlobal_OnItemClickListener);
+            registerForContextMenu(lvList);
+        }
+
+        if (classType.equals(User.class)) {
+            ((TextView)findViewById(R.id.tvTitle)).setText("Brukere");
+            final ListView lvList = (ListView)findViewById(R.id.lvList);
+
+            ArrayList<User> userArray = new ArrayList<User>();
+
+            adapterInstanceUser = new ArrayAdapter<User>(this, android.R.layout.simple_list_item_1, userArray);
+            User.showUsers(adapterInstanceUser);
+
+            lvList.setAdapter(adapterInstanceUser);
+            lvList.setOnItemClickListener(mGlobal_OnItemClickListener);
+            registerForContextMenu(lvList);
+        }
     }
 
 
@@ -130,9 +108,6 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
         ArrayList<Category> categoryArray = new ArrayList<Category>();
         ArrayAdapter<Category> adapterInstance;
         adapterInstance = new ArrayAdapter<Category>(this, android.R.layout.simple_list_item_1, categoryArray);
-        adapterInstance.add(new Category("Alle"));
-        adapterInstance.add(new Category("Tilgjengelig"));
-        adapterInstance.add(new Category("Utlånt"));
         spFilter.setAdapter(adapterInstance);
     }
 
@@ -143,11 +118,89 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
     }
 
 
-    public void showMenuMain(View v) {
-        PopupMenu popup = new PopupMenu(this, v);
-        MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.menu_activity_main, popup.getMenu());
-        popup.show();
+    final View.OnClickListener mGlobal_OnClickListener = new View.OnClickListener() {
+        public void onClick(final View v) {
+            switch(v.getId()) {
+                case R.id.btnMenu:
+                    PopupMenu popup = new PopupMenu(getApplication(), v);
+                    popup.getMenu().add(Menu.NONE, MENU_BUTTON_SHOW_ASSETS, Menu.NONE, R.string.MENU_BUTTON_SHOW_ASSETS).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
+                    popup.getMenu().add(Menu.NONE, MENU_BUTTON_SHOW_USERS, Menu.NONE, R.string.MENU_BUTTON_SHOW_USERS).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
+                    popup.getMenu().add(Menu.NONE, MENU_BUTTON_SHOW_HISTORY, Menu.NONE, R.string.MENU_BUTTON_SHOW_HISTORY).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
+                    popup.show();
+                    Log.d(TAG, "Adding menu to button.");
+                    break;
+            }
+        }
+    };
+
+
+    final MenuItem.OnMenuItemClickListener mGlobal_OnMenuItemClickListener = new MenuItem.OnMenuItemClickListener() {
+        @Override
+        public boolean onMenuItemClick(MenuItem menuItem) {
+            switch (menuItem.getItemId()) {
+                case MENU_BUTTON_SHOW_ASSETS:
+                    Log.d(TAG, "Showing assets");
+                    initializeList(Category.class);
+                    initializeFilterSpinner();
+                    return true;
+                case MENU_BUTTON_SHOW_USERS:
+                    Log.d(TAG, "Showing assets");
+                    initializeList(User.class);
+                    initializeFilterSpinner();
+                    return true;
+                default:
+                    return true;
+            }
+        }
+    };
+
+    final AdapterView.OnItemClickListener mGlobal_OnItemClickListener = new AdapterView.OnItemClickListener() {
+        public void onItemClick(AdapterView<?> adapterView, View row, int position, long index) {
+            Log.d(TAG, "Klikker på item " + adapterInstanceCategory.getItem(position).toString());
+        }
+    };
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        switch (v.getId()) {
+            case R.id.lvList:
+
+                super.onCreateContextMenu(menu, v, menuInfo);
+                AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+                String title = ((Category) adapterInstanceCategory.getItem(info.position)).toString();
+
+                menu.setHeaderTitle(title);
+                menu.add(Menu.NONE, MENU_CONTEXT_LIST_SHOW, Menu.NONE, R.string.MENU_CONTEXT_LIST_SHOW);
+                menu.add(Menu.NONE, MENU_CONTEXT_LIST_EDIT, Menu.NONE, R.string.MENU_CONTEXT_LIST_EDIT);
+                menu.add(Menu.NONE, MENU_CONTEXT_LIST_DELETE, Menu.NONE, R.string.MENU_CONTEXT_LIST_DELETE);
+                break;
+        }
     }
 
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+
+        switch (item.getItemId()) {
+            case MENU_CONTEXT_LIST_SHOW:
+                if (adapterInstanceCategory.getItem(info.position).getClass().equals(Category.class) ) {
+                    Log.d(TAG, "Working to filter on generic!");
+                }
+                return true;
+            case MENU_CONTEXT_LIST_DELETE:
+                if ((adapterInstanceCategory != null) &&(adapterInstanceCategory.getItem(info.position).getClass().equals(Category.class))) {
+                    Log.d(TAG, "Menu context delete category");
+                    Category.deleteCategory(adapterInstanceCategory, adapterInstanceCategory.getItem(info.position));
+                }
+                if ((adapterInstanceUser != null) &&(adapterInstanceUser.getItem(info.position).getClass().equals(User.class))) {
+                    Log.d(TAG, "Menu context delete category");
+                    User.deleteUser(adapterInstanceUser, adapterInstanceUser.getItem(info.position));
+                }
+
+
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
+    }
 }
