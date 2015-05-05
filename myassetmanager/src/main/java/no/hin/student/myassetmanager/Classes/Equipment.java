@@ -144,9 +144,9 @@ public class Equipment extends MyObjects {
         adapterInstance.add(new Equipment(3, "Telefon", "Microsoft", "Lumia 830", "Windows telefon", "IT-1332", ""));
     }
 
-    public static void deleteEquipment(ArrayAdapter<Equipment> adapterInstanceCategory, Equipment equipment) {
-        Log.d(adapterInstanceCategory.getContext().getString(R.string.LOGTAG), "Delete equipment from list and database");
-        adapterInstanceCategory.remove(equipment);
+    public static void deleteEquipment(ArrayAdapter<Equipment> adapterInstance, Equipment equipment) {
+        Log.d(adapterInstance.getContext().getString(R.string.LOGTAG), "Delete equipment from list and database");
+        adapterInstance.remove(equipment);
     }
 
     @Override
