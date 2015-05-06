@@ -3,8 +3,10 @@ package no.hin.student.myassetmanager.Classes;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 
+import no.hin.student.myassetmanager.Interfaces.MyInterface;
 
-public class Category extends MyObjects {
+
+public class Category extends MyObjects implements MyInterface {
     private int id;
     private String name;
 
@@ -26,20 +28,25 @@ public class Category extends MyObjects {
     }
 
     @Override
+    public String getInfo() {
+        return "Mer informasjon om kategorien";
+    }
+
+    @Override
     public String toString() {
         return name;
     }
 
 
-    public static void showCategories(ArrayAdapter<Category> adapterInstanceCategory) {
-        adapterInstanceCategory.add(new Category(1, "PC"));
-        adapterInstanceCategory.add(new Category(2, "Telefon"));
-        adapterInstanceCategory.add(new Category(3, "Switch"));
-        adapterInstanceCategory.add(new Category(4, "Server"));
+    public static void showCategories(MyAdapter adapterInstance) {
+        adapterInstance.add(new Category(1, "PC"));
+        adapterInstance.add(new Category(2, "Telefon"));
+        adapterInstance.add(new Category(3, "Switch"));
+        adapterInstance.add(new Category(4, "Server"));
     }
 
-    public static void deleteCategory(ArrayAdapter<Category> adapterInstanceCategory, Category category) {
+    public static void deleteCategory(MyAdapter adapterInstance, MyInterface category) {
         Log.d(TAG, "Delete category from list and database");
-        adapterInstanceCategory.remove(category);
+        //adapterInstance.remove(category);
     }
 }

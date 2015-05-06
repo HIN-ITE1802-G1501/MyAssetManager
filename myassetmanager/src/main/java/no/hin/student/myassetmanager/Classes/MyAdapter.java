@@ -9,10 +9,11 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import no.hin.student.myassetmanager.Interfaces.MyInterface;
 import no.hin.student.myassetmanager.R;
 
 public class MyAdapter extends BaseAdapter {
-    private static ArrayList<User> arrayList;
+    private static ArrayList<MyInterface> arrayList;
 
     private LayoutInflater mInflater;
 
@@ -25,7 +26,7 @@ public class MyAdapter extends BaseAdapter {
         return arrayList.size();
     }
 
-    public void add(User user) {
+    public void add(MyInterface user) {
         arrayList.add(user);
     }
 
@@ -51,9 +52,9 @@ public class MyAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        holder.txtName.setText(arrayList.get(position).getFirstname());
-        holder.txtCityState.setText(arrayList.get(position).getPassword());
-        holder.txtPhone.setText(arrayList.get(position).getPhone());
+        holder.txtName.setText(arrayList.get(position).getName());
+        holder.txtCityState.setText(arrayList.get(position).getName());
+        holder.txtPhone.setText(arrayList.get(position).getInfo());
 
         return convertView;
     }

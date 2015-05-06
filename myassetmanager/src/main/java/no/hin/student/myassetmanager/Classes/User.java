@@ -6,6 +6,8 @@ import android.widget.ArrayAdapter;
 
 import com.google.gson.Gson;
 
+import no.hin.student.myassetmanager.Interfaces.MyInterface;
+
 /**
  * Created by wfa on 07.04.2015.
  *
@@ -13,7 +15,7 @@ import com.google.gson.Gson;
  * Ved registrering av ny bruker oppgis brukernavn og passord m.m.
  *
  */
-public class User extends MyObjects {
+public class User extends MyObjects implements MyInterface {
     private int u_id;               //PrimÃ¦rnÃ¸kkelfelt, autogenereres i databasen.
     private String userName;        //Brukernavn
     private String password;        //Passord
@@ -129,5 +131,23 @@ public class User extends MyObjects {
     @Override
     public String toString() {
         return firstname + " " + lastname;
+    }
+
+
+
+
+    @Override
+    public int getId() {
+        return this.u_id;
+    }
+
+    @Override
+    public String getName() {
+        return this.firstname + " " + this.lastname;
+    }
+
+    @Override
+    public String getInfo() {
+        return "Telefon: " + this.getPhone() + " Mer: " + "";
     }
 }

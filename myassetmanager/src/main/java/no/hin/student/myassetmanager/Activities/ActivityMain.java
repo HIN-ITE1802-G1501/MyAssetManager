@@ -78,7 +78,7 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
             ((TextView)findViewById(R.id.tvTitle)).setText("Kategori");
             ArrayList<Category> categoryArray = new ArrayList<Category>();
             adapterInstance = new MyAdapter(this, categoryArray);
-            //Category.showCategories(adapterInstance);
+            Category.showCategories(adapterInstance);
         }
 
         if (classType.equals(User.class)) {
@@ -192,7 +192,7 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
             case MENU_CONTEXT_LIST_DELETE:
                 if ((adapterInstance != null) &&(adapterInstance.getItem(info.position).getClass().equals(Category.class))) {
                     Log.d(TAG, "Menu context delete category");
-                    //Category.deleteCategory(adapterInstance, (Category)adapterInstance.getItem(info.position));
+                    //Category.deleteCategory(adapterInstance, adapterInstance.getItem(info.position));
                 }
                 if ((adapterInstance != null) &&(adapterInstance.getItem(info.position).getClass().equals(User.class))) {
                     Log.d(TAG, "Menu context delete category");
