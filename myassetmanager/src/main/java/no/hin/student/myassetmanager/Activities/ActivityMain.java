@@ -21,7 +21,7 @@ import java.util.ArrayList;
 
 import no.hin.student.myassetmanager.Classes.Category;
 import no.hin.student.myassetmanager.Classes.Equipment;
-import no.hin.student.myassetmanager.Classes.MyClassAdapter;
+import no.hin.student.myassetmanager.Classes.MyAdapter;
 import no.hin.student.myassetmanager.Classes.MyObjects;
 import no.hin.student.myassetmanager.Classes.User;
 import no.hin.student.myassetmanager.Fragments.FragmentAsset;
@@ -42,7 +42,7 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
 
     private static final String TAG = "MyAssetManger-log";
 
-    private ArrayAdapter adapterInstance;
+    private MyAdapter adapterInstance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,49 +73,30 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
 
     private <T extends MyObjects> void initializeList(Class<T> classType)
     {
+        final ListView lvList = (ListView)findViewById(R.id.lvList);
         if (classType.equals(Category.class)) {
-            ((TextView)findViewById(R.id.tvTitle)).setText("Kategorier");
-            final ListView lvList = (ListView)findViewById(R.id.lvList);
-
+            ((TextView)findViewById(R.id.tvTitle)).setText("Kategori");
             ArrayList<Category> categoryArray = new ArrayList<Category>();
-
-            adapterInstance = new ArrayAdapter<Category>(this, android.R.layout.simple_list_item_1, categoryArray);
-            Category.showCategories(adapterInstance);
-
-            lvList.setAdapter(adapterInstance);
-            lvList.setOnItemClickListener(mGlobal_OnItemClickListener);
-            registerForContextMenu(lvList);
+            adapterInstance = new MyAdapter(this, categoryArray);
+            //Category.showCategories(adapterInstance);
         }
 
         if (classType.equals(User.class)) {
             ((TextView)findViewById(R.id.tvTitle)).setText("Brukere");
-            final ListView lvList = (ListView)findViewById(R.id.lvList);
-
             ArrayList<User> userArray = new ArrayList<User>();
-
-            adapterInstance = new ArrayAdapter<User>(this, android.R.layout.simple_list_item_1, userArray);
+            adapterInstance = new MyAdapter(this, userArray);
             User.showUsers(adapterInstance);
-
-            lvList.setAdapter(adapterInstance);
-            lvList.setOnItemClickListener(mGlobal_OnItemClickListener);
-            registerForContextMenu(lvList);
         }
 
         if (classType.equals(Equipment.class)) {
             ((TextView)findViewById(R.id.tvTitle)).setText("Utstyr");
-            final ListView lvList = (ListView)findViewById(R.id.lvList);
-
             ArrayList<Equipment> equipmentArray = new ArrayList<Equipment>();
-
-            adapterInstance = new ArrayAdapter<Equipment>(this, android.R.layout.simple_list_item_1, equipmentArray);
-            Equipment.showEquipment(adapterInstance);
-
-            lvList.setAdapter(adapterInstance);
-            lvList.setOnItemClickListener(mGlobal_OnItemClickListener);
-            registerForContextMenu(lvList);
-
-            //ArrayAdapter a = new ArrayAdapter(this, android.R.layout.simple_list_item_1, equipmentArray);
+            adapterInstance = new MyAdapter(this, equipmentArray);
+            //Equipment.showEquipment(adapterInstance);
         }
+        lvList.setAdapter(adapterInstance);
+        lvList.setOnItemClickListener(mGlobal_OnItemClickListener);
+        registerForContextMenu(lvList);
     }
 
 
@@ -124,7 +105,7 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
         Spinner spFilter = (Spinner)findViewById(R.id.spFilter);
         ArrayList<Category> categoryArray = new ArrayList<Category>();
         ArrayAdapter<Category> adapterInstance;
-        adapterInstance = new ArrayAdapter<Category>(this, android.R.layout.simple_list_item_1, categoryArray);
+        adapterInstance = new ArrayAdapter<Category>(this, android.R.layout.simple_list_item_2, categoryArray);
         spFilter.setAdapter(adapterInstance);
     }
 
@@ -211,11 +192,11 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
             case MENU_CONTEXT_LIST_DELETE:
                 if ((adapterInstance != null) &&(adapterInstance.getItem(info.position).getClass().equals(Category.class))) {
                     Log.d(TAG, "Menu context delete category");
-                    Category.deleteCategory(adapterInstance, (Category)adapterInstance.getItem(info.position));
+                    //Category.deleteCategory(adapterInstance, (Category)adapterInstance.getItem(info.position));
                 }
                 if ((adapterInstance != null) &&(adapterInstance.getItem(info.position).getClass().equals(User.class))) {
                     Log.d(TAG, "Menu context delete category");
-                    User.deleteUser(adapterInstance, (User)adapterInstance.getItem(info.position));
+                    //User.deleteUser(adapterInstance, (User)adapterInstance.getItem(info.position));
                 }
 
 

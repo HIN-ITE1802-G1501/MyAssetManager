@@ -115,7 +115,7 @@ public class User extends MyObjects {
         return json;
     }
 
-    public static void showUsers(ArrayAdapter<User> adapterInstance) {
+    public static void showUsers(MyAdapter adapterInstance) {
         adapterInstance.add(new User(1, "kekarlsen", "password", "Kurt-Erik", "Karlsen", "tlfnr123", true));
         adapterInstance.add(new User(2, "aleks", "password", "Aleksander", "Valle", "tlfnr123", true));
         adapterInstance.add(new User(3, "billy", "password", "Bill", "Gates", "tlfnr123", true));
