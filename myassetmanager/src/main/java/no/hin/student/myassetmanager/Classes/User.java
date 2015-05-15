@@ -123,9 +123,9 @@ public class User extends MyObjects implements MyInterface {
         adapterInstance.add(new User(3, "billy", "password", "Bill", "Gates", "tlfnr123", true));
     }
 
-    public static void deleteUser(ArrayAdapter<User> adapterInstanceCategory, User user) {
+    public static void deleteUser(MyAdapter adapterInstance, User user) {
         Log.d(TAG, "Delete user from list and database");
-        adapterInstanceCategory.remove(user);
+        adapterInstance.remove(user);
     }
 
     @Override

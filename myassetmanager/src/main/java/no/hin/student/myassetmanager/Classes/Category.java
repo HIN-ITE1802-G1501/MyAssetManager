@@ -3,10 +3,12 @@ package no.hin.student.myassetmanager.Classes;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 
+import java.util.Collection;
+
 import no.hin.student.myassetmanager.Interfaces.MyInterface;
 
 
-public class Category extends MyObjects implements MyInterface {
+public class Category extends MyObjects {
     private int id;
     private String name;
 
@@ -45,8 +47,8 @@ public class Category extends MyObjects implements MyInterface {
         adapterInstance.add(new Category(4, "Server"));
     }
 
-    public static void deleteCategory(MyAdapter adapterInstance, MyInterface category) {
+    public static void deleteCategory(MyAdapter adapterInstance, Category category) {
         Log.d(TAG, "Delete category from list and database");
-        //adapterInstance.remove(category);
+        adapterInstance.remove(category);
     }
 }

@@ -1,5 +1,7 @@
 package no.hin.student.myassetmanager.Classes;
 
-public class MyObjects {
+import no.hin.student.myassetmanager.Interfaces.MyInterface;
+
+public abstract class MyObjects implements MyInterface {
 
 }

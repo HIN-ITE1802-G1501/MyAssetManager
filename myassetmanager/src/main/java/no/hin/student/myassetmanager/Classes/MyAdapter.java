@@ -9,11 +9,10 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import no.hin.student.myassetmanager.Interfaces.MyInterface;
 import no.hin.student.myassetmanager.R;
-
+//  private <T extends MyObjects> void initializeList(Class<T> classType)
 public class MyAdapter extends BaseAdapter {
-    private static ArrayList<MyInterface> arrayList;
+    private static ArrayList<MyObjects> arrayList;
 
     private LayoutInflater mInflater;
 
@@ -26,8 +25,13 @@ public class MyAdapter extends BaseAdapter {
         return arrayList.size();
     }
 
-    public void add(MyInterface user) {
-        arrayList.add(user);
+//    public <T extends MyObjects> void add(Class<T> myObject) {
+    public void add(MyObjects myObject) {
+        arrayList.add(myObject);
+    }
+
+    public void remove(MyObjects myObject) {
+        arrayList.remove(myObject);
     }
 
     public Object getItem(int position) {

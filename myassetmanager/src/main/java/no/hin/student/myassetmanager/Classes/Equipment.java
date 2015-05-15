@@ -138,7 +138,7 @@ public class Equipment extends MyObjects {
     }
 
 
-    public static void showEquipment(ArrayAdapter<Equipment> adapterInstance) {
+    public static void showEquipment(MyAdapter adapterInstance) {
         adapterInstance.add(new Equipment(1, "Telefon", "Microsoft", "Lumia 930", "Windows telefon", "IT-1321", ""));
         adapterInstance.add(new Equipment(2, "Telefon", "Microsoft", "Lumia 1020", "Windows telefon", "IT-1323", ""));
         adapterInstance.add(new Equipment(3, "Telefon", "Microsoft", "Lumia 830", "Windows telefon", "IT-1332", ""));
@@ -160,5 +160,20 @@ public class Equipment extends MyObjects {
                 ", it_no='" + it_no + '\'' +
                 ", aquired='" + aquired + '\'' +
                 '}';
+    }
+
+    @Override
+    public int getId() {
+        return 0;
+    }
+
+    @Override
+    public String getName() {
+        return this.getType();
+    }
+
+    @Override
+    public String getInfo() {
+        return null;
     }
 }

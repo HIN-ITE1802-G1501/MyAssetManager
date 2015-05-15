@@ -92,7 +92,7 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
             ((TextView)findViewById(R.id.tvTitle)).setText("Utstyr");
             ArrayList<Equipment> equipmentArray = new ArrayList<Equipment>();
             adapterInstance = new MyAdapter(this, equipmentArray);
-            //Equipment.showEquipment(adapterInstance);
+            Equipment.showEquipment(adapterInstance);
         }
         lvList.setAdapter(adapterInstance);
         lvList.setOnItemClickListener(mGlobal_OnItemClickListener);
@@ -115,7 +115,7 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
 
     }
 
-
+    // When clicking show view button
     final View.OnClickListener mGlobal_OnClickListener = new View.OnClickListener() {
         public void onClick(final View v) {
             switch(v.getId()) {
@@ -130,6 +130,7 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
             }
         }
     };
+
 
 
     final MenuItem.OnMenuItemClickListener mGlobal_OnMenuItemClickListener = new MenuItem.OnMenuItemClickListener() {
@@ -192,11 +193,11 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
             case MENU_CONTEXT_LIST_DELETE:
                 if ((adapterInstance != null) &&(adapterInstance.getItem(info.position).getClass().equals(Category.class))) {
                     Log.d(TAG, "Menu context delete category");
-                    //Category.deleteCategory(adapterInstance, adapterInstance.getItem(info.position));
+                    Category.deleteCategory(adapterInstance, (Category)adapterInstance.getItem(info.position));
                 }
                 if ((adapterInstance != null) &&(adapterInstance.getItem(info.position).getClass().equals(User.class))) {
                     Log.d(TAG, "Menu context delete category");
-                    //User.deleteUser(adapterInstance, (User)adapterInstance.getItem(info.position));
+                    User.deleteUser(adapterInstance, (User)adapterInstance.getItem(info.position));
                 }
 
 
