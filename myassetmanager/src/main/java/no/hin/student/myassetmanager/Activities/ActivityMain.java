@@ -2,9 +2,14 @@ package no.hin.student.myassetmanager.Activities;
 
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -40,6 +45,9 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
     private static final int MENU_BUTTON_SHOW_USERS = 10202;
     private static final int MENU_BUTTON_SHOW_HISTORY = 10203;
 
+    private FragmentList fragmentList = new FragmentList();
+    private FragmentUser fragmentUser = new FragmentUser();
+
     private static final String TAG = "MyAssetManger-log";
 
     private MyAdapter adapterInstance;
@@ -70,26 +78,40 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentList = new FragmentList();
+        fragmentUser = new FragmentUser();
+        fragmentTransaction.add(R.id.fragment_container, fragmentList);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+        fragmentManager.executePendingTransactions();
+    }
+
 
     private <T extends MyObjects> void initializeList(Class<T> classType)
     {
-        final ListView lvList = (ListView)findViewById(R.id.lvList);
+        ListView lvList = (ListView)fragmentList.getView().findViewById(R.id.lvList);
         if (classType.equals(Category.class)) {
-            ((TextView)findViewById(R.id.tvTitle)).setText("Kategori");
+           ((TextView)fragmentList.getView().findViewById(R.id.tvTitle)).setText("Kategori");
             ArrayList<Category> categoryArray = new ArrayList<Category>();
             adapterInstance = new MyAdapter(this, categoryArray);
             Category.showCategories(adapterInstance);
         }
 
         if (classType.equals(User.class)) {
-            ((TextView)findViewById(R.id.tvTitle)).setText("Brukere");
+            ((TextView)fragmentList.getView().findViewById(R.id.tvTitle)).setText("Brukere");
             ArrayList<User> userArray = new ArrayList<User>();
             adapterInstance = new MyAdapter(this, userArray);
             User.showUsers(adapterInstance);
         }
 
         if (classType.equals(Equipment.class)) {
-            ((TextView)findViewById(R.id.tvTitle)).setText("Utstyr");
+            ((TextView)fragmentList.getView().findViewById(R.id.tvTitle)).setText("Utstyr");
             ArrayList<Equipment> equipmentArray = new ArrayList<Equipment>();
             adapterInstance = new MyAdapter(this, equipmentArray);
             Equipment.showEquipment(adapterInstance);
@@ -136,6 +158,13 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
     final MenuItem.OnMenuItemClickListener mGlobal_OnMenuItemClickListener = new MenuItem.OnMenuItemClickListener() {
         @Override
         public boolean onMenuItemClick(MenuItem menuItem) {
+            FragmentManager fragmentManager = getFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.fragment_container, fragmentList);
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
+            fragmentManager.executePendingTransactions();
+
             switch (menuItem.getItemId()) {
                 case MENU_BUTTON_SHOW_ASSETS:
                     Log.d(TAG, "Showing assets");
@@ -147,18 +176,30 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
                     initializeList(User.class);
                     initializeFilterSpinner();
                     return true;
+                case MENU_BUTTON_SHOW_HISTORY:
+                    fragmentUser.setText();
+                    return true;
                 default:
                     return true;
             }
         }
     };
 
+    // When clicking on a listview item
     final AdapterView.OnItemClickListener mGlobal_OnItemClickListener = new AdapterView.OnItemClickListener() {
         public void onItemClick(AdapterView<?> adapterView, View row, int position, long index) {
             Log.d(TAG, "Clicking on equipment " + adapterInstance.getItem(position).toString());
             if (adapterInstance.getItem(position).getClass().equals(Category.class)) {
                 initializeList(Equipment.class);
                 initializeFilterSpinner();
+            } else if (adapterInstance.getItem(position).getClass().equals(Equipment.class)) {
+                FragmentManager fragmentManager = getFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.fragment_container, fragmentUser);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+                fragmentManager.executePendingTransactions();
+                ((TextView)fragmentUser.getView().findViewById(R.id.tvUserTitle)).setText( ((Equipment)adapterInstance.getItem(position)).getDescription() );
             }
         }
     };
