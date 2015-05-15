@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -47,25 +48,23 @@ public class MyAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.listview_layout1, null);
             holder = new ViewHolder();
-            holder.txtName = (TextView) convertView.findViewById(R.id.name);
-            holder.txtCityState = (TextView) convertView.findViewById(R.id.surname);
-            holder.txtPhone = (TextView) convertView.findViewById(R.id.email);
+            holder.ivListItemImage = (ImageView) convertView.findViewById(R.id.image);
+            holder.ivListItemTitle = (TextView) convertView.findViewById(R.id.title);
 
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        holder.txtName.setText(arrayList.get(position).getName());
-        holder.txtCityState.setText(arrayList.get(position).getName());
-        holder.txtPhone.setText(arrayList.get(position).getInfo());
+        holder.ivListItemImage.setImageResource(R.mipmap.ic_launcher);
+        holder.ivListItemTitle.setText(arrayList.get(position).getListItemTitle());
+
 
         return convertView;
     }
 
     static class ViewHolder {
-        TextView txtName;
-        TextView txtCityState;
-        TextView txtPhone;
+        ImageView ivListItemImage;
+        TextView ivListItemTitle;
     }
 }

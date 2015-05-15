@@ -4,6 +4,7 @@ package no.hin.student.myassetmanager.Classes;
 import android.content.res.Resources;
 import android.util.Log;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 
 import com.google.gson.Gson;
 
@@ -168,12 +169,12 @@ public class Equipment extends MyObjects {
     }
 
     @Override
-    public String getName() {
+    public String getListItemTitle() {
         return this.getType();
     }
 
     @Override
-    public String getInfo() {
+    public ImageView getListItemImage() {
         return null;
     }
 }

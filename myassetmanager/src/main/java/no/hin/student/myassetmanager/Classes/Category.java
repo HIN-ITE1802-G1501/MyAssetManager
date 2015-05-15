@@ -2,6 +2,7 @@ package no.hin.student.myassetmanager.Classes;
 
 import android.util.Log;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 
 import java.util.Collection;
 
@@ -30,13 +31,13 @@ public class Category extends MyObjects {
     }
 
     @Override
-    public String getInfo() {
+    public String getListItemTitle() {
         return "Mer informasjon om kategorien";
     }
 
     @Override
-    public String toString() {
-        return name;
+    public ImageView getListItemImage() {
+        return null;
     }
 
 

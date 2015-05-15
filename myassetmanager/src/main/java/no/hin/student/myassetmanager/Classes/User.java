@@ -3,6 +3,7 @@ package no.hin.student.myassetmanager.Classes;
 
 import android.util.Log;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 
 import com.google.gson.Gson;
 
@@ -142,12 +143,12 @@ public class User extends MyObjects implements MyInterface {
     }
 
     @Override
-    public String getName() {
+    public String getListItemTitle() {
         return this.firstname + " " + this.lastname;
     }
 
     @Override
-    public String getInfo() {
-        return "Telefon: " + this.getPhone() + " Mer: " + "";
+    public ImageView getListItemImage() {
+        return null;
     }
 }
