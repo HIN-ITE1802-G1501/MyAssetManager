@@ -11,7 +11,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import no.hin.student.myassetmanager.R;
-//  private <T extends MyObjects> void initializeList(Class<T> classType)
+
 public class MyAdapter extends BaseAdapter {
     private static ArrayList<MyObjects> arrayList;
 
@@ -26,7 +26,7 @@ public class MyAdapter extends BaseAdapter {
         return arrayList.size();
     }
 
-//    public <T extends MyObjects> void add(Class<T> myObject) {
+
     public void add(MyObjects myObject) {
         arrayList.add(myObject);
     }

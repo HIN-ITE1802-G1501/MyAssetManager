@@ -52,10 +52,5 @@ public class FragmentUser extends Fragment {
         public void onFragmentInteraction(Uri uri);
     }
 
-    public void setText(){
-        TextView tvUserTitle = (TextView) getView().findViewById(R.id.tvUserTitle);
-        tvUserTitle.setText("Hello");
-    }
-
 
 }

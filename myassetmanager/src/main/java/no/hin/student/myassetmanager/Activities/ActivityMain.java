@@ -177,7 +177,6 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
                     initializeFilterSpinner();
                     return true;
                 case MENU_BUTTON_SHOW_HISTORY:
-                    fragmentUser.setText();
                     return true;
                 default:
                     return true;
@@ -199,7 +198,18 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
                 fragmentManager.executePendingTransactions();
-                ((TextView)fragmentUser.getView().findViewById(R.id.tvUserTitle)).setText( ((Equipment)adapterInstance.getItem(position)).getDescription() );
+                ((TextView)fragmentUser.getView().findViewById(R.id.tvUserFullName)).setText( ((Equipment)adapterInstance.getItem(position)).getDescription() );
+            } else if (adapterInstance.getItem(position).getClass().equals(User.class)) {
+                FragmentManager fragmentManager = getFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.fragment_container, fragmentUser);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+                fragmentManager.executePendingTransactions();
+                User user = ((User)adapterInstance.getItem(position));
+                ((TextView)fragmentUser.getView().findViewById(R.id.tvUserFullName)).setText( user.getFirstname() + " " + user.getLastname() );
+                ((TextView)fragmentUser.getView().findViewById(R.id.tvUserName)).setText( user.getUserName() );
+                ((TextView)fragmentUser.getView().findViewById(R.id.tvUserPhoneNumber)).setText( user.getPhone() );
             }
         }
     };

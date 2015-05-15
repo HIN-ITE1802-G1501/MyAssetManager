@@ -51,7 +51,6 @@ public class FragmentList extends Fragment {
         return inflater.inflate(R.layout.fragment_list, container, false);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
