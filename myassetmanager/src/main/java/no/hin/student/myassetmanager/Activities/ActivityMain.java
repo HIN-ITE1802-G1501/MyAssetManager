@@ -2,14 +2,13 @@ package no.hin.student.myassetmanager.Activities;
 
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
-import android.preference.PreferenceManager;
+
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -22,13 +21,23 @@ import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
+
+import java.net.URLEncoder;
 import java.util.ArrayList;
+
 
 import no.hin.student.myassetmanager.Classes.Category;
 import no.hin.student.myassetmanager.Classes.Equipment;
 import no.hin.student.myassetmanager.Classes.MyAdapter;
 import no.hin.student.myassetmanager.Classes.MyObjects;
 import no.hin.student.myassetmanager.Classes.User;
+
 import no.hin.student.myassetmanager.Fragments.FragmentAsset;
 import no.hin.student.myassetmanager.Fragments.FragmentList;
 import no.hin.student.myassetmanager.Fragments.FragmentUser;
@@ -47,6 +56,7 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
 
     private FragmentList fragmentList = new FragmentList();
     private FragmentUser fragmentUser = new FragmentUser();
+
 
     private static final String TAG = "MyAssetManger-log";
 
@@ -178,7 +188,10 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
                     initializeFilterSpinner();
                     return true;
                 case MENU_BUTTON_SHOW_HISTORY:
-                    Category.download();
+                    User.doLogin(getBaseContext());
+
+
+
                     return true;
                 default:
                     return true;
@@ -186,11 +199,6 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
         }
     };
 
-    private Runnable kjoerIBakgrunnen = new Runnable() {
-        public void run() {
-            Category.download();
-        }
-    };
 
 
     // When clicking on a listview item
@@ -266,4 +274,24 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
                 return super.onContextItemSelected(item);
         }
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

@@ -153,23 +153,25 @@ public class Category extends MyObjects {
 
 
     public static ArrayList readCategoriesFromFile(String fileName) {
-           String line = "";
-           ArrayList data = new ArrayList();
-           try {
-                FileReader fr = new FileReader(fileName);
-               BufferedReader br = new BufferedReader(fr);//Can also use a Scanner to read the file
-                while((line = br.readLine()) != null) {
-                     data.add(line);
-                        Log.d(TAG, "Reading line " + line);
-                    }
-               }
-           catch(FileNotFoundException fN) {
-                fN.printStackTrace();
-               }
-           catch(IOException e) {
-                System.out.println(e);
-               }
-           return data;
-         }
+       String line = "";
+       ArrayList data = new ArrayList();
+       try {
+            FileReader fr = new FileReader(fileName);
+           BufferedReader br = new BufferedReader(fr);//Can also use a Scanner to read the file
+            while((line = br.readLine()) != null) {
+                 data.add(line);
+                    Log.d(TAG, "Reading line " + line);
+                }
+           }
+       catch(FileNotFoundException fN) {
+            fN.printStackTrace();
+           }
+       catch(IOException e) {
+            System.out.println(e);
+           }
+       return data;
+     }
+
+
 
 }

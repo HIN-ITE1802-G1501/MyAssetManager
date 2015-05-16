@@ -1,15 +1,29 @@
 package no.hin.student.myassetmanager.Classes;
 
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.util.Log;
+import android.util.Pair;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import no.hin.student.myassetmanager.Interfaces.MyInterface;
+import no.hin.student.myassetmanager.R;
 
 
 /**
@@ -27,6 +41,9 @@ public class User extends MyObjects implements MyInterface {
     private String lastname;        //Etternavn
     private String phone;           //Telefonnummer (obligatorisk)
     private boolean user_activated; //Aktivert eller ikke. Settes som aktiv av admin/lÃ¦rer.
+
+
+    private static HttpClient httpClient = null;
 
     private static final String TAG = "MyAssetManger-log";
 
@@ -153,5 +170,62 @@ public class User extends MyObjects implements MyInterface {
     @Override
     public int getListItemImage() {
         return android.R.drawable.ic_menu_report_image;
+    }
+
+
+
+
+
+
+
+    //logIn:
+//Button-event, koplet til et Button-objekt definert i XML:
+    public static void doLogin(Context context) {
+        if (httpClient == null) {
+            httpClient = new DefaultHttpClient();
+            //Parametre:
+            List<NameValuePair> nameValuePairs = null;
+            nameValuePairs = new ArrayList<NameValuePair>(6);
+            nameValuePairs.add(new BasicNameValuePair("uid", "530617"));
+            nameValuePairs.add(new BasicNameValuePair("pwd", "kurt"));
+            //Tar også med databaseparametre her (lagres i session på serveren
+            //slik at samme parametret brukes på alle forespørsler).
+            //NB! Her bruker du parametre til din egen database:
+            nameValuePairs.add(new BasicNameValuePair("connectstring", "jdbc:mysql://kark.hin.no:3306/"));
+            nameValuePairs.add(new BasicNameValuePair("dbName", "stud_v15_karlsen"));
+            nameValuePairs.add(new BasicNameValuePair("db_uid", "karlsen"));
+            nameValuePairs.add(new BasicNameValuePair("db_pwd", "530617Pass"));
+            //NB! Sender med referanse til seg selv til konstruktøren:
+            new LogInAsyncTask(context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
+        } else {
+            Log.d(TAG, "Du er allerede logget inn!");
+        }
+    }
+
+
+
+
+    //getEquipment (henter alt utstyr):
+    //Button-event, koplet til et Button-objekt definert i XML:
+    public void doGetEquipment(View view) {
+        if (httpClient != null) {
+            //Parametre:
+            List<NameValuePair> nameValuePairs =new ArrayList<NameValuePair>(1);
+            nameValuePairs.add(new BasicNameValuePair("which_equipment", "ALL"));
+            //NB! Sender med referanse til seg selv til konstruktøren:
+            //new GetEquipmentAsyncTask(this).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
+        } else {
+            //Toast.makeText(this, "Logg inn først!!!", Toast.LENGTH_LONG).show();
+        }
+    }
+
+
+
+
+
+    //Viser login-resultat:
+    public void showLoginResult(String result) {
+        //TextView textViewStatus = (TextView)findViewById(R.id.tvStatus);
+        //textViewStatus.setText(result);
     }
 }
