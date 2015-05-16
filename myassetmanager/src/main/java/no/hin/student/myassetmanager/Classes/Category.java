@@ -53,23 +53,30 @@ public class Category extends MyObjects {
         return this.getName();
     }
 
-    private enum Fruit {
-        Annet, Dataskjerm, Dockingstasjon, Hub, Laptop, Legosett, Nettbrett, Oculus, PC, Ruter, Smartklokker, Svitsj, TV;
+    private enum Icons {
+        Annet, Dataskjerm, Dockingstasjon, HDMIsvitsj, Hub, Laptop, Legosett, Nettbrett, Oculus, PC, Ruter, Smartklokker, Svitsj, TVskjerm;
     }
 
 
     @Override
     public int getListItemImage() {
-        try {
-            Fruit fruit = Fruit.valueOf(this.name);
+        return getCategoryImage(this.name);
+    }
 
-            switch (fruit) {
+
+    public static int getCategoryImage(String categoryName) {
+        try {
+            Icons icons = Icons.valueOf(categoryName.replace("-",""));
+
+            switch (icons) {
                 case Annet:
                     return R.drawable.other;
                 case Dataskjerm:
                     return R.drawable.screen;
                 case Dockingstasjon:
                     return R.drawable.docking;
+                case HDMIsvitsj:
+                    return R.drawable.hdmi;
                 case Hub:
                     return R.drawable.hub;
                 case Laptop:
@@ -86,17 +93,16 @@ public class Category extends MyObjects {
                     return R.drawable.router;
                 case Smartklokker:
                     return R.drawable.smartwatch;
-                default:
-                    return R.drawable.other;
+                case Svitsj:
+                    return R.drawable.nswitch;
+                case TVskjerm:
+                    return R.drawable.screen;
             }
         }catch (Exception e) {
 
         }
-
-
         return R.drawable.other;
     }
-
 
     public static void showCategories(MyAdapter adapterInstance) {
         folder = Environment.getExternalStorageDirectory() + "/Download";
