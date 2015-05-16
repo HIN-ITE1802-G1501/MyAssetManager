@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 
 
@@ -21,19 +20,12 @@ import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
-
-import java.net.URLEncoder;
 import java.util.ArrayList;
 
 
 import no.hin.student.myassetmanager.Classes.Category;
 import no.hin.student.myassetmanager.Classes.Equipment;
+import no.hin.student.myassetmanager.Classes.WebAPI;
 import no.hin.student.myassetmanager.Classes.MyAdapter;
 import no.hin.student.myassetmanager.Classes.MyObjects;
 import no.hin.student.myassetmanager.Classes.User;
@@ -188,10 +180,8 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
                     initializeFilterSpinner();
                     return true;
                 case MENU_BUTTON_SHOW_HISTORY:
-                    User.doLogin(getBaseContext());
-
-
-
+                    WebAPI.doLogin(getBaseContext());
+                    WebAPI.doGetEquipment(getBaseContext());
                     return true;
                 default:
                     return true;
