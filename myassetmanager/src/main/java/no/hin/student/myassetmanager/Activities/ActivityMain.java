@@ -90,6 +90,7 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
         fragmentManager.executePendingTransactions();
+        initializeList(Category.class);
     }
 
 
@@ -177,12 +178,20 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
                     initializeFilterSpinner();
                     return true;
                 case MENU_BUTTON_SHOW_HISTORY:
+                    Category.download();
                     return true;
                 default:
                     return true;
             }
         }
     };
+
+    private Runnable kjoerIBakgrunnen = new Runnable() {
+        public void run() {
+            Category.download();
+        }
+    };
+
 
     // When clicking on a listview item
     final AdapterView.OnItemClickListener mGlobal_OnItemClickListener = new AdapterView.OnItemClickListener() {
