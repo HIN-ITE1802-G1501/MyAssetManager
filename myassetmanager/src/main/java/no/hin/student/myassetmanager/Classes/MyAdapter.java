@@ -56,7 +56,7 @@ public class MyAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        holder.ivListItemImage.setImageResource(R.mipmap.ic_launcher);
+        holder.ivListItemImage.setImageResource(arrayList.get(position).getListItemImage());
         holder.ivListItemTitle.setText(arrayList.get(position).getListItemTitle());
 
 

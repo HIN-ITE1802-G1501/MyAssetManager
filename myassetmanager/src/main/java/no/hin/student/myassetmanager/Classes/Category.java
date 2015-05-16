@@ -1,6 +1,7 @@
 package no.hin.student.myassetmanager.Classes;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Environment;
 import android.util.Log;
 import android.widget.ArrayAdapter;
@@ -21,6 +22,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import no.hin.student.myassetmanager.Interfaces.MyInterface;
+import no.hin.student.myassetmanager.R;
 
 
 public class Category extends MyObjects {
@@ -51,9 +53,48 @@ public class Category extends MyObjects {
         return this.getName();
     }
 
+    private enum Fruit {
+        Annet, Dataskjerm, Dockingstasjon, Hub, Laptop, Legosett, Nettbrett, Oculus, PC, Ruter, Smartklokker, Svitsj, TV;
+    }
+
+
     @Override
-    public ImageView getListItemImage() {
-        return null;
+    public int getListItemImage() {
+        try {
+            Fruit fruit = Fruit.valueOf(this.name);
+
+            switch (fruit) {
+                case Annet:
+                    return R.drawable.other;
+                case Dataskjerm:
+                    return R.drawable.screen;
+                case Dockingstasjon:
+                    return R.drawable.docking;
+                case Hub:
+                    return R.drawable.hub;
+                case Laptop:
+                    return R.drawable.laptop;
+                case Legosett:
+                    return R.drawable.lego;
+                case Nettbrett:
+                    return R.drawable.tablet;
+                case Oculus:
+                    return R.drawable.oculus;
+                case PC:
+                    return R.drawable.pc;
+                case Ruter:
+                    return R.drawable.router;
+                case Smartklokker:
+                    return R.drawable.smartwatch;
+                default:
+                    return R.drawable.other;
+            }
+        }catch (Exception e) {
+
+        }
+
+
+        return R.drawable.other;
     }
 
 

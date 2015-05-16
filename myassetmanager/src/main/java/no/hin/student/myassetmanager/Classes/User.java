@@ -1,6 +1,8 @@
 package no.hin.student.myassetmanager.Classes;
 
 
+import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -8,6 +10,7 @@ import android.widget.ImageView;
 import com.google.gson.Gson;
 
 import no.hin.student.myassetmanager.Interfaces.MyInterface;
+
 
 /**
  * Created by wfa on 07.04.2015.
@@ -148,7 +151,7 @@ public class User extends MyObjects implements MyInterface {
     }
 
     @Override
-    public ImageView getListItemImage() {
-        return null;
+    public int getListItemImage() {
+        return android.R.drawable.ic_menu_report_image;
     }
 }

@@ -174,7 +174,7 @@ public class Equipment extends MyObjects {
     }
 
     @Override
-    public ImageView getListItemImage() {
-        return null;
+    public int getListItemImage() {
+        return R.drawable.user;
     }
 }
