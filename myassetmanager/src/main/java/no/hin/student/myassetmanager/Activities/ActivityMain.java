@@ -77,8 +77,12 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
             Log.d(TAG, "Starting settings from MainMenu");
             return true;
         }
+        if (id == R.id.action_login) {
+            Log.d(TAG, "Starting login from MainMenu");
+            WebAPI.doLogin(ActivityMain.this);
+        }
         if (id == R.id.action_logout) {
-            Log.d(TAG, "Starting settings from MainMenu");
+            Log.d(TAG, "Starting logout from MainMenu");
             WebAPI.logOut(ActivityMain.this);
         }
         return super.onOptionsItemSelected(item);
@@ -95,7 +99,6 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
         fragmentManager.executePendingTransactions();
-        WebAPI.doLoginAdmin(ActivityMain.this);
         getCategories();
     }
 
@@ -160,9 +163,6 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
                     initializeFilterSpinner();
                     return true;
                 case MENU_BUTTON_SHOW_HISTORY:
-                    //WebAPI.doLogin(ActivityMain.this);
-                    //WebAPI.doGetUsers(ActivityMain.this);
-                    //String type, String brand, String model, String description, String it_no, String aquired, byte[] image
                     WebAPI.addEquipment(ActivityMain.this, new Equipment("PC", "Microsoft", "Surface 2 Pro", "128 GB", "ITE1721", "02.02.2015", null));
                     WebAPI.addEquipment(ActivityMain.this, new Equipment("PC", "Microsoft", "Surface 2 Pro", "128 GB", "ITE1723", "02.02.2015", null));
                     WebAPI.addEquipment(ActivityMain.this, new Equipment("PC", "Microsoft", "Surface 2 Pro", "128 GB", "ITE1724", "2015-05-17", null));

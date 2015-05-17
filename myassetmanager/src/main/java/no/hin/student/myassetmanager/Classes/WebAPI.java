@@ -124,6 +124,9 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
                         ((ActivityMain) context).logIn(log_in_admin);
                         break;
                     case LOG_OUT:
+                        httpClient.getConnectionManager().closeExpiredConnections();
+                        httpClient.getConnectionManager().shutdown();
+                        httpClient = null;
                         break;
 
 
@@ -202,7 +205,7 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
             nameValuePairs = new ArrayList<NameValuePair>(0);
             new WebAPI(URL, Method.LOG_OUT, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
         } else {
-            Log.d(TAG, "Du er ikke logget på!");
+            Log.d(TAG, "Du er ikke logget på og kan derfor ikke logge ut.");
         }
     }
 

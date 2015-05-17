@@ -5,6 +5,7 @@
     <string name="action_users">Brukere</string>
     <string name="action_loan">Utlån</string>
     <string name="action_settings">Innstillinger</string>
+    <string name="action_login">Logg inn</string>
     <string name="action_logout">Logg ut</string>
 
     <string name="action_edit">Endre</string>
