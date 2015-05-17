@@ -92,36 +92,8 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
         fragmentManager.executePendingTransactions();
-        initializeList(Category.class);
-    }
-
-
-    private <T extends MyObjects> void initializeList(Class<T> classType)
-    {
-        ListView lvList = (ListView)fragmentList.getView().findViewById(R.id.lvList);
-        if (classType.equals(Category.class)) {
-           ((TextView)fragmentList.getView().findViewById(R.id.tvTitle)).setText("Kategori");
-            ArrayList<Category> categoryArray = new ArrayList<Category>();
-            adapterInstance = new MyAdapter(this, categoryArray);
-            Category.showCategories(adapterInstance);
-        }
-
-        if (classType.equals(User.class)) {
-            ((TextView)fragmentList.getView().findViewById(R.id.tvTitle)).setText("Brukere");
-            ArrayList<User> userArray = new ArrayList<User>();
-            adapterInstance = new MyAdapter(this, userArray);
-            User.showUsers(adapterInstance);
-        }
-
-        if (classType.equals(Equipment.class)) {
-            ((TextView)fragmentList.getView().findViewById(R.id.tvTitle)).setText("Utstyr");
-            ArrayList<Equipment> equipmentArray = new ArrayList<Equipment>();
-            adapterInstance = new MyAdapter(this, equipmentArray);
-            Equipment.showEquipment(adapterInstance);
-        }
-        lvList.setAdapter(adapterInstance);
-        lvList.setOnItemClickListener(mGlobal_OnItemClickListener);
-        registerForContextMenu(lvList);
+        WebAPI.doLogin(ActivityMain.this);
+        getCategories();
     }
 
 
@@ -171,17 +143,17 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
             switch (menuItem.getItemId()) {
                 case MENU_BUTTON_SHOW_ASSETS:
                     Log.d(TAG, "Showing assets");
-                    initializeList(Category.class);
+                    getCategories();
                     initializeFilterSpinner();
                     return true;
                 case MENU_BUTTON_SHOW_USERS:
                     Log.d(TAG, "Showing users");
-                    initializeList(User.class);
+                    WebAPI.doGetUsers(ActivityMain.this);
                     initializeFilterSpinner();
                     return true;
                 case MENU_BUTTON_SHOW_HISTORY:
-                    WebAPI.doLogin(getBaseContext());
-                    WebAPI.doGetEquipment(getBaseContext());
+                    WebAPI.doLogin(ActivityMain.this);
+                    WebAPI.doGetUsers(ActivityMain.this);
                     return true;
                 default:
                     return true;
@@ -196,7 +168,8 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
         public void onItemClick(AdapterView<?> adapterView, View row, int position, long index) {
             Log.d(TAG, "Clicking on equipment " + adapterInstance.getItem(position).toString());
             if (adapterInstance.getItem(position).getClass().equals(Category.class)) {
-                initializeList(Equipment.class);
+                Log.d(TAG, ((Category)adapterInstance.getItem(position)).getListItemTitle());
+                WebAPI.doGetEquipmentType(ActivityMain.this, ((Category)adapterInstance.getItem(position)).getListItemTitle());
                 initializeFilterSpinner();
             } else if (adapterInstance.getItem(position).getClass().equals(Equipment.class)) {
                 FragmentManager fragmentManager = getFragmentManager();
@@ -275,10 +248,40 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
 
 
 
+    public void logIn(User user) {
+        Log.d(TAG, "User logged in: " + user.getFirstname() + " " + user.getLastname());
+    }
 
 
 
+    public void addToList(ArrayList<MyObjects> objects) {
+        ListView lvList = (ListView)fragmentList.getView().findViewById(R.id.lvList);
 
+        ((TextView)fragmentList.getView().findViewById(R.id.tvTitle)).setText("Utstyr");
+        ArrayList<MyObjects> array = new ArrayList<MyObjects>();
+        adapterInstance = new MyAdapter(this, array);
+        if (objects != null) {
+            for (int i = 0; i < objects.size(); i++) {
+                adapterInstance.add(objects.get(i));
+            }
+        }
+        lvList.setAdapter(adapterInstance);
+        lvList.setOnItemClickListener(mGlobal_OnItemClickListener);
+        registerForContextMenu(lvList);
+    }
+
+
+
+    private void getCategories() {
+        ListView lvList = (ListView)fragmentList.getView().findViewById(R.id.lvList);
+        ((TextView)fragmentList.getView().findViewById(R.id.tvTitle)).setText("Kategori");
+        ArrayList<Category> categoryArray = new ArrayList<Category>();
+        adapterInstance = new MyAdapter(this, categoryArray);
+        Category.showCategories(adapterInstance);
+        lvList.setAdapter(adapterInstance);
+        lvList.setOnItemClickListener(mGlobal_OnItemClickListener);
+        registerForContextMenu(lvList);
+    }
 
 
 

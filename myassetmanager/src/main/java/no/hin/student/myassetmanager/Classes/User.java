@@ -4,7 +4,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 import org.apache.http.client.HttpClient;
 import no.hin.student.myassetmanager.Interfaces.MyInterface;
-
+import no.hin.student.myassetmanager.R;
 
 
 public class User extends MyObjects implements MyInterface {
@@ -112,12 +112,6 @@ public class User extends MyObjects implements MyInterface {
         return json;
     }
 
-    public static void showUsers(MyAdapter adapterInstance) {
-        adapterInstance.add(new User(1, "kekarlsen", "password", "Kurt-Erik", "Karlsen", "tlfnr123", true));
-        adapterInstance.add(new User(2, "aleks", "password", "Aleksander", "Valle", "tlfnr123", true));
-        adapterInstance.add(new User(3, "billy", "password", "Bill", "Gates", "tlfnr123", true));
-    }
-
     public static void deleteUser(MyAdapter adapterInstance, User user) {
         Log.d(TAG, "Delete user from list and database");
         adapterInstance.remove(user);
@@ -143,7 +137,7 @@ public class User extends MyObjects implements MyInterface {
 
     @Override
     public int getListItemImage() {
-        return android.R.drawable.ic_menu_report_image;
+        return R.drawable.user;
     }
 
 

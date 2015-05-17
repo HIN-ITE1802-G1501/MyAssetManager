@@ -139,12 +139,6 @@ public class Equipment extends MyObjects {
     }
 
 
-    public static void showEquipment(MyAdapter adapterInstance) {
-        adapterInstance.add(new Equipment(1, "Telefon", "Microsoft", "Lumia 930", "Windows telefon", "IT-1321", ""));
-        adapterInstance.add(new Equipment(2, "Telefon", "Microsoft", "Lumia 1020", "Windows telefon", "IT-1323", ""));
-        adapterInstance.add(new Equipment(3, "Telefon", "Microsoft", "Lumia 830", "Windows telefon", "IT-1332", ""));
-    }
-
     public static void deleteEquipment(ArrayAdapter<Equipment> adapterInstance, Equipment equipment) {
         Log.d(adapterInstance.getContext().getString(R.string.LOGTAG), "Delete equipment from list and database");
         adapterInstance.remove(equipment);
@@ -170,11 +164,11 @@ public class Equipment extends MyObjects {
 
     @Override
     public String getListItemTitle() {
-        return this.getType();
+        return this.getBrand() + " " + this.getModel();
     }
 
     @Override
     public int getListItemImage() {
-        return R.drawable.user;
+        return Category.getCategoryImage(this.getType());
     }
 }

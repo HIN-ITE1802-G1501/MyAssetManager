@@ -1,13 +1,12 @@
 package no.hin.student.myassetmanager.Classes;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.util.Pair;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -18,13 +17,13 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+
+import no.hin.student.myassetmanager.Activities.ActivityMain;
 
 
 public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Void, String> {
@@ -48,7 +47,9 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
     public enum Method {
         LOG_IN(0, "logIn"),
         GET_EQUIPMENT(1, "getEquipment"),
-        GET_USER(2, "getUser");
+        DELETE_USER(2, "deleteUser"),
+        GET_EQUIPMENTTYPE(3, "getEquipmentType"),
+        GET_USERS(3, "getUsers");
 
         private int type;
         private String text;
@@ -66,6 +67,7 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
             return text;
         }
     };
+
 
     public WebAPI(String serverURL, Method method, Context context) {
         this.method = method;
@@ -97,7 +99,6 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
 
     @Override
     protected void onPostExecute(String result) {
-        //((ActivityMain)context).showLoginResult(result);
         Log.d(TAG, result);
         Gson gson = new Gson();
         ResponseMsg response = gson.fromJson(result, ResponseMsg.class);
@@ -106,20 +107,22 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
         switch (method) {
             case LOG_IN:
                 User user = gson.fromJson(response.getJsonResponse(), User.class);
-                Log.d(TAG, "Hyyyyyl: " + user.getLastname() );
+                ((ActivityMain)context).logIn(user);
                 break;
             case GET_EQUIPMENT:
-                try {
-                    JSONObject json = new JSONObject(response.getJsonResponse());
-                    //JSONArray jArray = json.getJSONArray()M
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                ArrayList<Equipment> array ;
-                Log.d(TAG, "Hyyyyyl: " + response.getJsonResponse() );
+                Type equipmentListType = new TypeToken<List<Equipment>>(){}.getType();
+                ArrayList<MyObjects> equipments = (ArrayList<MyObjects>) gson.fromJson(response.getJsonResponse(), equipmentListType);
+                ((ActivityMain)context).addToList(equipments);
                 break;
-            case GET_USER:
+            case GET_EQUIPMENTTYPE:
+                Type equipmentTypeListType = new TypeToken<List<Equipment>>(){}.getType();
+                ArrayList<MyObjects> equipmentType = (ArrayList<MyObjects>) gson.fromJson(response.getJsonResponse(), equipmentTypeListType);
+                ((ActivityMain)context).addToList(equipmentType);
+                break;
+            case GET_USERS:
+                Type usersListType = new TypeToken<List<User>>(){}.getType();
+                ArrayList<MyObjects> users = (ArrayList<MyObjects>) gson.fromJson(response.getJsonResponse(), usersListType);
+                ((ActivityMain)context).addToList(users);
                 break;
         }
     }
@@ -142,13 +145,32 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
         }
     }
 
-
+    public static void doGetUsers(Context context) {
+        if (httpClient != null) {
+            List<NameValuePair> nameValuePairs =new ArrayList<NameValuePair>(1);
+            new WebAPI(URL, Method.GET_USERS, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
+        } else {
+            Log.d(TAG, "Logg inn først!");
+        }
+    }
 
     public static void doGetEquipment(Context context) {
         if (httpClient != null) {
             List<NameValuePair> nameValuePairs =new ArrayList<NameValuePair>(1);
             nameValuePairs.add(new BasicNameValuePair("which_equipment", "ALL"));
             new WebAPI(URL, Method.GET_EQUIPMENT, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
+        } else {
+            Log.d(TAG, "Logg inn først!");
+        }
+    }
+
+
+    public static void doGetEquipmentType(Context context, String category) {
+        if (httpClient != null) {
+            List<NameValuePair> nameValuePairs =new ArrayList<NameValuePair>(1);
+            nameValuePairs.add(new BasicNameValuePair("type", category));
+            Log.d(TAG, category);
+            new WebAPI(URL, Method.GET_EQUIPMENTTYPE, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
         } else {
             Log.d(TAG, "Logg inn først!");
         }
