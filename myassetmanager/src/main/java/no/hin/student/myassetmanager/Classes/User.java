@@ -132,6 +132,7 @@ public class User extends MyObjects implements MyInterface {
         return this.firstname + " " + this.lastname;
     }
 
+
     @Override
     public int getListItemImage() {
         return R.drawable.user;

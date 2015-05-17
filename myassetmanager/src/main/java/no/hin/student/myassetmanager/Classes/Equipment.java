@@ -167,6 +167,7 @@ public class Equipment extends MyObjects {
         return this.getBrand() + " " + this.getModel();
     }
 
+
     @Override
     public int getListItemImage() {
         return Category.getCategoryImage(this.getType());

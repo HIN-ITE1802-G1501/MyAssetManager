@@ -19,6 +19,7 @@ import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -76,13 +77,15 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
             Log.d(TAG, "Starting settings from MainMenu");
             return true;
         }
-
+        if (id == R.id.action_logout) {
+            Log.d(TAG, "Starting settings from MainMenu");
+            WebAPI.logOut(ActivityMain.this);
+        }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
-    public void onStart()
-    {
+    public void onStart() {
         super.onStart();
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -96,6 +99,11 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
         getCategories();
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        WebAPI.logOut(ActivityMain.this);
+    }
 
     private void initializeFilterSpinner()
     {
@@ -152,8 +160,12 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
                     initializeFilterSpinner();
                     return true;
                 case MENU_BUTTON_SHOW_HISTORY:
-                    WebAPI.doLogin(ActivityMain.this);
-                    WebAPI.doGetUsers(ActivityMain.this);
+                    //WebAPI.doLogin(ActivityMain.this);
+                    //WebAPI.doGetUsers(ActivityMain.this);
+                    //String type, String brand, String model, String description, String it_no, String aquired, byte[] image
+                    WebAPI.addEquipment(ActivityMain.this, new Equipment("PC", "Microsoft", "Surface 2 Pro", "128 GB", "ITE1721", "02.02.2015", null));
+                    WebAPI.addEquipment(ActivityMain.this, new Equipment("PC", "Microsoft", "Surface 2 Pro", "128 GB", "ITE1723", "02.02.2015", null));
+                    WebAPI.addEquipment(ActivityMain.this, new Equipment("PC", "Microsoft", "Surface 2 Pro", "128 GB", "ITE1724", "2015-05-17", null));
                     return true;
                 default:
                     return true;
@@ -254,19 +266,22 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
 
 
     public void addToList(ArrayList<MyObjects> objects) {
-        ListView lvList = (ListView)fragmentList.getView().findViewById(R.id.lvList);
 
-        ((TextView)fragmentList.getView().findViewById(R.id.tvTitle)).setText("Utstyr");
-        ArrayList<MyObjects> array = new ArrayList<MyObjects>();
-        adapterInstance = new MyAdapter(this, array);
         if (objects != null) {
+            ListView lvList = (ListView) fragmentList.getView().findViewById(R.id.lvList);
+            TextView tvTitle = ((TextView) fragmentList.getView().findViewById(R.id.tvTitle));
+            tvTitle.setText(((Equipment) objects.get(0)).getType());
+            ArrayList<MyObjects> array = new ArrayList<MyObjects>();
+            adapterInstance = new MyAdapter(this, array);
             for (int i = 0; i < objects.size(); i++) {
-                adapterInstance.add(objects.get(i));
+                    adapterInstance.add(objects.get(i));
             }
+            lvList.setAdapter(adapterInstance);
+            lvList.setOnItemClickListener(mGlobal_OnItemClickListener);
+            registerForContextMenu(lvList);
+        } else {
+            Toast.makeText(this.getApplicationContext(), "Det finnes desverre ikke noe utstyr i denne kategorien.", Toast.LENGTH_SHORT).show();
         }
-        lvList.setAdapter(adapterInstance);
-        lvList.setOnItemClickListener(mGlobal_OnItemClickListener);
-        registerForContextMenu(lvList);
     }
 
 

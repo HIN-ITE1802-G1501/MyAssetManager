@@ -46,12 +46,17 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
 
 
     public enum Method {
-        LOG_IN(0, "logIn"),
-        LOG_IN_ADMIN(0, "logInAdmin"),
-        GET_EQUIPMENT(1, "getEquipment"),
-        DELETE_USER(2, "deleteUser"),
-        GET_EQUIPMENTTYPE(3, "getEquipmentType"),
-        GET_USERS(3, "getUsers");
+        LOG_IN(1001, "logIn"),
+        LOG_IN_ADMIN(1002, "logInAdmin"),
+        LOG_OUT(1999, "logOut"),
+
+        GET_EQUIPMENT(2001, "getEquipment"),
+        GET_EQUIPMENTTYPE(2002, "getEquipmentType"),
+        GET_USERS(2003, "getUsers"),
+
+        ADD_EQUIPMENT(1001, "addEquipment"),
+
+        DELETE_USER(4001, "deleteUser");
 
         private int type;
         private String text;
@@ -80,10 +85,11 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
 
     @Override
     protected String doInBackground(Pair<List<NameValuePair>, HttpClient>... params) {
-        Pair pair = params[0];
-        List<NameValuePair> urlParams = (List<NameValuePair>)pair.first;
-        HttpClient httpClient = (HttpClient)pair.second;
         try {
+            Pair pair = params[0];
+            List<NameValuePair> urlParams = (List<NameValuePair>)pair.first;
+            HttpClient httpClient = (HttpClient)pair.second;
+
             String requestURL = serverURL + methodName;
             HttpPost httpPost = new HttpPost(requestURL);
             httpPost.setEntity(new UrlEncodedFormEntity(urlParams));
@@ -101,41 +107,56 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
 
     @Override
     protected void onPostExecute(String result) {
-        Log.d(TAG, result);
-        Gson gson = new Gson();
-        ResponseMsg response = gson.fromJson(result, ResponseMsg.class);
-        if (response.getMessage().contains("518")) {
-            Toast.makeText(context, "Du må være admin!", Toast.LENGTH_SHORT).show();
-        } else {
-            switch (method) {
-                case LOG_IN:
-                    User log_in = gson.fromJson(response.getJsonResponse(), User.class);
-                    ((ActivityMain) context).logIn(log_in);
-                    break;
-                case LOG_IN_ADMIN:
-                    User log_in_admin = gson.fromJson(response.getJsonResponse(), User.class);
-                    ((ActivityMain) context).logIn(log_in_admin);
-                    break;
-                case GET_EQUIPMENT:
-                    Type get_equipment = new TypeToken<List<Equipment>>() {
-                    }.getType();
-                    ArrayList<MyObjects> equipment = (ArrayList<MyObjects>) gson.fromJson(response.getJsonResponse(), get_equipment);
-                    ((ActivityMain) context).addToList(equipment);
-                    break;
-                case GET_EQUIPMENTTYPE:
-                    Type get_equipmenttype = new TypeToken<List<Equipment>>() {}.getType();
-                    ArrayList<MyObjects> equipment_type = (ArrayList<MyObjects>) gson.fromJson(response.getJsonResponse(), get_equipmenttype);
-                    ((ActivityMain) context).addToList(equipment_type);
-                    break;
-                case DELETE_USER:
-                    ((ActivityMain) context).deleteUser();
-                    break;
-                case GET_USERS:
-                    Type get_users = new TypeToken<List<User>>() {}.getType();
-                    ArrayList<MyObjects> users = (ArrayList<MyObjects>) gson.fromJson(response.getJsonResponse(), get_users);
-                    ((ActivityMain) context).addToList(users);
-                    break;
+        try {
+            Log.d(TAG, result);
+            Gson gson = new Gson();
+            ResponseMsg response = gson.fromJson(result, ResponseMsg.class);
+            if (response.getMessage().contains("518") || response.getMessage().contains("517")) {
+                Toast.makeText(context, "Du må være admin!", Toast.LENGTH_SHORT).show();
+            } else {
+                switch (method) {
+                    case LOG_IN:
+                        User log_in = gson.fromJson(response.getJsonResponse(), User.class);
+                        ((ActivityMain) context).logIn(log_in);
+                        break;
+                    case LOG_IN_ADMIN:
+                        User log_in_admin = gson.fromJson(response.getJsonResponse(), User.class);
+                        ((ActivityMain) context).logIn(log_in_admin);
+                        break;
+                    case LOG_OUT:
+                        break;
+
+
+                    case GET_EQUIPMENT:
+                        Type get_equipment = new TypeToken<List<Equipment>>() {
+                        }.getType();
+                        ArrayList<MyObjects> equipment = (ArrayList<MyObjects>) gson.fromJson(response.getJsonResponse(), get_equipment);
+                        ((ActivityMain) context).addToList(equipment);
+                        break;
+                    case GET_EQUIPMENTTYPE:
+                        Type get_equipmenttype = new TypeToken<List<Equipment>>() {
+                        }.getType();
+                        ArrayList<MyObjects> equipment_type = (ArrayList<MyObjects>) gson.fromJson(response.getJsonResponse(), get_equipmenttype);
+                        ((ActivityMain) context).addToList(equipment_type);
+                        break;
+                    case GET_USERS:
+                        Type get_users = new TypeToken<List<User>>() {
+                        }.getType();
+                        ArrayList<MyObjects> users = (ArrayList<MyObjects>) gson.fromJson(response.getJsonResponse(), get_users);
+                        ((ActivityMain) context).addToList(users);
+                        break;
+
+
+                    case ADD_EQUIPMENT:
+
+                        break;
+                    case DELETE_USER:
+                        ((ActivityMain) context).deleteUser();
+                        break;
+                }
             }
+        } catch (Exception e) {
+            Log.d(TAG, e.toString());
         }
     }
 
@@ -171,6 +192,17 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
             new WebAPI(URL, Method.LOG_IN_ADMIN, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
         } else {
             Log.d(TAG, "Du er allerede logget inn!");
+        }
+    }
+
+    public static void logOut(Context context) {
+        if (httpClient != null) {
+            httpClient = new DefaultHttpClient();
+            List<NameValuePair> nameValuePairs = null;
+            nameValuePairs = new ArrayList<NameValuePair>(0);
+            new WebAPI(URL, Method.LOG_OUT, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
+        } else {
+            Log.d(TAG, "Du er ikke logget på!");
         }
     }
 
@@ -211,6 +243,17 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
             nameValuePairs.add(new BasicNameValuePair("userId", Integer.toString(userId)));
             Log.d(TAG, Integer.toString(userId));
             new WebAPI(URL, Method.DELETE_USER, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
+        } else {
+            Log.d(TAG, "Logg inn først!");
+        }
+    }
+
+    public static void addEquipment(Context context, Equipment equipment) {
+        if (httpClient != null) {
+            List<NameValuePair> nameValuePairs =new ArrayList<NameValuePair>(1);
+            Log.d(TAG, "Before adding: " + equipment.toJSONString());
+            nameValuePairs.add(new BasicNameValuePair("equipment", equipment.toJSONString()));
+            new WebAPI(URL, Method.ADD_EQUIPMENT, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
         } else {
             Log.d(TAG, "Logg inn først!");
         }
