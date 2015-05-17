@@ -113,11 +113,6 @@ public class Category extends MyObjects {
         }
     }
 
-    public static void deleteCategory(MyAdapter adapterInstance, Category category) {
-        Log.d(TAG, "Delete category from list and database");
-        adapterInstance.remove(category);
-    }
-
     public static void download() {
         folder = Environment.getExternalStorageDirectory() + "/Download";
 

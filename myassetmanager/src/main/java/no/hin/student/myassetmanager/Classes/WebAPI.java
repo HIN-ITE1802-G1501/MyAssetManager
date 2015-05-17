@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.util.Pair;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -46,6 +47,7 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
 
     public enum Method {
         LOG_IN(0, "logIn"),
+        LOG_IN_ADMIN(0, "logInAdmin"),
         GET_EQUIPMENT(1, "getEquipment"),
         DELETE_USER(2, "deleteUser"),
         GET_EQUIPMENTTYPE(3, "getEquipmentType"),
@@ -102,28 +104,38 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
         Log.d(TAG, result);
         Gson gson = new Gson();
         ResponseMsg response = gson.fromJson(result, ResponseMsg.class);
-
-
-        switch (method) {
-            case LOG_IN:
-                User user = gson.fromJson(response.getJsonResponse(), User.class);
-                ((ActivityMain)context).logIn(user);
-                break;
-            case GET_EQUIPMENT:
-                Type equipmentListType = new TypeToken<List<Equipment>>(){}.getType();
-                ArrayList<MyObjects> equipments = (ArrayList<MyObjects>) gson.fromJson(response.getJsonResponse(), equipmentListType);
-                ((ActivityMain)context).addToList(equipments);
-                break;
-            case GET_EQUIPMENTTYPE:
-                Type equipmentTypeListType = new TypeToken<List<Equipment>>(){}.getType();
-                ArrayList<MyObjects> equipmentType = (ArrayList<MyObjects>) gson.fromJson(response.getJsonResponse(), equipmentTypeListType);
-                ((ActivityMain)context).addToList(equipmentType);
-                break;
-            case GET_USERS:
-                Type usersListType = new TypeToken<List<User>>(){}.getType();
-                ArrayList<MyObjects> users = (ArrayList<MyObjects>) gson.fromJson(response.getJsonResponse(), usersListType);
-                ((ActivityMain)context).addToList(users);
-                break;
+        if (response.getMessage().contains("518")) {
+            Toast.makeText(context, "Du må være admin!", Toast.LENGTH_SHORT).show();
+        } else {
+            switch (method) {
+                case LOG_IN:
+                    User log_in = gson.fromJson(response.getJsonResponse(), User.class);
+                    ((ActivityMain) context).logIn(log_in);
+                    break;
+                case LOG_IN_ADMIN:
+                    User log_in_admin = gson.fromJson(response.getJsonResponse(), User.class);
+                    ((ActivityMain) context).logIn(log_in_admin);
+                    break;
+                case GET_EQUIPMENT:
+                    Type get_equipment = new TypeToken<List<Equipment>>() {
+                    }.getType();
+                    ArrayList<MyObjects> equipment = (ArrayList<MyObjects>) gson.fromJson(response.getJsonResponse(), get_equipment);
+                    ((ActivityMain) context).addToList(equipment);
+                    break;
+                case GET_EQUIPMENTTYPE:
+                    Type get_equipmenttype = new TypeToken<List<Equipment>>() {}.getType();
+                    ArrayList<MyObjects> equipment_type = (ArrayList<MyObjects>) gson.fromJson(response.getJsonResponse(), get_equipmenttype);
+                    ((ActivityMain) context).addToList(equipment_type);
+                    break;
+                case DELETE_USER:
+                    ((ActivityMain) context).deleteUser();
+                    break;
+                case GET_USERS:
+                    Type get_users = new TypeToken<List<User>>() {}.getType();
+                    ArrayList<MyObjects> users = (ArrayList<MyObjects>) gson.fromJson(response.getJsonResponse(), get_users);
+                    ((ActivityMain) context).addToList(users);
+                    break;
+            }
         }
     }
 
@@ -140,6 +152,23 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
             nameValuePairs.add(new BasicNameValuePair("db_uid", username));
             nameValuePairs.add(new BasicNameValuePair("db_pwd", password));
             new WebAPI(URL, Method.LOG_IN, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
+        } else {
+            Log.d(TAG, "Du er allerede logget inn!");
+        }
+    }
+
+    public static void doLoginAdmin(Context context) {
+        if (httpClient == null) {
+            httpClient = new DefaultHttpClient();
+            List<NameValuePair> nameValuePairs = null;
+            nameValuePairs = new ArrayList<NameValuePair>(6);
+            nameValuePairs.add(new BasicNameValuePair("uid", "530617"));
+            nameValuePairs.add(new BasicNameValuePair("pwd", "kurt"));
+            nameValuePairs.add(new BasicNameValuePair("connectstring", "jdbc:mysql://" + sql + ":" + sqlport + "/"));
+            nameValuePairs.add(new BasicNameValuePair("dbName", db));
+            nameValuePairs.add(new BasicNameValuePair("db_uid", username));
+            nameValuePairs.add(new BasicNameValuePair("db_pwd", password));
+            new WebAPI(URL, Method.LOG_IN_ADMIN, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
         } else {
             Log.d(TAG, "Du er allerede logget inn!");
         }
@@ -171,6 +200,17 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
             nameValuePairs.add(new BasicNameValuePair("type", category));
             Log.d(TAG, category);
             new WebAPI(URL, Method.GET_EQUIPMENTTYPE, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
+        } else {
+            Log.d(TAG, "Logg inn først!");
+        }
+    }
+
+    public static void doDeleteUser(Context context, int userId) {
+        if (httpClient != null) {
+            List<NameValuePair> nameValuePairs =new ArrayList<NameValuePair>(1);
+            nameValuePairs.add(new BasicNameValuePair("userId", Integer.toString(userId)));
+            Log.d(TAG, Integer.toString(userId));
+            new WebAPI(URL, Method.DELETE_USER, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
         } else {
             Log.d(TAG, "Logg inn først!");
         }

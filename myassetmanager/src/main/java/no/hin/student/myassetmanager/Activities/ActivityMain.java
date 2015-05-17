@@ -92,7 +92,7 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
         fragmentManager.executePendingTransactions();
-        WebAPI.doLogin(ActivityMain.this);
+        WebAPI.doLoginAdmin(ActivityMain.this);
         getCategories();
     }
 
@@ -201,7 +201,7 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
 
                 super.onCreateContextMenu(menu, v, menuInfo);
                 AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-                String title = (adapterInstance.getItem(info.position)).toString();
+                String title = ((MyObjects)(adapterInstance.getItem(info.position))).getListItemTitle();
 
                 menu.setHeaderTitle(title);
                 menu.add(Menu.NONE, MENU_CONTEXT_LIST_SHOW, Menu.NONE, R.string.MENU_CONTEXT_LIST_SHOW);
@@ -218,17 +218,18 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
         switch (item.getItemId()) {
             case MENU_CONTEXT_LIST_SHOW:
                 if (adapterInstance.getItem(info.position).getClass().equals(Category.class) ) {
-                    Log.d(TAG, "Working to filter on generic!");
+                    WebAPI.doGetEquipmentType(ActivityMain.this, ((Category)adapterInstance.getItem(info.position)).getListItemTitle());
+                    Log.d(TAG, "Menu context show category!");
                 }
                 return true;
             case MENU_CONTEXT_LIST_DELETE:
                 if ((adapterInstance != null) &&(adapterInstance.getItem(info.position).getClass().equals(Category.class))) {
                     Log.d(TAG, "Menu context delete category");
-                    Category.deleteCategory(adapterInstance, (Category)adapterInstance.getItem(info.position));
+
                 }
                 if ((adapterInstance != null) &&(adapterInstance.getItem(info.position).getClass().equals(User.class))) {
                     Log.d(TAG, "Menu context delete category");
-                    User.deleteUser(adapterInstance, (User)adapterInstance.getItem(info.position));
+                    WebAPI.doDeleteUser(ActivityMain.this, ((User)adapterInstance.getItem(info.position)).getId());
                 }
 
 
@@ -242,14 +243,12 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
 
 
 
-
-
-
-
-
-
     public void logIn(User user) {
         Log.d(TAG, "User logged in: " + user.getFirstname() + " " + user.getLastname());
+    }
+
+    public void deleteUser() {
+        WebAPI.doGetUsers(ActivityMain.this);
     }
 
 

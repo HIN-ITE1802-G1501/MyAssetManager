@@ -122,9 +122,6 @@ public class User extends MyObjects implements MyInterface {
         return firstname + " " + lastname;
     }
 
-
-
-
     @Override
     public int getId() {
         return this.u_id;
