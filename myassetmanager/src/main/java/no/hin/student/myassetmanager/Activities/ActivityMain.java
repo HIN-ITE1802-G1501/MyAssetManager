@@ -91,6 +91,11 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
     @Override
     public void onStart() {
         super.onStart();
+        WebAPI.setLoginInformation(
+                getResources().getString(R.string.db_user),
+                getResources().getString(R.string.db_password)
+        );
+
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentList = new FragmentList();

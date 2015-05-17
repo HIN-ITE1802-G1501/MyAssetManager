@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import no.hin.student.myassetmanager.Activities.ActivityMain;
+import no.hin.student.myassetmanager.R;
 
 
 public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Void, String> {
@@ -38,8 +39,8 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
     private static final String TAG = "MyAssetManger-log";
     private static final String sql = "kark.hin.no";
     private static final int sqlport = 3306;
-    private static final String username = "karlsen";
-    private static final String password = "530617Pass";
+    private static String username;
+    private static String password;
     private static final String db = "stud_v15_karlsen";
     private static final String URL = "http://kark.hin.no:8088/d3330log_backend/";
 
@@ -161,6 +162,11 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
         } catch (Exception e) {
             Log.d(TAG, e.toString());
         }
+    }
+
+    public static void setLoginInformation(String dbUser, String dbPassword)  {
+        username = dbUser;
+        password = dbPassword;
     }
 
 
