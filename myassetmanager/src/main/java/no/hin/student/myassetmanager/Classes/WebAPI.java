@@ -206,7 +206,6 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
 
     public static void logOut(Context context) {
         if (httpClient != null) {
-            httpClient = new DefaultHttpClient();
             List<NameValuePair> nameValuePairs = null;
             nameValuePairs = new ArrayList<NameValuePair>(0);
             new WebAPI(URL, Method.LOG_OUT, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
