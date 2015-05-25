@@ -1,13 +1,10 @@
 package no.hin.student.myassetmanager.Activities;
 
-
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.net.Uri;
 import android.os.Bundle;
-
-
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -23,14 +20,12 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-
 import no.hin.student.myassetmanager.Classes.Category;
 import no.hin.student.myassetmanager.Classes.Equipment;
-import no.hin.student.myassetmanager.Classes.WebAPI;
 import no.hin.student.myassetmanager.Classes.MyAdapter;
 import no.hin.student.myassetmanager.Classes.MyObjects;
 import no.hin.student.myassetmanager.Classes.User;
-
+import no.hin.student.myassetmanager.Classes.WebAPI;
 import no.hin.student.myassetmanager.Fragments.FragmentAsset;
 import no.hin.student.myassetmanager.Fragments.FragmentList;
 import no.hin.student.myassetmanager.Fragments.FragmentUser;
@@ -107,6 +102,17 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
         getCategories();
     }
 
+    private void getCategories() {
+        ListView lvList = (ListView)fragmentList.getView().findViewById(R.id.lvList);
+        ((TextView)fragmentList.getView().findViewById(R.id.tvTitle)).setText("Kategori");
+        ArrayList<Category> categoryArray = new ArrayList<Category>();
+        adapterInstance = new MyAdapter(this, categoryArray);
+        Category.showCategories(adapterInstance);
+        lvList.setAdapter(adapterInstance);
+        lvList.setOnItemClickListener(mGlobal_OnItemClickListener);
+        registerForContextMenu(lvList);
+    }
+
     @Override
     public void onStop() {
         super.onStop();
@@ -137,6 +143,8 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
                     popup.getMenu().add(Menu.NONE, MENU_BUTTON_SHOW_ASSETS, Menu.NONE, R.string.MENU_BUTTON_SHOW_ASSETS).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
                     popup.getMenu().add(Menu.NONE, MENU_BUTTON_SHOW_USERS, Menu.NONE, R.string.MENU_BUTTON_SHOW_USERS).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
                     popup.getMenu().add(Menu.NONE, MENU_BUTTON_SHOW_HISTORY, Menu.NONE, R.string.MENU_BUTTON_SHOW_HISTORY).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
+                    popup.getMenu().add(Menu.NONE, 3, Menu.NONE, "Logg inn").setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
+                    popup.getMenu().add(Menu.NONE, 333, Menu.NONE, "Logg ut").setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
                     popup.show();
                     Log.d(TAG, "Adding menu to button.");
                     break;
@@ -171,6 +179,14 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
                     WebAPI.addEquipment(ActivityMain.this, new Equipment("PC", "Microsoft", "Surface 2 Pro", "128 GB", "ITE1721", "02.02.2015", null));
                     WebAPI.addEquipment(ActivityMain.this, new Equipment("PC", "Microsoft", "Surface 2 Pro", "128 GB", "ITE1723", "02.02.2015", null));
                     WebAPI.addEquipment(ActivityMain.this, new Equipment("PC", "Microsoft", "Surface 2 Pro", "128 GB", "ITE1724", "2015-05-17", null));
+                    return true;
+                case 3:
+                    Log.d(TAG, "Starting login from MainMenu");
+                    WebAPI.doLogin(ActivityMain.this);
+                    return true;
+                case 333:
+                    Log.d(TAG, "Starting logout from MainMenu");
+                    WebAPI.logOut(ActivityMain.this);
                     return true;
                 default:
                     return true;
@@ -291,16 +307,7 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
 
 
 
-    private void getCategories() {
-        ListView lvList = (ListView)fragmentList.getView().findViewById(R.id.lvList);
-        ((TextView)fragmentList.getView().findViewById(R.id.tvTitle)).setText("Kategori");
-        ArrayList<Category> categoryArray = new ArrayList<Category>();
-        adapterInstance = new MyAdapter(this, categoryArray);
-        Category.showCategories(adapterInstance);
-        lvList.setAdapter(adapterInstance);
-        lvList.setOnItemClickListener(mGlobal_OnItemClickListener);
-        registerForContextMenu(lvList);
-    }
+
 
 
 
