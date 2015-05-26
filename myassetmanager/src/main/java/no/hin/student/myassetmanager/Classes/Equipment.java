@@ -1,10 +1,8 @@
 package no.hin.student.myassetmanager.Classes;
 
 
-import android.content.res.Resources;
 import android.util.Log;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 
 import com.google.gson.Gson;
 
@@ -16,7 +14,8 @@ import no.hin.student.myassetmanager.R;
  * Objekter av denne typen representerer utstyr (nettbrett, smartklokker osv).
  *
  */
-public class Equipment extends MyObjects {
+public class Equipment extends AssetManagerObjects
+{
     private int e_id;           //PrimÃ¦rnÃ¸kkelfelt, autogenereres i databasen.
     private String type;        //Type/gruppe utstyr, f.eks. "Nettbrett". Settes til en av verdiene fra: http://kark.hin.no:8088/d3330log_backend/utstyrstyper.txt
     private String brand;       //F.eks. "Samsung"
@@ -44,7 +43,6 @@ public class Equipment extends MyObjects {
         this.description = description;
         this.it_no = it_no;
         this.aquired = aquired;
-        this.image = image;
     }
 
     public Equipment(int e_id, String type, String brand, String model, String description, String it_no, String aquired, byte[] image) {

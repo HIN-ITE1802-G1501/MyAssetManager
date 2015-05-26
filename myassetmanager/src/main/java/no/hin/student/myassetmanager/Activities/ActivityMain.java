@@ -22,8 +22,8 @@ import java.util.ArrayList;
 
 import no.hin.student.myassetmanager.Classes.Category;
 import no.hin.student.myassetmanager.Classes.Equipment;
-import no.hin.student.myassetmanager.Classes.MyAdapter;
-import no.hin.student.myassetmanager.Classes.MyObjects;
+import no.hin.student.myassetmanager.Classes.AssetManagerAdapter;
+import no.hin.student.myassetmanager.Classes.AssetManagerObjects;
 import no.hin.student.myassetmanager.Classes.User;
 import no.hin.student.myassetmanager.Classes.WebAPI;
 import no.hin.student.myassetmanager.Fragments.FragmentAsset;
@@ -42,13 +42,14 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
     private static final int MENU_BUTTON_SHOW_USERS = 10202;
     private static final int MENU_BUTTON_SHOW_HISTORY = 10203;
 
-    private FragmentList fragmentList = new FragmentList();
-    private FragmentUser fragmentUser = new FragmentUser();
-
+    private static final int MENU_BUTTON_LOGIN = 10301;
+    private static final int MENU_BUTTON_LOGOUT = 10302;
 
     private static final String TAG = "MyAssetManger-log";
 
-    private MyAdapter adapterInstance;
+    private FragmentList fragmentList = new FragmentList();
+    private FragmentUser fragmentUser = new FragmentUser();
+    private AssetManagerAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,77 +58,45 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
         findViewById(R.id.btnMenu).setOnClickListener(mGlobal_OnClickListener);
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_application, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.action_settings) {
-            Log.d(TAG, "Starting settings from MainMenu");
-            return true;
-        }
-        if (id == R.id.action_login) {
-            Log.d(TAG, "Starting login from MainMenu");
-            WebAPI.doLogin(ActivityMain.this);
-        }
-        if (id == R.id.action_logout) {
-            Log.d(TAG, "Starting logout from MainMenu");
-            WebAPI.logOut(ActivityMain.this);
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     @Override
     public void onStart() {
         super.onStart();
-        WebAPI.setLoginInformation(
+
+        WebAPI.setDatabaseLoginInformation(
                 getResources().getString(R.string.db_user),
                 getResources().getString(R.string.db_password)
         );
 
-        FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentList = new FragmentList();
         fragmentUser = new FragmentUser();
-        fragmentTransaction.add(R.id.fragment_container, fragmentList);
+
+        addListFragmentToFragmentContainer();
+        populateListViewWithCategories();
+    }
+
+    private void addListFragmentToFragmentContainer() {
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_container, fragmentList);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
         fragmentManager.executePendingTransactions();
-        getCategories();
     }
 
-    private void getCategories() {
+    private void populateListViewWithCategories() {
         ListView lvList = (ListView)fragmentList.getView().findViewById(R.id.lvList);
         ((TextView)fragmentList.getView().findViewById(R.id.tvTitle)).setText("Kategori");
-        ArrayList<Category> categoryArray = new ArrayList<Category>();
-        adapterInstance = new MyAdapter(this, categoryArray);
-        Category.showCategories(adapterInstance);
-        lvList.setAdapter(adapterInstance);
+        adapter = new AssetManagerAdapter(this, Category.getCategories());
+        lvList.setAdapter(adapter);
         lvList.setOnItemClickListener(mGlobal_OnItemClickListener);
         registerForContextMenu(lvList);
     }
 
     @Override
     public void onStop() {
-        super.onStop();
         WebAPI.logOut(ActivityMain.this);
+        super.onStop();
     }
-
-    private void initializeFilterSpinner()
-    {
-        Spinner spFilter = (Spinner)findViewById(R.id.spFilter);
-        ArrayList<Category> categoryArray = new ArrayList<Category>();
-        ArrayAdapter<Category> adapterInstance;
-        adapterInstance = new ArrayAdapter<Category>(this, android.R.layout.simple_list_item_2, categoryArray);
-        spFilter.setAdapter(adapterInstance);
-    }
-
 
     @Override
     public void onFragmentInteraction(Uri uri) {
@@ -143,8 +112,8 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
                     popup.getMenu().add(Menu.NONE, MENU_BUTTON_SHOW_ASSETS, Menu.NONE, R.string.MENU_BUTTON_SHOW_ASSETS).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
                     popup.getMenu().add(Menu.NONE, MENU_BUTTON_SHOW_USERS, Menu.NONE, R.string.MENU_BUTTON_SHOW_USERS).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
                     popup.getMenu().add(Menu.NONE, MENU_BUTTON_SHOW_HISTORY, Menu.NONE, R.string.MENU_BUTTON_SHOW_HISTORY).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
-                    popup.getMenu().add(Menu.NONE, 3, Menu.NONE, "Logg inn").setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
-                    popup.getMenu().add(Menu.NONE, 333, Menu.NONE, "Logg ut").setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
+                    popup.getMenu().add(Menu.NONE, MENU_BUTTON_LOGIN, Menu.NONE, R.string.MENU_BUTTON_LOGIN).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
+                    popup.getMenu().add(Menu.NONE, MENU_BUTTON_LOGOUT, Menu.NONE, R.string.MENU_BUTTON_LOGOUT).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
                     popup.show();
                     Log.d(TAG, "Adding menu to button.");
                     break;
@@ -157,34 +126,27 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
     final MenuItem.OnMenuItemClickListener mGlobal_OnMenuItemClickListener = new MenuItem.OnMenuItemClickListener() {
         @Override
         public boolean onMenuItemClick(MenuItem menuItem) {
-            FragmentManager fragmentManager = getFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.fragment_container, fragmentList);
-            fragmentTransaction.addToBackStack(null);
-            fragmentTransaction.commit();
-            fragmentManager.executePendingTransactions();
+            addListFragmentToFragmentContainer();
 
             switch (menuItem.getItemId()) {
                 case MENU_BUTTON_SHOW_ASSETS:
                     Log.d(TAG, "Showing assets");
-                    getCategories();
-                    initializeFilterSpinner();
+                    populateListViewWithCategories();
+                    //initializeFilterSpinner();
                     return true;
                 case MENU_BUTTON_SHOW_USERS:
                     Log.d(TAG, "Showing users");
                     WebAPI.doGetUsers(ActivityMain.this);
-                    initializeFilterSpinner();
+                    //initializeFilterSpinner();
                     return true;
                 case MENU_BUTTON_SHOW_HISTORY:
-                    WebAPI.addEquipment(ActivityMain.this, new Equipment("PC", "Microsoft", "Surface 2 Pro", "128 GB", "ITE1721", "02.02.2015", null));
-                    WebAPI.addEquipment(ActivityMain.this, new Equipment("PC", "Microsoft", "Surface 2 Pro", "128 GB", "ITE1723", "02.02.2015", null));
-                    WebAPI.addEquipment(ActivityMain.this, new Equipment("PC", "Microsoft", "Surface 2 Pro", "128 GB", "ITE1724", "2015-05-17", null));
+                    WebAPI.doGetAllLogEntriesForAllUser(ActivityMain.this);
                     return true;
-                case 3:
+                case MENU_BUTTON_LOGIN:
                     Log.d(TAG, "Starting login from MainMenu");
-                    WebAPI.doLogin(ActivityMain.this);
+                    WebAPI.doLoginAdmin(ActivityMain.this);
                     return true;
-                case 333:
+                case MENU_BUTTON_LOGOUT:
                     Log.d(TAG, "Starting logout from MainMenu");
                     WebAPI.logOut(ActivityMain.this);
                     return true;
@@ -199,33 +161,42 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
     // When clicking on a listview item
     final AdapterView.OnItemClickListener mGlobal_OnItemClickListener = new AdapterView.OnItemClickListener() {
         public void onItemClick(AdapterView<?> adapterView, View row, int position, long index) {
-            Log.d(TAG, "Clicking on equipment " + adapterInstance.getItem(position).toString());
-            if (adapterInstance.getItem(position).getClass().equals(Category.class)) {
-                Log.d(TAG, ((Category)adapterInstance.getItem(position)).getListItemTitle());
-                WebAPI.doGetEquipmentType(ActivityMain.this, ((Category)adapterInstance.getItem(position)).getListItemTitle());
+            Log.d(TAG, "Clicking on equipment " + adapter.getItem(position).toString());
+            if (adapter.getItem(position).getClass().equals(Category.class)) {
+                Log.d(TAG, ((Category) adapter.getItem(position)).getListItemTitle());
+                WebAPI.doGetEquipmentType(ActivityMain.this, ((Category) adapter.getItem(position)).getListItemTitle());
                 initializeFilterSpinner();
-            } else if (adapterInstance.getItem(position).getClass().equals(Equipment.class)) {
+            } else if (adapter.getItem(position).getClass().equals(Equipment.class)) {
                 FragmentManager fragmentManager = getFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.fragment_container, fragmentUser);
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
                 fragmentManager.executePendingTransactions();
-                ((TextView)fragmentUser.getView().findViewById(R.id.tvUserFullName)).setText( ((Equipment)adapterInstance.getItem(position)).getDescription() );
-            } else if (adapterInstance.getItem(position).getClass().equals(User.class)) {
+                ((TextView)fragmentUser.getView().findViewById(R.id.tvUserFullName)).setText( ((Equipment) adapter.getItem(position)).getDescription() );
+            } else if (adapter.getItem(position).getClass().equals(User.class)) {
                 FragmentManager fragmentManager = getFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.fragment_container, fragmentUser);
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
                 fragmentManager.executePendingTransactions();
-                User user = ((User)adapterInstance.getItem(position));
+                User user = ((User) adapter.getItem(position));
                 ((TextView)fragmentUser.getView().findViewById(R.id.tvUserFullName)).setText( user.getFirstname() + " " + user.getLastname() );
                 ((TextView)fragmentUser.getView().findViewById(R.id.tvUserName)).setText( user.getUserName() );
                 ((TextView)fragmentUser.getView().findViewById(R.id.tvUserPhoneNumber)).setText( user.getPhone() );
             }
         }
     };
+
+    private void initializeFilterSpinner()
+    {
+        Spinner spFilter = (Spinner)findViewById(R.id.spFilter);
+        ArrayList<Category> categoryArray = new ArrayList<Category>();
+        ArrayAdapter<Category> adapterInstance;
+        adapterInstance = new ArrayAdapter<Category>(this, android.R.layout.simple_list_item_2, categoryArray);
+        spFilter.setAdapter(adapterInstance);
+    }
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
@@ -234,7 +205,7 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
 
                 super.onCreateContextMenu(menu, v, menuInfo);
                 AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-                String title = ((MyObjects)(adapterInstance.getItem(info.position))).getListItemTitle();
+                String title = ((AssetManagerObjects)(adapter.getItem(info.position))).getListItemTitle();
 
                 menu.setHeaderTitle(title);
                 menu.add(Menu.NONE, MENU_CONTEXT_LIST_SHOW, Menu.NONE, R.string.MENU_CONTEXT_LIST_SHOW);
@@ -250,19 +221,19 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
 
         switch (item.getItemId()) {
             case MENU_CONTEXT_LIST_SHOW:
-                if (adapterInstance.getItem(info.position).getClass().equals(Category.class) ) {
-                    WebAPI.doGetEquipmentType(ActivityMain.this, ((Category)adapterInstance.getItem(info.position)).getListItemTitle());
+                if (adapter.getItem(info.position).getClass().equals(Category.class) ) {
+                    WebAPI.doGetEquipmentType(ActivityMain.this, ((Category) adapter.getItem(info.position)).getListItemTitle());
                     Log.d(TAG, "Menu context show category!");
                 }
                 return true;
             case MENU_CONTEXT_LIST_DELETE:
-                if ((adapterInstance != null) &&(adapterInstance.getItem(info.position).getClass().equals(Category.class))) {
+                if ((adapter != null) &&(adapter.getItem(info.position).getClass().equals(Category.class))) {
                     Log.d(TAG, "Menu context delete category");
 
                 }
-                if ((adapterInstance != null) &&(adapterInstance.getItem(info.position).getClass().equals(User.class))) {
+                if ((adapter != null) &&(adapter.getItem(info.position).getClass().equals(User.class))) {
                     Log.d(TAG, "Menu context delete category");
-                    WebAPI.doDeleteUser(ActivityMain.this, ((User)adapterInstance.getItem(info.position)).getId());
+                    WebAPI.doDeleteUser(ActivityMain.this, ((User) adapter.getItem(info.position)).getId());
                 }
 
 
@@ -271,9 +242,6 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
                 return super.onContextItemSelected(item);
         }
     }
-
-
-
 
 
     public void logIn(User user) {
@@ -286,18 +254,19 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
 
 
 
-    public void addToList(ArrayList<MyObjects> objects) {
+    public void addToList(ArrayList<AssetManagerObjects> objects) {
 
         if (objects != null) {
             ListView lvList = (ListView) fragmentList.getView().findViewById(R.id.lvList);
             TextView tvTitle = ((TextView) fragmentList.getView().findViewById(R.id.tvTitle));
-            tvTitle.setText(((Equipment) objects.get(0)).getType());
-            ArrayList<MyObjects> array = new ArrayList<MyObjects>();
-            adapterInstance = new MyAdapter(this, array);
-            for (int i = 0; i < objects.size(); i++) {
-                    adapterInstance.add(objects.get(i));
-            }
-            lvList.setAdapter(adapterInstance);
+
+            if (objects.get(0) instanceof Equipment)
+                tvTitle.setText(((Equipment) objects.get(0)).getType());
+            else
+                tvTitle.setText("Brukere");
+
+            adapter = new AssetManagerAdapter(this, objects);
+            lvList.setAdapter(adapter);
             lvList.setOnItemClickListener(mGlobal_OnItemClickListener);
             registerForContextMenu(lvList);
         } else {

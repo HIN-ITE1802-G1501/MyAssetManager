@@ -12,12 +12,12 @@ import java.util.ArrayList;
 
 import no.hin.student.myassetmanager.R;
 
-public class MyAdapter extends BaseAdapter {
-    private static ArrayList<MyObjects> arrayList;
+public class AssetManagerAdapter extends BaseAdapter {
+    private static ArrayList<AssetManagerObjects> arrayList;
 
     private LayoutInflater mInflater;
 
-    public MyAdapter(Context context, ArrayList results) {
+    public AssetManagerAdapter(Context context, ArrayList results) {
         arrayList = results;
         mInflater = LayoutInflater.from(context);
     }
@@ -27,11 +27,11 @@ public class MyAdapter extends BaseAdapter {
     }
 
 
-    public void add(MyObjects myObject) {
+    public void add(AssetManagerObjects myObject) {
         arrayList.add(myObject);
     }
 
-    public void remove(MyObjects myObject) {
+    public void remove(AssetManagerObjects myObject) {
         arrayList.remove(myObject);
     }
 

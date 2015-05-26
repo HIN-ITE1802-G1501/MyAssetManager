@@ -19,5 +19,8 @@
     <string name="MENU_BUTTON_SHOW_USERS">Brukere</string>
     <string name="MENU_BUTTON_SHOW_HISTORY">Historie</string>
 
+    <string name="MENU_BUTTON_LOGIN">Logg inn</string>
+    <string name="MENU_BUTTON_LOGOUT">Logg ut</string>
+
     <string name="LOGTAG">Test</string>
 </resources>

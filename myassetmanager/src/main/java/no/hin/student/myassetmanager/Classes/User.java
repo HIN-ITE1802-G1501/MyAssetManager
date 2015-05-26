@@ -7,7 +7,7 @@ import no.hin.student.myassetmanager.Interfaces.MyInterface;
 import no.hin.student.myassetmanager.R;
 
 
-public class User extends MyObjects implements MyInterface {
+public class User extends AssetManagerObjects implements MyInterface {
     private int u_id;
     private String userName;
     private String password;
@@ -112,7 +112,7 @@ public class User extends MyObjects implements MyInterface {
         return json;
     }
 
-    public static void deleteUser(MyAdapter adapterInstance, User user) {
+    public static void deleteUser(AssetManagerAdapter adapterInstance, User user) {
         Log.d(TAG, "Delete user from list and database");
         adapterInstance.remove(user);
     }

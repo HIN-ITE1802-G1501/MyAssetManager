@@ -1,11 +1,7 @@
 package no.hin.student.myassetmanager.Classes;
 
-import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.Environment;
 import android.util.Log;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -14,18 +10,16 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 
-import no.hin.student.myassetmanager.Interfaces.MyInterface;
 import no.hin.student.myassetmanager.R;
 
 
-public class Category extends MyObjects {
+public class Category extends AssetManagerObjects
+{
     private int id;
     private String name;
     public static String url = "http://kark.hin.no:8088/d3330log_backend/utstyrstyper.txt";
@@ -104,13 +98,16 @@ public class Category extends MyObjects {
         return R.drawable.other;
     }
 
-    public static void showCategories(MyAdapter adapterInstance) {
+    public static ArrayList<Category> getCategories() {
         folder = Environment.getExternalStorageDirectory() + "/Download";
-        ArrayList arr = readCategoriesFromFile(folder + "/products.txt");
-        Collections.sort(arr, String.CASE_INSENSITIVE_ORDER);
-        for (int i = 0; i < arr.size(); i++) {
-            adapterInstance.add(new Category(i, arr.get(i).toString()));
-        }
+        ArrayList categoryStrings = readCategoriesFromFile(folder + "/products.txt");
+        Collections.sort(categoryStrings, String.CASE_INSENSITIVE_ORDER);
+        ArrayList<Category> categories = new ArrayList<>();
+
+        for (int i = 0; i < categoryStrings.size(); i++)
+            categories.add(new Category(i, categoryStrings.get(i).toString()));
+
+        return categories;
     }
 
     public static void download() {

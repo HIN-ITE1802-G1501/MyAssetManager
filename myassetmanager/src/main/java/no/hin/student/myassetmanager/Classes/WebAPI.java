@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import no.hin.student.myassetmanager.Activities.ActivityMain;
-import no.hin.student.myassetmanager.R;
 
 
 public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Void, String> {
@@ -54,6 +53,7 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
         GET_EQUIPMENT(2001, "getEquipment"),
         GET_EQUIPMENTTYPE(2002, "getEquipmentType"),
         GET_USERS(2003, "getUsers"),
+        GET_ALL_LOG_ENTRIES_FOR_ALL_USER(2004, "getAllLogEntriesForAllUser"),
 
         ADD_EQUIPMENT(1001, "addEquipment"),
 
@@ -134,21 +134,26 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
                     case GET_EQUIPMENT:
                         Type get_equipment = new TypeToken<List<Equipment>>() {
                         }.getType();
-                        ArrayList<MyObjects> equipment = (ArrayList<MyObjects>) gson.fromJson(response.getJsonResponse(), get_equipment);
+                        ArrayList<AssetManagerObjects> equipment = (ArrayList<AssetManagerObjects>) gson.fromJson(response.getJsonResponse(), get_equipment);
                         ((ActivityMain) context).addToList(equipment);
                         break;
                     case GET_EQUIPMENTTYPE:
                         Type get_equipmenttype = new TypeToken<List<Equipment>>() {
                         }.getType();
-                        ArrayList<MyObjects> equipment_type = (ArrayList<MyObjects>) gson.fromJson(response.getJsonResponse(), get_equipmenttype);
+                        ArrayList<AssetManagerObjects> equipment_type = (ArrayList<AssetManagerObjects>) gson.fromJson(response.getJsonResponse(), get_equipmenttype);
                         ((ActivityMain) context).addToList(equipment_type);
                         break;
                     case GET_USERS:
                         Type get_users = new TypeToken<List<User>>() {
                         }.getType();
-                        ArrayList<MyObjects> users = (ArrayList<MyObjects>) gson.fromJson(response.getJsonResponse(), get_users);
+                        ArrayList<AssetManagerObjects> users = (ArrayList<AssetManagerObjects>) gson.fromJson(response.getJsonResponse(), get_users);
                         ((ActivityMain) context).addToList(users);
                         break;
+                    case GET_ALL_LOG_ENTRIES_FOR_ALL_USER:
+                        Type get_all_log_entries_for_all_user = new TypeToken<List<LogEntry>>() {
+                        }.getType();
+                        ArrayList<AssetManagerObjects> logEntries = (ArrayList<AssetManagerObjects>) gson.fromJson(response.getJsonResponse(), get_all_log_entries_for_all_user);
+                        ((ActivityMain) context).addToList(logEntries);
 
 
                     case ADD_EQUIPMENT:
@@ -164,7 +169,7 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
         }
     }
 
-    public static void setLoginInformation(String dbUser, String dbPassword)  {
+    public static void setDatabaseLoginInformation(String dbUser, String dbPassword)  {
         username = dbUser;
         password = dbPassword;
     }
@@ -262,6 +267,15 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
             Log.d(TAG, "Before adding: " + equipment.toJSONString());
             nameValuePairs.add(new BasicNameValuePair("equipment", equipment.toJSONString()));
             new WebAPI(URL, Method.ADD_EQUIPMENT, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
+        } else {
+            Log.d(TAG, "Logg inn først!");
+        }
+    }
+
+    public static void doGetAllLogEntriesForAllUser(Context context) {
+        if (httpClient != null) {
+            List<NameValuePair> nameValuePairs =new ArrayList<NameValuePair>(1);
+            new WebAPI(URL, Method.GET_ALL_LOG_ENTRIES_FOR_ALL_USER, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
         } else {
             Log.d(TAG, "Logg inn først!");
         }
