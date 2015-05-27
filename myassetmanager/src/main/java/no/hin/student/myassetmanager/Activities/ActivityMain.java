@@ -1,6 +1,7 @@
 package no.hin.student.myassetmanager.Activities;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.net.Uri;
@@ -12,6 +13,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
@@ -20,19 +23,20 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import no.hin.student.myassetmanager.Classes.Category;
-import no.hin.student.myassetmanager.Classes.Equipment;
 import no.hin.student.myassetmanager.Classes.AssetManagerAdapter;
 import no.hin.student.myassetmanager.Classes.AssetManagerObjects;
+import no.hin.student.myassetmanager.Classes.Category;
+import no.hin.student.myassetmanager.Classes.Equipment;
 import no.hin.student.myassetmanager.Classes.User;
 import no.hin.student.myassetmanager.Classes.WebAPI;
 import no.hin.student.myassetmanager.Fragments.FragmentAsset;
 import no.hin.student.myassetmanager.Fragments.FragmentList;
+import no.hin.student.myassetmanager.Fragments.FragmentLogin;
 import no.hin.student.myassetmanager.Fragments.FragmentUser;
 import no.hin.student.myassetmanager.R;
 
 
-public class ActivityMain extends Activity implements FragmentUser.OnFragmentInteractionListener, FragmentAsset.OnFragmentInteractionListener, FragmentList.OnFragmentInteractionListener {
+public class ActivityMain extends Activity implements FragmentLogin.LoginListener, FragmentList.OnFragmentInteractionListener, FragmentAsset.OnFragmentInteractionListener, FragmentUser.OnFragmentInteractionListener {
 
     private static final int MENU_CONTEXT_LIST_SHOW = 10101;
     private static final int MENU_CONTEXT_LIST_EDIT = 10102;
@@ -47,8 +51,9 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
 
     private static final String TAG = "MyAssetManger-log";
 
-    private FragmentList fragmentList = new FragmentList();
-    private FragmentUser fragmentUser = new FragmentUser();
+    private FragmentList fragmentList;
+    private FragmentUser fragmentUser;
+    private FragmentLogin fragmentLogin;
     private AssetManagerAdapter adapter;
 
     @Override
@@ -69,15 +74,16 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
 
         fragmentList = new FragmentList();
         fragmentUser = new FragmentUser();
+        fragmentLogin = new FragmentLogin();
 
-        addListFragmentToFragmentContainer();
-        populateListViewWithCategories();
+        replaceFragmentContainerFragmentWith(fragmentLogin);
+        //populateListViewWithCategories();
     }
 
-    private void addListFragmentToFragmentContainer() {
+    private void replaceFragmentContainerFragmentWith(Fragment fragment) {
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_container, fragmentList);
+        fragmentTransaction.replace(R.id.fragment_container, fragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
         fragmentManager.executePendingTransactions();
@@ -98,11 +104,6 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
         super.onStop();
     }
 
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
-    }
-
     // When clicking show view button
     final View.OnClickListener mGlobal_OnClickListener = new View.OnClickListener() {
         public void onClick(final View v) {
@@ -112,7 +113,6 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
                     popup.getMenu().add(Menu.NONE, MENU_BUTTON_SHOW_ASSETS, Menu.NONE, R.string.MENU_BUTTON_SHOW_ASSETS).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
                     popup.getMenu().add(Menu.NONE, MENU_BUTTON_SHOW_USERS, Menu.NONE, R.string.MENU_BUTTON_SHOW_USERS).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
                     popup.getMenu().add(Menu.NONE, MENU_BUTTON_SHOW_HISTORY, Menu.NONE, R.string.MENU_BUTTON_SHOW_HISTORY).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
-                    popup.getMenu().add(Menu.NONE, MENU_BUTTON_LOGIN, Menu.NONE, R.string.MENU_BUTTON_LOGIN).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
                     popup.getMenu().add(Menu.NONE, MENU_BUTTON_LOGOUT, Menu.NONE, R.string.MENU_BUTTON_LOGOUT).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
                     popup.show();
                     Log.d(TAG, "Adding menu to button.");
@@ -126,7 +126,7 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
     final MenuItem.OnMenuItemClickListener mGlobal_OnMenuItemClickListener = new MenuItem.OnMenuItemClickListener() {
         @Override
         public boolean onMenuItemClick(MenuItem menuItem) {
-            addListFragmentToFragmentContainer();
+            replaceFragmentContainerFragmentWith(fragmentList);
 
             switch (menuItem.getItemId()) {
                 case MENU_BUTTON_SHOW_ASSETS:
@@ -142,13 +142,10 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
                 case MENU_BUTTON_SHOW_HISTORY:
                     WebAPI.doGetAllLogEntriesForAllUser(ActivityMain.this);
                     return true;
-                case MENU_BUTTON_LOGIN:
-                    Log.d(TAG, "Starting login from MainMenu");
-                    WebAPI.doLoginAdmin(ActivityMain.this);
-                    return true;
                 case MENU_BUTTON_LOGOUT:
                     Log.d(TAG, "Starting logout from MainMenu");
                     WebAPI.logOut(ActivityMain.this);
+                    replaceFragmentContainerFragmentWith(fragmentLogin);
                     return true;
                 default:
                     return true;
@@ -162,32 +159,41 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
     final AdapterView.OnItemClickListener mGlobal_OnItemClickListener = new AdapterView.OnItemClickListener() {
         public void onItemClick(AdapterView<?> adapterView, View row, int position, long index) {
             Log.d(TAG, "Clicking on equipment " + adapter.getItem(position).toString());
-            if (adapter.getItem(position).getClass().equals(Category.class)) {
+
+            boolean clickedCategory = adapter.getItem(position).getClass().equals(Category.class);
+            boolean clickedEquipment = adapter.getItem(position).getClass().equals(Equipment.class);
+            boolean clickedUser = adapter.getItem(position).getClass().equals(User.class);
+
+            if (clickedCategory) {
                 Log.d(TAG, ((Category) adapter.getItem(position)).getListItemTitle());
                 WebAPI.doGetEquipmentType(ActivityMain.this, ((Category) adapter.getItem(position)).getListItemTitle());
                 initializeFilterSpinner();
-            } else if (adapter.getItem(position).getClass().equals(Equipment.class)) {
-                FragmentManager fragmentManager = getFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.fragment_container, fragmentUser);
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
-                fragmentManager.executePendingTransactions();
-                ((TextView)fragmentUser.getView().findViewById(R.id.tvUserFullName)).setText( ((Equipment) adapter.getItem(position)).getDescription() );
-            } else if (adapter.getItem(position).getClass().equals(User.class)) {
-                FragmentManager fragmentManager = getFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.fragment_container, fragmentUser);
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
-                fragmentManager.executePendingTransactions();
+            }
+            else if (clickedEquipment) {
+                replaceFragmentContainerFragmentWith(fragmentUser); // should be fragmentEquipment !! <<<<<
+                ((TextView)fragmentUser.getView().findViewById(R.id.tvUserFullName)).setText(((Equipment) adapter.getItem(position)).getDescription());
+            }
+            else if (clickedUser) {
+                replaceFragmentContainerFragmentWith(fragmentUser);
                 User user = ((User) adapter.getItem(position));
-                ((TextView)fragmentUser.getView().findViewById(R.id.tvUserFullName)).setText( user.getFirstname() + " " + user.getLastname() );
-                ((TextView)fragmentUser.getView().findViewById(R.id.tvUserName)).setText( user.getUserName() );
-                ((TextView)fragmentUser.getView().findViewById(R.id.tvUserPhoneNumber)).setText( user.getPhone() );
+                fillTextViewsWithUserData(user);
             }
         }
     };
+
+    private void fillTextViewsWithUserData(User user) {
+        TextView textViewFullName = (TextView)fragmentUser.getView().findViewById(R.id.tvUserFullName);
+        TextView textViewUsername = (TextView)fragmentUser.getView().findViewById(R.id.tvUserName);
+        TextView textViewPhoneNumber = (TextView)fragmentUser.getView().findViewById(R.id.tvUserPhoneNumber);
+
+        String fullName = user.getFirstname() + " " + user.getLastname();
+        String username = user.getUserName();
+        String phoneNumber = user.getPhone();
+
+        textViewFullName.setText(fullName);
+        textViewUsername.setText(username);
+        textViewPhoneNumber.setText(phoneNumber);
+    }
 
     private void initializeFilterSpinner()
     {
@@ -276,10 +282,29 @@ public class ActivityMain extends Activity implements FragmentUser.OnFragmentInt
 
 
 
+    public void onClickLoginButton(View buttonView)
+    {
+        String username = ((EditText)fragmentLogin.getView().findViewById(R.id.editTextUsername)).getText().toString();
+        String password = ((EditText)fragmentLogin.getView().findViewById(R.id.editTextPassword)).getText().toString();
+        boolean isAdmin = ((CheckBox)fragmentLogin.getView().findViewById(R.id.checkBoxIsAdmin)).isChecked();
+
+        attemptLogin(username, password, isAdmin);
+    }
 
 
+    public void attemptLogin(String username, String password, boolean isAdmin) {
+        if (isAdmin)
+            WebAPI.doLoginAdmin(this, username, password);
+        else
+            WebAPI.doLogin(this, username, password);
+
+        replaceFragmentContainerFragmentWith(fragmentList);
+    }
 
 
+    @Override
+    public void onFragmentInteraction(Uri uri)
+    {
 
-
+    }
 }

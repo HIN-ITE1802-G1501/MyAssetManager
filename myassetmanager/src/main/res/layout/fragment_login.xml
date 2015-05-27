@@ -1,0 +1,88 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:context="no.hin.student.myassetmanager.Fragments.FragmentLogin"
+                android:orientation="vertical">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Innlogging"
+        android:id="@+id/textViewLoginLabel"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:textSize="40sp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Brukernavn:"
+        android:id="@+id/textViewUsername"
+        android:layout_marginTop="27dp"
+        android:layout_below="@+id/textViewLoginLabel"
+        android:layout_centerHorizontal="true"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/editTextUsername"
+        android:layout_below="@+id/textViewUsername"
+        android:layout_alignRight="@+id/textViewLoginLabel"
+        android:layout_alignEnd="@+id/textViewLoginLabel"
+        android:layout_alignLeft="@+id/textViewLoginLabel"
+        android:layout_alignStart="@+id/textViewLoginLabel"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_marginTop="10dp"
+        android:text="Passord:"
+        android:id="@+id/textViewPassword"
+        android:layout_below="@+id/editTextUsername"
+        android:layout_alignLeft="@+id/textViewUsername"
+        android:layout_alignStart="@+id/textViewUsername"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:ems="10"
+        android:id="@+id/editTextPassword"
+        android:layout_below="@+id/textViewPassword"
+        android:layout_alignRight="@+id/editTextUsername"
+        android:layout_alignEnd="@+id/editTextUsername"
+        android:layout_alignLeft="@+id/editTextUsername"
+        android:layout_alignStart="@+id/editTextUsername"/>
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Admin"
+        android:id="@+id/checkBoxIsAdmin"
+        android:layout_marginTop="20dp"
+        android:checked="false"
+        android:layout_below="@+id/editTextPassword"
+        android:layout_alignLeft="@+id/editTextPassword"
+        android:layout_alignStart="@+id/editTextPassword"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Logg inn"
+        android:onClick="onClickLoginButton"
+        android:id="@+id/buttonLogin"
+        android:layout_below="@+id/checkBoxIsAdmin"
+        android:layout_alignLeft="@+id/checkBoxIsAdmin"
+        android:layout_alignStart="@+id/checkBoxIsAdmin"
+        android:layout_marginTop="20dp"
+        android:layout_alignRight="@+id/editTextPassword"
+        android:layout_alignEnd="@+id/editTextPassword"/>
+
+</RelativeLayout>

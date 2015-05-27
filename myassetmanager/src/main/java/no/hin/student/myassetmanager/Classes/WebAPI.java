@@ -38,8 +38,8 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
     private static final String TAG = "MyAssetManger-log";
     private static final String sql = "kark.hin.no";
     private static final int sqlport = 3306;
-    private static String username;
-    private static String password;
+    private static String databaseUsername;
+    private static String databasePassword;
     private static final String db = "stud_v15_karlsen";
     private static final String URL = "http://kark.hin.no:8088/d3330log_backend/";
 
@@ -170,39 +170,39 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
     }
 
     public static void setDatabaseLoginInformation(String dbUser, String dbPassword)  {
-        username = dbUser;
-        password = dbPassword;
+        databaseUsername = dbUser;
+        databasePassword = dbPassword;
     }
 
 
-    public static void doLogin(Context context) {
+    public static void doLogin(Context context, String username, String password) {
         if (httpClient == null) {
             httpClient = new DefaultHttpClient();
             List<NameValuePair> nameValuePairs = null;
             nameValuePairs = new ArrayList<NameValuePair>(6);
-            nameValuePairs.add(new BasicNameValuePair("uid", "530617"));
-            nameValuePairs.add(new BasicNameValuePair("pwd", "kurt"));
+            nameValuePairs.add(new BasicNameValuePair("uid", username));
+            nameValuePairs.add(new BasicNameValuePair("pwd", password));
             nameValuePairs.add(new BasicNameValuePair("connectstring", "jdbc:mysql://" + sql + ":" + sqlport + "/"));
             nameValuePairs.add(new BasicNameValuePair("dbName", db));
-            nameValuePairs.add(new BasicNameValuePair("db_uid", username));
-            nameValuePairs.add(new BasicNameValuePair("db_pwd", password));
+            nameValuePairs.add(new BasicNameValuePair("db_uid", databaseUsername));
+            nameValuePairs.add(new BasicNameValuePair("db_pwd", databasePassword));
             new WebAPI(URL, Method.LOG_IN, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
         } else {
             Log.d(TAG, "Du er allerede logget inn!");
         }
     }
 
-    public static void doLoginAdmin(Context context) {
+    public static void doLoginAdmin(Context context, String username, String password) {
         if (httpClient == null) {
             httpClient = new DefaultHttpClient();
             List<NameValuePair> nameValuePairs = null;
             nameValuePairs = new ArrayList<NameValuePair>(6);
-            nameValuePairs.add(new BasicNameValuePair("uid", "530617"));
-            nameValuePairs.add(new BasicNameValuePair("pwd", "kurt"));
+            nameValuePairs.add(new BasicNameValuePair("uid", username));
+            nameValuePairs.add(new BasicNameValuePair("pwd", password));
             nameValuePairs.add(new BasicNameValuePair("connectstring", "jdbc:mysql://" + sql + ":" + sqlport + "/"));
             nameValuePairs.add(new BasicNameValuePair("dbName", db));
-            nameValuePairs.add(new BasicNameValuePair("db_uid", username));
-            nameValuePairs.add(new BasicNameValuePair("db_pwd", password));
+            nameValuePairs.add(new BasicNameValuePair("db_uid", databaseUsername));
+            nameValuePairs.add(new BasicNameValuePair("db_pwd", databasePassword));
             new WebAPI(URL, Method.LOG_IN_ADMIN, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
         } else {
             Log.d(TAG, "Du er allerede logget inn!");
