@@ -83,7 +83,7 @@ public class ActivityMain extends Activity {
         TableLayout topMenu = (TableLayout)this.findViewById(R.id.tableLayoutTopMenu);
 
         if (fragment instanceof FragmentLogin || fragment instanceof FragmentRegister)
-            topMenu.setVisibility(View.INVISIBLE);
+            topMenu.setVisibility(View.GONE);
         else
             topMenu.setVisibility(View.VISIBLE);
 
