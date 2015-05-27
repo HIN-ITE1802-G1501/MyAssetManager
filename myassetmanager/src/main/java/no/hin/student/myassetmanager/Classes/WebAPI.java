@@ -119,17 +119,17 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
                 switch (method) {
                     case LOG_IN:
                         if (response.getMessage().contains("512")) {
-                            ((ActivityMain) context).logIn(null, false);
+                            ((ActivityMain) context).logIn(null, false, ActivityMain.IS_LOGGED_OUT);
                             closeSession();
                         }
                         else {
                             User log_in = gson.fromJson(response.getJsonResponse(), User.class);
-                            ((ActivityMain) context).logIn(log_in, true);
+                            ((ActivityMain) context).logIn(log_in, true, ActivityMain.IS_REGULAR_USER);
                         }
                         break;
                     case LOG_IN_ADMIN:
                         if (response.getMessage().contains("512")) {
-                            ((ActivityMain) context).logIn(null, false);
+                            ((ActivityMain) context).logIn(null, false, ActivityMain.IS_LOGGED_OUT);
                             closeSession();
                         }
                         else if (response.getMessage().contains("517")) {
@@ -138,12 +138,13 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
                         }
                         else {
                             User log_in_admin = gson.fromJson(response.getJsonResponse(), User.class);
-                            ((ActivityMain) context).logIn(log_in_admin, true);
+                            ((ActivityMain) context).logIn(log_in_admin, true, ActivityMain.IS_ADMIN_USER);
                         }
 
                         break;
                     case LOG_OUT:
                         closeSession();
+                        ((ActivityMain) context).logOut();
                         break;
 
 
@@ -176,7 +177,8 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
 
                         break;
                     case ADD_USER_WITHOUT_LOGIN:
-                        Toast.makeText(context, response.getMessage().toString(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, response.getMessage().toString(), Toast.LENGTH_LONG).show();
+                        closeSession();
                         break;
                     case DELETE_USER:
                         ((ActivityMain) context).deleteUser();

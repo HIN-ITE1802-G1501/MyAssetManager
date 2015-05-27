@@ -38,6 +38,10 @@ import no.hin.student.myassetmanager.R;
 
 public class ActivityMain extends Activity {
 
+    public static final int IS_ADMIN_USER = 1;
+    public static final int IS_REGULAR_USER = 2;
+    public static final int IS_LOGGED_OUT = 0;
+
     private static final int MENU_CONTEXT_LIST_SHOW = 10101;
     private static final int MENU_CONTEXT_LIST_EDIT = 10102;
     private static final int MENU_CONTEXT_LIST_DELETE = 10103;
@@ -56,6 +60,8 @@ public class ActivityMain extends Activity {
     private FragmentLogin fragmentLogin;
     private FragmentRegister fragmentRegister;
     private AssetManagerAdapter adapter;
+
+    private int loggedInUser = IS_LOGGED_OUT;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,16 +124,29 @@ public class ActivityMain extends Activity {
             switch(v.getId()) {
                 case R.id.btnMenu:
                     PopupMenu popup = new PopupMenu(getApplication(), v);
-                    popup.getMenu().add(Menu.NONE, MENU_BUTTON_SHOW_ASSETS, Menu.NONE, R.string.MENU_BUTTON_SHOW_ASSETS).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
-                    popup.getMenu().add(Menu.NONE, MENU_BUTTON_SHOW_USERS, Menu.NONE, R.string.MENU_BUTTON_SHOW_USERS).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
-                    popup.getMenu().add(Menu.NONE, MENU_BUTTON_SHOW_HISTORY, Menu.NONE, R.string.MENU_BUTTON_SHOW_HISTORY).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
-                    popup.getMenu().add(Menu.NONE, MENU_BUTTON_LOGOUT, Menu.NONE, R.string.MENU_BUTTON_LOGOUT).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
-                    popup.show();
-                    Log.d(TAG, "Adding menu to button.");
+
+                    if (loggedInUser == IS_ADMIN_USER)
+                        showAdminMenu(popup);
+                    else if (loggedInUser == IS_REGULAR_USER)
+                        showRegularUserMenu(popup);
                     break;
             }
         }
     };
+
+    private void showAdminMenu(PopupMenu popup) {
+        popup.getMenu().add(Menu.NONE, MENU_BUTTON_SHOW_ASSETS, Menu.NONE, R.string.MENU_BUTTON_SHOW_ASSETS).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
+        popup.getMenu().add(Menu.NONE, MENU_BUTTON_SHOW_USERS, Menu.NONE, R.string.MENU_BUTTON_SHOW_USERS).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
+        popup.getMenu().add(Menu.NONE, MENU_BUTTON_SHOW_HISTORY, Menu.NONE, R.string.MENU_BUTTON_SHOW_HISTORY).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
+        popup.getMenu().add(Menu.NONE, MENU_BUTTON_LOGOUT, Menu.NONE, R.string.MENU_BUTTON_LOGOUT).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
+        popup.show();
+    }
+
+    private void showRegularUserMenu(PopupMenu popup) {
+        popup.getMenu().add(Menu.NONE, MENU_BUTTON_SHOW_ASSETS, Menu.NONE, R.string.MENU_BUTTON_SHOW_ASSETS).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
+        popup.getMenu().add(Menu.NONE, MENU_BUTTON_LOGOUT, Menu.NONE, R.string.MENU_BUTTON_LOGOUT).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
+        popup.show();
+    }
 
 
 
@@ -258,15 +277,20 @@ public class ActivityMain extends Activity {
     }
 
 
-    public void logIn(User user, boolean success) {
+    public void logIn(User user, boolean success, int userStatus) {
         if (success) {
             Log.d(TAG, "User logged in: " + user.getFirstname() + " " + user.getLastname());
+            loggedInUser = userStatus;
             replaceFragmentContainerFragmentWith(fragmentList);
             populateListViewWithCategories();
         }
         else {
             Toast.makeText(getApplicationContext(), "Feil brukernavn og/eller passord", Toast.LENGTH_LONG).show();
         }
+    }
+
+    public void logOut() {
+        loggedInUser = IS_LOGGED_OUT;
     }
 
     public void deleteUser() {
@@ -308,6 +332,7 @@ public class ActivityMain extends Activity {
 
         User user = new User(username, password, firstname, lastname, phoneNumber, false);
         WebAPI.doAddUserWithoutLogin(this, user);
+        replaceFragmentContainerFragmentWith(fragmentLogin);
     }
 
     public void onClickLoginButton(View buttonView) {
