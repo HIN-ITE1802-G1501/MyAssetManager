@@ -54,6 +54,7 @@ public class ActivityMain extends Activity {
     private FragmentList fragmentList;
     private FragmentUser fragmentUser;
     private FragmentLogin fragmentLogin;
+    private FragmentRegister fragmentRegister;
     private AssetManagerAdapter adapter;
 
     @Override
@@ -75,6 +76,7 @@ public class ActivityMain extends Activity {
         fragmentList = new FragmentList();
         fragmentUser = new FragmentUser();
         fragmentLogin = new FragmentLogin();
+        fragmentRegister = new FragmentRegister();
 
         replaceFragmentContainerFragmentWith(fragmentLogin);
     }
@@ -293,8 +295,19 @@ public class ActivityMain extends Activity {
         }
     }
 
-    public void onClickRegisterButton(View buttonView) {
-        replaceFragmentContainerFragmentWith(new FragmentRegister());
+    public void onClickRegisterPageButton(View buttonView) {
+        replaceFragmentContainerFragmentWith(fragmentRegister);
+    }
+
+    public void onClickSendRegistrationButton(View buttonView) {
+        String firstname = ((EditText)fragmentRegister.getView().findViewById(R.id.editTextRegisterFirstname)).getText().toString();
+        String lastname = ((EditText)fragmentRegister.getView().findViewById(R.id.editTextRegisterLastname)).getText().toString();
+        String phoneNumber = ((EditText)fragmentRegister.getView().findViewById(R.id.editTextRegisterPhonenumber)).getText().toString();
+        String username = ((EditText)fragmentRegister.getView().findViewById(R.id.editTextRegisterUsername)).getText().toString();
+        String password = ((EditText)fragmentRegister.getView().findViewById(R.id.editTextRegisterPassword)).getText().toString();
+
+        User user = new User(username, password, firstname, lastname, phoneNumber, false);
+        WebAPI.doAddUserWithoutLogin(this, user);
     }
 
     public void onClickLoginButton(View buttonView) {

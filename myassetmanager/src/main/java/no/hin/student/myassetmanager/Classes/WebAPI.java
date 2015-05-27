@@ -55,7 +55,8 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
         GET_USERS(2003, "getUsers"),
         GET_ALL_LOG_ENTRIES_FOR_ALL_USER(2004, "getAllLogEntriesForAllUser"),
 
-        ADD_EQUIPMENT(1001, "addEquipment"),
+        ADD_EQUIPMENT(3001, "addEquipment"),
+        ADD_USER_WITHOUT_LOGIN(3002, "addUserWithoutLogin"),
 
         DELETE_USER(4001, "deleteUser");
 
@@ -174,6 +175,9 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
                     case ADD_EQUIPMENT:
 
                         break;
+                    case ADD_USER_WITHOUT_LOGIN:
+                        Toast.makeText(context, response.getMessage().toString(), Toast.LENGTH_SHORT).show();
+                        break;
                     case DELETE_USER:
                         ((ActivityMain) context).deleteUser();
                         break;
@@ -242,7 +246,7 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
 
     public static void doGetUsers(Context context) {
         if (httpClient != null) {
-            List<NameValuePair> nameValuePairs =new ArrayList<NameValuePair>(1);
+            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
             new WebAPI(URL, Method.GET_USERS, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
         } else {
             Log.d(TAG, "Logg inn først!");
@@ -251,7 +255,7 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
 
     public static void doGetEquipment(Context context) {
         if (httpClient != null) {
-            List<NameValuePair> nameValuePairs =new ArrayList<NameValuePair>(1);
+            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
             nameValuePairs.add(new BasicNameValuePair("which_equipment", "ALL"));
             new WebAPI(URL, Method.GET_EQUIPMENT, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
         } else {
@@ -262,7 +266,7 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
 
     public static void doGetEquipmentType(Context context, String category) {
         if (httpClient != null) {
-            List<NameValuePair> nameValuePairs =new ArrayList<NameValuePair>(1);
+            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
             nameValuePairs.add(new BasicNameValuePair("type", category));
             Log.d(TAG, category);
             new WebAPI(URL, Method.GET_EQUIPMENTTYPE, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
@@ -273,7 +277,7 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
 
     public static void doDeleteUser(Context context, int userId) {
         if (httpClient != null) {
-            List<NameValuePair> nameValuePairs =new ArrayList<NameValuePair>(1);
+            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
             nameValuePairs.add(new BasicNameValuePair("userId", Integer.toString(userId)));
             Log.d(TAG, Integer.toString(userId));
             new WebAPI(URL, Method.DELETE_USER, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
@@ -284,7 +288,7 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
 
     public static void addEquipment(Context context, Equipment equipment) {
         if (httpClient != null) {
-            List<NameValuePair> nameValuePairs =new ArrayList<NameValuePair>(1);
+            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
             Log.d(TAG, "Before adding: " + equipment.toJSONString());
             nameValuePairs.add(new BasicNameValuePair("equipment", equipment.toJSONString()));
             new WebAPI(URL, Method.ADD_EQUIPMENT, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
@@ -295,10 +299,24 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
 
     public static void doGetAllLogEntriesForAllUser(Context context) {
         if (httpClient != null) {
-            List<NameValuePair> nameValuePairs =new ArrayList<NameValuePair>(1);
+            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
             new WebAPI(URL, Method.GET_ALL_LOG_ENTRIES_FOR_ALL_USER, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
         } else {
             Log.d(TAG, "Logg inn først!");
         }
+    }
+
+    public static void doAddUserWithoutLogin(Context context, User user) {
+        if (httpClient == null)
+            httpClient = new DefaultHttpClient();
+
+        List<NameValuePair> nameValuePairs = null;
+        nameValuePairs = new ArrayList<NameValuePair>(5);
+        nameValuePairs.add(new BasicNameValuePair("user", user.toJSONString()));
+        nameValuePairs.add(new BasicNameValuePair("connectstring", "jdbc:mysql://" + sql + ":" + sqlport + "/"));
+        nameValuePairs.add(new BasicNameValuePair("dbName", db));
+        nameValuePairs.add(new BasicNameValuePair("db_uid", databaseUsername));
+        nameValuePairs.add(new BasicNameValuePair("db_pwd", databasePassword));
+        new WebAPI(URL, Method.ADD_USER_WITHOUT_LOGIN, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
     }
 }

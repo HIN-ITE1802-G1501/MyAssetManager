@@ -116,6 +116,7 @@
         android:layout_height="wrap_content"
         android:text="Registrer"
         android:id="@+id/buttonRegister"
+        android:onClick="onClickSendRegistrationButton"
         android:layout_below="@+id/editTextRegisterPassword"
         android:layout_alignLeft="@+id/textViewRegisterLabel"
         android:layout_alignStart="@+id/textViewRegisterLabel"
