@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -30,14 +29,13 @@ import no.hin.student.myassetmanager.Classes.Category;
 import no.hin.student.myassetmanager.Classes.Equipment;
 import no.hin.student.myassetmanager.Classes.User;
 import no.hin.student.myassetmanager.Classes.WebAPI;
-import no.hin.student.myassetmanager.Fragments.FragmentAsset;
 import no.hin.student.myassetmanager.Fragments.FragmentList;
 import no.hin.student.myassetmanager.Fragments.FragmentLogin;
 import no.hin.student.myassetmanager.Fragments.FragmentUser;
 import no.hin.student.myassetmanager.R;
 
 
-public class ActivityMain extends Activity implements FragmentLogin.LoginListener, FragmentList.OnFragmentInteractionListener, FragmentAsset.OnFragmentInteractionListener, FragmentUser.OnFragmentInteractionListener {
+public class ActivityMain extends Activity {
 
     private static final int MENU_CONTEXT_LIST_SHOW = 10101;
     private static final int MENU_CONTEXT_LIST_EDIT = 10102;
@@ -147,7 +145,7 @@ public class ActivityMain extends Activity implements FragmentLogin.LoginListene
                     //initializeFilterSpinner();
                     return true;
                 case MENU_BUTTON_SHOW_HISTORY:
-                    WebAPI.doGetAllLogEntriesForAllUser(ActivityMain.this);
+                    //WebAPI.doGetAllLogEntriesForAllUser(ActivityMain.this);
                     return true;
                 case MENU_BUTTON_LOGOUT:
                     Log.d(TAG, "Starting logout from MainMenu");
@@ -306,17 +304,10 @@ public class ActivityMain extends Activity implements FragmentLogin.LoginListene
     }
 
 
-    public void attemptLogin(String username, String password, boolean isAdmin) {
+    private void attemptLogin(String username, String password, boolean isAdmin) {
         if (isAdmin)
             WebAPI.doLoginAdmin(this, username, password);
         else
             WebAPI.doLogin(this, username, password);
-    }
-
-
-    @Override
-    public void onFragmentInteraction(Uri uri)
-    {
-
     }
 }
