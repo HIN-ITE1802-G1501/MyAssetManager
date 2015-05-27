@@ -77,7 +77,6 @@ public class ActivityMain extends Activity implements FragmentLogin.LoginListene
         fragmentLogin = new FragmentLogin();
 
         replaceFragmentContainerFragmentWith(fragmentLogin);
-        //populateListViewWithCategories();
     }
 
     private void replaceFragmentContainerFragmentWith(Fragment fragment) {
@@ -250,8 +249,15 @@ public class ActivityMain extends Activity implements FragmentLogin.LoginListene
     }
 
 
-    public void logIn(User user) {
-        Log.d(TAG, "User logged in: " + user.getFirstname() + " " + user.getLastname());
+    public void logIn(User user, boolean success) {
+        if (success) {
+            Log.d(TAG, "User logged in: " + user.getFirstname() + " " + user.getLastname());
+            replaceFragmentContainerFragmentWith(fragmentList);
+            populateListViewWithCategories();
+        }
+        else {
+            Toast.makeText(getApplicationContext(), "Feil brukernavn og/eller passord", Toast.LENGTH_LONG).show();
+        }
     }
 
     public void deleteUser() {
@@ -297,8 +303,6 @@ public class ActivityMain extends Activity implements FragmentLogin.LoginListene
             WebAPI.doLoginAdmin(this, username, password);
         else
             WebAPI.doLogin(this, username, password);
-
-        replaceFragmentContainerFragmentWith(fragmentList);
     }
 
 

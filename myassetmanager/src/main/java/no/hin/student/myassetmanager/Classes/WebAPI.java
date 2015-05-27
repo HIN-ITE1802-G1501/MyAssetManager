@@ -117,17 +117,28 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
             } else {
                 switch (method) {
                     case LOG_IN:
-                        User log_in = gson.fromJson(response.getJsonResponse(), User.class);
-                        ((ActivityMain) context).logIn(log_in);
+                        if (response.getMessage().contains("512")) {
+                            ((ActivityMain) context).logIn(null, false);
+                            closeSession();
+                        }
+                        else {
+                            User log_in = gson.fromJson(response.getJsonResponse(), User.class);
+                            ((ActivityMain) context).logIn(log_in, true);
+                        }
                         break;
                     case LOG_IN_ADMIN:
-                        User log_in_admin = gson.fromJson(response.getJsonResponse(), User.class);
-                        ((ActivityMain) context).logIn(log_in_admin);
+                        if (response.getMessage().contains("512")) {
+                            ((ActivityMain) context).logIn(null, false);
+                            closeSession();
+                        }
+                        else {
+                            User log_in_admin = gson.fromJson(response.getJsonResponse(), User.class);
+                            ((ActivityMain) context).logIn(log_in_admin, true);
+                        }
+
                         break;
                     case LOG_OUT:
-                        httpClient.getConnectionManager().closeExpiredConnections();
-                        httpClient.getConnectionManager().shutdown();
-                        httpClient = null;
+                        closeSession();
                         break;
 
 
@@ -167,6 +178,12 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
         } catch (Exception e) {
             Log.d(TAG, e.toString());
         }
+    }
+
+    private void closeSession() {
+        httpClient.getConnectionManager().closeExpiredConnections();
+        httpClient.getConnectionManager().shutdown();
+        httpClient = null;
     }
 
     public static void setDatabaseLoginInformation(String dbUser, String dbPassword)  {
