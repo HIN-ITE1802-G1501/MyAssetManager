@@ -10,6 +10,7 @@ android:weightSum="1">
 <TableLayout
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
+    android:id="@+id/tableLayoutTopMenu"
     android:layout_alignParentLeft="true">
     <TableRow
         android:layout_height="100dp"

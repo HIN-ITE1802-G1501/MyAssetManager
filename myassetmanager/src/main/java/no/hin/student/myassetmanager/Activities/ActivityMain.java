@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -80,6 +81,13 @@ public class ActivityMain extends Activity implements FragmentLogin.LoginListene
     }
 
     private void replaceFragmentContainerFragmentWith(Fragment fragment) {
+        TableLayout topMenu = (TableLayout)this.findViewById(R.id.tableLayoutTopMenu);
+
+        if (fragment instanceof FragmentLogin)
+            topMenu.setVisibility(View.INVISIBLE);
+        else
+            topMenu.setVisibility(View.VISIBLE);
+
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container, fragment);
