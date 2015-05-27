@@ -1,0 +1,104 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:context="no.hin.student.myassetmanager.Fragments.FragmentRegister">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Fornavn:"
+        android:id="@+id/textViewRegisterFirstname"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:id="@+id/editTextRegisterFirstname"
+        android:layout_below="@+id/textViewRegisterFirstname"
+        android:layout_centerHorizontal="true"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Etternavn:"
+        android:id="@+id/textViewRegisterLastname"
+        android:layout_below="@+id/editTextRegisterFirstname"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:id="@+id/editTextRegisterLastname"
+        android:layout_below="@+id/textViewRegisterLastname"
+        android:layout_centerHorizontal="true"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Telefonnummer:"
+        android:id="@+id/textViewRegisterPhonenumber"
+        android:layout_below="@+id/editTextRegisterLastname"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="phone"
+        android:ems="10"
+        android:id="@+id/editTextRegisterPhonenumber"
+        android:layout_below="@+id/textViewRegisterPhonenumber"
+        android:layout_centerHorizontal="true"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Brukernavn:"
+        android:id="@+id/textViewRegisterUsername"
+        android:layout_below="@+id/editTextRegisterPhonenumber"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/editTextRegisterUsername"
+        android:layout_below="@+id/textViewRegisterUsername"
+        android:layout_alignRight="@+id/editTextRegisterPhonenumber"
+        android:layout_alignEnd="@+id/editTextRegisterPhonenumber"
+        android:layout_alignLeft="@+id/editTextRegisterPhonenumber"
+        android:layout_alignStart="@+id/editTextRegisterPhonenumber"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Password:"
+        android:id="@+id/textViewRegisterPassword"
+        android:layout_below="@+id/editTextRegisterUsername"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:ems="10"
+        android:id="@+id/editTextRegisterPassword"
+        android:layout_below="@+id/textViewRegisterPassword"
+        android:layout_centerHorizontal="true"/>
+</RelativeLayout>

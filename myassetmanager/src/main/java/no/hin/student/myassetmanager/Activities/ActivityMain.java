@@ -31,6 +31,7 @@ import no.hin.student.myassetmanager.Classes.User;
 import no.hin.student.myassetmanager.Classes.WebAPI;
 import no.hin.student.myassetmanager.Fragments.FragmentList;
 import no.hin.student.myassetmanager.Fragments.FragmentLogin;
+import no.hin.student.myassetmanager.Fragments.FragmentRegister;
 import no.hin.student.myassetmanager.Fragments.FragmentUser;
 import no.hin.student.myassetmanager.R;
 
@@ -81,7 +82,7 @@ public class ActivityMain extends Activity {
     private void replaceFragmentContainerFragmentWith(Fragment fragment) {
         TableLayout topMenu = (TableLayout)this.findViewById(R.id.tableLayoutTopMenu);
 
-        if (fragment instanceof FragmentLogin)
+        if (fragment instanceof FragmentLogin || fragment instanceof FragmentRegister)
             topMenu.setVisibility(View.INVISIBLE);
         else
             topMenu.setVisibility(View.VISIBLE);
@@ -292,10 +293,11 @@ public class ActivityMain extends Activity {
         }
     }
 
+    public void onClickRegisterButton(View buttonView) {
+        replaceFragmentContainerFragmentWith(new FragmentRegister());
+    }
 
-
-    public void onClickLoginButton(View buttonView)
-    {
+    public void onClickLoginButton(View buttonView) {
         String username = ((EditText)fragmentLogin.getView().findViewById(R.id.editTextUsername)).getText().toString();
         String password = ((EditText)fragmentLogin.getView().findViewById(R.id.editTextPassword)).getText().toString();
         boolean isAdmin = ((CheckBox)fragmentLogin.getView().findViewById(R.id.checkBoxIsAdmin)).isChecked();
