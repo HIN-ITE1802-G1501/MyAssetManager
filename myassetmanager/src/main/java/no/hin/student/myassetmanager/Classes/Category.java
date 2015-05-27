@@ -154,6 +154,9 @@ public class Category extends AssetManagerObjects
                  data.add(line);
                     Log.d(TAG, "Reading line " + line);
                 }
+
+           br.close();
+           fr.close();
            }
        catch(FileNotFoundException fN) {
             fN.printStackTrace();

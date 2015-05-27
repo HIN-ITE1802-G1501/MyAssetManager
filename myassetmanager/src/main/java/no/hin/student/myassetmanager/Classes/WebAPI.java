@@ -112,7 +112,7 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
             Log.d(TAG, result);
             Gson gson = new Gson();
             ResponseMsg response = gson.fromJson(result, ResponseMsg.class);
-            if (response.getMessage().contains("518") || response.getMessage().contains("517")) {
+            if (response.getMessage().contains("518")) {
                 Toast.makeText(context, "Du må være admin!", Toast.LENGTH_SHORT).show();
             } else {
                 switch (method) {
@@ -129,6 +129,10 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
                     case LOG_IN_ADMIN:
                         if (response.getMessage().contains("512")) {
                             ((ActivityMain) context).logIn(null, false);
+                            closeSession();
+                        }
+                        else if (response.getMessage().contains("517")) {
+                            Toast.makeText(context, "Denne admin-brukeren er allerede logget inn", Toast.LENGTH_LONG).show();
                             closeSession();
                         }
                         else {
