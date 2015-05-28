@@ -58,7 +58,9 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
         ADD_EQUIPMENT(3001, "addEquipment"),
         ADD_USER_WITHOUT_LOGIN(3002, "addUserWithoutLogin"),
 
-        DELETE_USER(4001, "deleteUser");
+        UPDATE_USER(4001, "updateUser"),
+
+        DELETE_USER(5001, "deleteUser");
 
         private int type;
         private String text;
@@ -182,6 +184,11 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
                         Toast.makeText(context, response.getMessage().toString(), Toast.LENGTH_LONG).show();
                         closeSession();
                         break;
+
+                    case UPDATE_USER:
+
+                        break;
+
                     case DELETE_USER:
                         ((ActivityMain) context).deleteUser();
                         break;
@@ -322,5 +329,16 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
         nameValuePairs.add(new BasicNameValuePair("db_uid", databaseUsername));
         nameValuePairs.add(new BasicNameValuePair("db_pwd", databasePassword));
         new WebAPI(URL, Method.ADD_USER_WITHOUT_LOGIN, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
+    }
+
+    public static void doUpdateUser(Context context, User user) {
+        if (httpClient == null)
+            httpClient = new DefaultHttpClient();
+
+        List<NameValuePair> nameValuePairs = null;
+        nameValuePairs = new ArrayList<NameValuePair>(2);
+        nameValuePairs.add(new BasicNameValuePair("userId", String.valueOf(user.getU_id())));
+        nameValuePairs.add(new BasicNameValuePair("user", user.toJSONString()));
+        new WebAPI(URL, Method.UPDATE_USER, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
     }
 }

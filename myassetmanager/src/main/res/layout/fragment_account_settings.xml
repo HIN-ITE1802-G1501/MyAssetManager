@@ -112,6 +112,7 @@
         android:layout_height="wrap_content"
         android:text="Oppdater brukerinfo"
         android:id="@+id/buttonSettingsUpdateInfo"
+        android:onClick="onClickUpdateUserInfo"
         android:layout_below="@+id/textViewSettingsUsername"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
@@ -148,5 +149,16 @@
         android:layout_alignEnd="@+id/editTextSettingsRepeatPassword"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Bruk feltene under hvis du ønsker å oppdatere passordet:"
+        android:id="@+id/textView"
+        android:layout_above="@+id/textViewSettingsNewPassword"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:textSize="12sp"/>
 
 </RelativeLayout>

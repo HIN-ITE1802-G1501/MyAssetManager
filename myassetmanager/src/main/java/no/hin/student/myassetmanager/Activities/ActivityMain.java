@@ -352,6 +352,20 @@ public class ActivityMain extends Activity {
         replaceFragmentContainerFragmentWith(fragmentLogin);
     }
 
+    public void onClickUpdateUserInfo(View buttonView) {
+        String firstname = ((EditText)fragmentAccountSettings.getView().findViewById(R.id.editTextSettingsFirstname)).getText().toString();
+        String lastname = ((EditText)fragmentAccountSettings.getView().findViewById(R.id.editTextSettingsLastname)).getText().toString();
+        String phoneNumber = ((EditText)fragmentAccountSettings.getView().findViewById(R.id.editTextSettingsPhonenumber)).getText().toString();
+        String username = ((EditText)fragmentAccountSettings.getView().findViewById(R.id.editTextSettingsUsername)).getText().toString();
+
+        user.setFirstname(firstname);
+        user.setLastname(lastname);
+        user.setPhone(phoneNumber);
+        user.setUserName(username);
+
+        WebAPI.doUpdateUser(this, user);
+    }
+
     public void onClickLoginButton(View buttonView) {
         String username = ((EditText)fragmentLogin.getView().findViewById(R.id.editTextUsername)).getText().toString();
         String password = ((EditText)fragmentLogin.getView().findViewById(R.id.editTextPassword)).getText().toString();
