@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -21,6 +22,7 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import no.hin.student.myassetmanager.Classes.AssetManagerAdapter;
@@ -72,6 +74,10 @@ public class ActivityMain extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         findViewById(R.id.btnMenu).setOnClickListener(mGlobal_OnClickListener);
+
+        File file = new File(Environment.getExternalStorageDirectory() + "/Download/products.txt");
+        if (!(file.exists())) // If file doesn't exist, downloadCategoriesFile it
+            Category.downloadCategoriesFile();
     }
 
     @Override
@@ -106,15 +112,6 @@ public class ActivityMain extends Activity {
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
         fragmentManager.executePendingTransactions();
-    }
-
-    private void populateListViewWithCategories() {
-        ListView lvList = (ListView)fragmentList.getView().findViewById(R.id.lvList);
-        ((TextView)fragmentList.getView().findViewById(R.id.tvTitle)).setText("Kategori");
-        adapter = new AssetManagerAdapter(this, Category.getCategories());
-        lvList.setAdapter(adapter);
-        lvList.setOnItemClickListener(mGlobal_OnItemClickListener);
-        registerForContextMenu(lvList);
     }
 
     @Override
@@ -189,6 +186,15 @@ public class ActivityMain extends Activity {
             }
         }
     };
+
+    private void populateListViewWithCategories() {
+        ListView lvList = (ListView)fragmentList.getView().findViewById(R.id.lvList);
+        ((TextView)fragmentList.getView().findViewById(R.id.tvTitle)).setText("Kategori");
+        adapter = new AssetManagerAdapter(this, Category.getCategories());
+        lvList.setAdapter(adapter);
+        lvList.setOnItemClickListener(mGlobal_OnItemClickListener);
+        registerForContextMenu(lvList);
+    }
 
 
 

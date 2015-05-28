@@ -110,35 +110,48 @@ public class Category extends AssetManagerObjects
         return categories;
     }
 
-    public static void download() {
+    public static void downloadCategoriesFile() {
         folder = Environment.getExternalStorageDirectory() + "/Download";
 
         new Thread(new Runnable() {
             public void run() {
+
+                InputStream inputStream = null;
+                FileOutputStream fileOutputStream = null;
+
                 try {
                     URL url = new URL(Category.url);
-                    URLConnection conexion = url.openConnection();
-                    conexion.connect();
-                    int lenghtOfFile = conexion.getContentLength();
-                    InputStream is = url.openStream();
+                    URLConnection connection = url.openConnection();
+                    connection.connect();
+                    int lengthOfFile = connection.getContentLength();
+                    inputStream = url.openStream();
                     File testDirectory = new File(folder);
                     if (!testDirectory.exists()) {
                         testDirectory.mkdir();
                     }
-                    FileOutputStream fos = new FileOutputStream(folder + "/products.txt");
+                    fileOutputStream = new FileOutputStream(folder + "/products.txt");
                     byte data[] = new byte[1024];
                     long total = 0;
                     int count = 0;
-                    while ((count = is.read(data)) != -1) {
+                    while ((count = inputStream.read(data)) != -1) {
                         total += count;
-                        int progress_temp = (int) total * 100 / lenghtOfFile;
-                        fos.write(data, 0, count);
+                        int progress_temp = (int) total * 100 / lengthOfFile;
+                        fileOutputStream.write(data, 0, count);
                     }
-                    is.close();
-                    fos.close();
-                } catch (Exception e) {
-                    Log.e(TAG, "Unable to download" + e.getMessage());
                 }
+                catch (Exception e) {
+                    Log.e(TAG, "Unable to downloadCategoriesFile" + e.getMessage());
+                }
+                finally {
+                    try {
+                        inputStream.close();
+                        fileOutputStream.close();
+                    }
+                    catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
             }
         }).start();
     }
