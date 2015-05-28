@@ -100,9 +100,11 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
                 return EntityUtils.toString(response.getEntity());
             }
             return "Error: " + response.getStatusLine().getStatusCode() + " " + response.getStatusLine().getReasonPhrase();
-        } catch (ClientProtocolException e) {
+        }
+        catch (ClientProtocolException e) {
             return e.getMessage();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             return e.getMessage();
         }
     }

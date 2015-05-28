@@ -32,7 +32,7 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Etternavn:"
         android:id="@+id/textViewSettingsLastname"
-        android:layout_alignBottom="@+id/editTextSettingsEtternavn"
+        android:layout_alignBottom="@+id/editTextSettingsLastname"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"/>
 
@@ -41,7 +41,7 @@
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
         android:ems="10"
-        android:id="@+id/editTextSettingsEtternavn"
+        android:id="@+id/editTextSettingsLastname"
         android:layout_below="@+id/textViewSettingsFirstname"
         android:layout_alignLeft="@+id/editTextSettingsFirstname"
         android:layout_alignStart="@+id/editTextSettingsFirstname"/>
@@ -53,8 +53,8 @@
         android:ems="10"
         android:id="@+id/editTextSettingsPhonenumber"
         android:layout_below="@+id/textViewSettingsLastname"
-        android:layout_alignLeft="@+id/editTextSettingsEtternavn"
-        android:layout_alignStart="@+id/editTextSettingsEtternavn"/>
+        android:layout_alignLeft="@+id/editTextSettingsLastname"
+        android:layout_alignStart="@+id/editTextSettingsLastname"/>
 
     <TextView
         android:layout_width="wrap_content"

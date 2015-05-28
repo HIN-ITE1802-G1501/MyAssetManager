@@ -64,7 +64,8 @@ public class ActivityMain extends Activity {
     private FragmentAccountSettings fragmentAccountSettings;
     private AssetManagerAdapter adapter;
 
-    private int loggedInUser = IS_LOGGED_OUT;
+    private int loggedInUserStatus = IS_LOGGED_OUT;
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,9 +130,9 @@ public class ActivityMain extends Activity {
                 case R.id.btnMenu:
                     PopupMenu popup = new PopupMenu(getApplication(), v);
 
-                    if (loggedInUser == IS_ADMIN_USER)
+                    if (loggedInUserStatus == IS_ADMIN_USER)
                         showAdminMenu(popup);
-                    else if (loggedInUser == IS_REGULAR_USER)
+                    else if (loggedInUserStatus == IS_REGULAR_USER)
                         showRegularUserMenu(popup);
                     break;
             }
@@ -289,7 +290,8 @@ public class ActivityMain extends Activity {
     public void logIn(User user, boolean success, int userStatus) {
         if (success) {
             Log.d(TAG, "User logged in: " + user.getFirstname() + " " + user.getLastname());
-            loggedInUser = userStatus;
+            loggedInUserStatus = userStatus;
+            this.user = user;
             replaceFragmentContainerFragmentWith(fragmentList);
             populateListViewWithCategories();
         }
@@ -299,7 +301,7 @@ public class ActivityMain extends Activity {
     }
 
     public void logOut() {
-        loggedInUser = IS_LOGGED_OUT;
+        loggedInUserStatus = IS_LOGGED_OUT;
     }
 
     public void deleteUser() {
@@ -358,5 +360,9 @@ public class ActivityMain extends Activity {
             WebAPI.doLoginAdmin(this, username, password);
         else
             WebAPI.doLogin(this, username, password);
+    }
+
+    public User getCurrentUser() {
+        return user;
     }
 }
