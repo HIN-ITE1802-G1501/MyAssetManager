@@ -56,22 +56,6 @@ android:weightSum="1">
                     />
 
             </TableRow>
-            <TableRow android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:text= "Klikk på et prosjekt i listen under for å starte timeregistrering."
-                    android:textSize="14dp"
-                    android:layout_weight="1"
-                    android:padding="3dp"
-                    android:textColor="#FFFFFF"
-                    android:gravity="left"
-                    android:layout_marginLeft="0dp"
-                    android:layout_marginRight="0dp"
-                    android:layout_marginTop="0dp"
-                    android:layout_marginBottom="0dp"
-                    android:layout_span="1"/>
-            </TableRow>
-
 
 
         </TableLayout>

@@ -395,4 +395,8 @@ public class ActivityMain extends Activity {
     public User getCurrentUser() {
         return user;
     }
+
+    public int getCurrentUserStatus() {
+        return loggedInUserStatus;
+    }
 }
