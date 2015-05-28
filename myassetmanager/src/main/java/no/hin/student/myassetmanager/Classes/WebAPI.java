@@ -59,6 +59,7 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
         ADD_USER_WITHOUT_LOGIN(3002, "addUserWithoutLogin"),
 
         UPDATE_USER(4001, "updateUser"),
+        CHANGE_USER_PASSWORD(4002, "changeUserPassword"),
 
         DELETE_USER(5001, "deleteUser");
 
@@ -186,7 +187,8 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
                         break;
 
                     case UPDATE_USER:
-
+                        break;
+                    case CHANGE_USER_PASSWORD:
                         break;
 
                     case DELETE_USER:
@@ -340,5 +342,16 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
         nameValuePairs.add(new BasicNameValuePair("userId", String.valueOf(user.getU_id())));
         nameValuePairs.add(new BasicNameValuePair("user", user.toJSONString()));
         new WebAPI(URL, Method.UPDATE_USER, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
+    }
+
+    public static void doChangeUserPassword(Context context, int userId, String newPassword) {
+        if (httpClient == null)
+            httpClient = new DefaultHttpClient();
+
+        List<NameValuePair> nameValuePairs = null;
+        nameValuePairs = new ArrayList<NameValuePair>(2);
+        nameValuePairs.add(new BasicNameValuePair("userId", String.valueOf(userId)));
+        nameValuePairs.add(new BasicNameValuePair("newPassword", newPassword));
+        new WebAPI(URL, Method.CHANGE_USER_PASSWORD, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
     }
 }

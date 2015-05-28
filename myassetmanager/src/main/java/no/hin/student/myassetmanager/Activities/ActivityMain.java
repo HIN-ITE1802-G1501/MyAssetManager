@@ -352,7 +352,7 @@ public class ActivityMain extends Activity {
         replaceFragmentContainerFragmentWith(fragmentLogin);
     }
 
-    public void onClickUpdateUserInfo(View buttonView) {
+    public void onClickUpdateUserInfoButton(View buttonView) {
         String firstname = ((EditText)fragmentAccountSettings.getView().findViewById(R.id.editTextSettingsFirstname)).getText().toString();
         String lastname = ((EditText)fragmentAccountSettings.getView().findViewById(R.id.editTextSettingsLastname)).getText().toString();
         String phoneNumber = ((EditText)fragmentAccountSettings.getView().findViewById(R.id.editTextSettingsPhonenumber)).getText().toString();
@@ -364,6 +364,16 @@ public class ActivityMain extends Activity {
         user.setUserName(username);
 
         WebAPI.doUpdateUser(this, user);
+    }
+
+    public void onClickUpdateUserPasswordButton(View buttonView) {
+        String password = ((EditText)fragmentAccountSettings.getView().findViewById(R.id.editTextSettingsNewPassword)).getText().toString();
+        String repeatedPassword = ((EditText)fragmentAccountSettings.getView().findViewById(R.id.editTextSettingsRepeatPassword)).getText().toString();
+
+        if (!password.equals(repeatedPassword))
+            Toast.makeText(this, "Passord matchet ikke hverandre. Prøv på nytt", Toast.LENGTH_LONG).show();
+        else
+            WebAPI.doChangeUserPassword(this, user.getU_id(), password);
     }
 
     public void onClickLoginButton(View buttonView) {
