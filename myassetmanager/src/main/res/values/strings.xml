@@ -18,6 +18,7 @@
     <string name="MENU_BUTTON_SHOW_ASSETS">Utstyr</string>
     <string name="MENU_BUTTON_SHOW_USERS">Brukere</string>
     <string name="MENU_BUTTON_SHOW_HISTORY">Historie</string>
+    <string name="MENU_BUTTON_SHOW_MY_PAGE">Min side</string>
 
     <string name="MENU_BUTTON_LOGIN">Logg inn</string>
     <string name="MENU_BUTTON_LOGOUT">Logg ut</string>

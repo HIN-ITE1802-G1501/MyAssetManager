@@ -29,6 +29,7 @@ import no.hin.student.myassetmanager.Classes.Category;
 import no.hin.student.myassetmanager.Classes.Equipment;
 import no.hin.student.myassetmanager.Classes.User;
 import no.hin.student.myassetmanager.Classes.WebAPI;
+import no.hin.student.myassetmanager.Fragments.FragmentAccountSettings;
 import no.hin.student.myassetmanager.Fragments.FragmentList;
 import no.hin.student.myassetmanager.Fragments.FragmentLogin;
 import no.hin.student.myassetmanager.Fragments.FragmentRegister;
@@ -49,6 +50,7 @@ public class ActivityMain extends Activity {
     private static final int MENU_BUTTON_SHOW_ASSETS = 10201;
     private static final int MENU_BUTTON_SHOW_USERS = 10202;
     private static final int MENU_BUTTON_SHOW_HISTORY = 10203;
+    private static final int MENU_BUTTON_SHOW_MY_PAGE = 10204;
 
     private static final int MENU_BUTTON_LOGIN = 10301;
     private static final int MENU_BUTTON_LOGOUT = 10302;
@@ -59,6 +61,7 @@ public class ActivityMain extends Activity {
     private FragmentUser fragmentUser;
     private FragmentLogin fragmentLogin;
     private FragmentRegister fragmentRegister;
+    private FragmentAccountSettings fragmentAccountSettings;
     private AssetManagerAdapter adapter;
 
     private int loggedInUser = IS_LOGGED_OUT;
@@ -83,6 +86,7 @@ public class ActivityMain extends Activity {
         fragmentUser = new FragmentUser();
         fragmentLogin = new FragmentLogin();
         fragmentRegister = new FragmentRegister();
+        fragmentAccountSettings = new FragmentAccountSettings();
 
         replaceFragmentContainerFragmentWith(fragmentLogin);
     }
@@ -138,12 +142,14 @@ public class ActivityMain extends Activity {
         popup.getMenu().add(Menu.NONE, MENU_BUTTON_SHOW_ASSETS, Menu.NONE, R.string.MENU_BUTTON_SHOW_ASSETS).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
         popup.getMenu().add(Menu.NONE, MENU_BUTTON_SHOW_USERS, Menu.NONE, R.string.MENU_BUTTON_SHOW_USERS).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
         popup.getMenu().add(Menu.NONE, MENU_BUTTON_SHOW_HISTORY, Menu.NONE, R.string.MENU_BUTTON_SHOW_HISTORY).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
+        popup.getMenu().add(Menu.NONE, MENU_BUTTON_SHOW_MY_PAGE, Menu.NONE, R.string.MENU_BUTTON_SHOW_MY_PAGE).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
         popup.getMenu().add(Menu.NONE, MENU_BUTTON_LOGOUT, Menu.NONE, R.string.MENU_BUTTON_LOGOUT).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
         popup.show();
     }
 
     private void showRegularUserMenu(PopupMenu popup) {
         popup.getMenu().add(Menu.NONE, MENU_BUTTON_SHOW_ASSETS, Menu.NONE, R.string.MENU_BUTTON_SHOW_ASSETS).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
+        popup.getMenu().add(Menu.NONE, MENU_BUTTON_SHOW_MY_PAGE, Menu.NONE, R.string.MENU_BUTTON_SHOW_MY_PAGE).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
         popup.getMenu().add(Menu.NONE, MENU_BUTTON_LOGOUT, Menu.NONE, R.string.MENU_BUTTON_LOGOUT).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
         popup.show();
     }
@@ -168,6 +174,9 @@ public class ActivityMain extends Activity {
                     return true;
                 case MENU_BUTTON_SHOW_HISTORY:
                     //WebAPI.doGetAllLogEntriesForAllUser(ActivityMain.this);
+                    return true;
+                case MENU_BUTTON_SHOW_MY_PAGE:
+                    replaceFragmentContainerFragmentWith(fragmentAccountSettings);
                     return true;
                 case MENU_BUTTON_LOGOUT:
                     Log.d(TAG, "Starting logout from MainMenu");

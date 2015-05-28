@@ -1,13 +1,152 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              tools:context="no.hin.student.myassetmanager.Fragments.FragmentAccountSettings">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment"/>
 
-</FrameLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Fornavn:"
+        android:id="@+id/textViewSettingsFirstname"
+        android:layout_alignBottom="@+id/editTextSettingsFirstname"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:id="@+id/editTextSettingsFirstname"
+        android:layout_marginLeft="30dp"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/textViewSettingsFirstname"
+        android:layout_toEndOf="@+id/textViewSettingsFirstname"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Etternavn:"
+        android:id="@+id/textViewSettingsLastname"
+        android:layout_alignBottom="@+id/editTextSettingsEtternavn"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:id="@+id/editTextSettingsEtternavn"
+        android:layout_below="@+id/textViewSettingsFirstname"
+        android:layout_alignLeft="@+id/editTextSettingsFirstname"
+        android:layout_alignStart="@+id/editTextSettingsFirstname"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="phone"
+        android:ems="10"
+        android:id="@+id/editTextSettingsPhonenumber"
+        android:layout_below="@+id/textViewSettingsLastname"
+        android:layout_alignLeft="@+id/editTextSettingsEtternavn"
+        android:layout_alignStart="@+id/editTextSettingsEtternavn"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Telefon:"
+        android:id="@+id/textViewSettingsPhonenumber"
+        android:layout_alignBottom="@+id/editTextSettingsPhonenumber"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/editTextSettingsUsername"
+        android:layout_below="@+id/textViewSettingsPhonenumber"
+        android:layout_alignLeft="@+id/editTextSettingsPhonenumber"
+        android:layout_alignStart="@+id/editTextSettingsPhonenumber"
+        android:layout_alignRight="@+id/editTextSettingsPhonenumber"
+        android:layout_alignEnd="@+id/editTextSettingsPhonenumber"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Brukernavn:"
+        android:id="@+id/textViewSettingsUsername"
+        android:layout_alignBottom="@+id/editTextSettingsUsername"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:ems="10"
+        android:layout_marginTop="40dp"
+        android:id="@+id/editTextSettingsNewPassword"
+        android:layout_below="@+id/buttonSettingsUpdateInfo"
+        android:layout_alignRight="@+id/buttonSettingsUpdateInfo"
+        android:layout_alignEnd="@+id/buttonSettingsUpdateInfo"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Passord:"
+        android:id="@+id/textViewSettingsNewPassword"
+        android:layout_alignBottom="@+id/editTextSettingsNewPassword"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Oppdater brukerinfo"
+        android:id="@+id/buttonSettingsUpdateInfo"
+        android:layout_below="@+id/textViewSettingsUsername"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignRight="@+id/editTextSettingsUsername"
+        android:layout_alignEnd="@+id/editTextSettingsUsername"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:ems="10"
+        android:id="@+id/editTextSettingsRepeatPassword"
+        android:layout_below="@+id/textViewSettingsNewPassword"
+        android:layout_alignLeft="@+id/editTextSettingsNewPassword"
+        android:layout_alignStart="@+id/editTextSettingsNewPassword"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Gjenta:"
+        android:id="@+id/textViewSettingsRepeatPassword"
+        android:layout_alignBottom="@+id/editTextSettingsRepeatPassword"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Oppdater passord"
+        android:id="@+id/buttonSettingsUpdatePassword"
+        android:layout_below="@+id/textViewSettingsRepeatPassword"
+        android:layout_alignRight="@+id/editTextSettingsRepeatPassword"
+        android:layout_alignEnd="@+id/editTextSettingsRepeatPassword"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
+
+</RelativeLayout>
