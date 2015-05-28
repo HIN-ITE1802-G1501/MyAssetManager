@@ -187,8 +187,12 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
                         break;
 
                     case UPDATE_USER:
+                        if (response.getResult() == true)
+                            Toast.makeText(context, "Oppdatering fullført", Toast.LENGTH_LONG).show();
                         break;
                     case CHANGE_USER_PASSWORD:
+                        if (response.getResult() == true)
+                            Toast.makeText(context, "Oppdatering fullført", Toast.LENGTH_LONG).show();
                         break;
 
                     case DELETE_USER:

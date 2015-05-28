@@ -93,7 +93,6 @@ public class ActivityMain extends Activity {
         fragmentUser = new FragmentUser();
         fragmentLogin = new FragmentLogin();
         fragmentRegister = new FragmentRegister();
-        fragmentAccountSettings = new FragmentAccountSettings();
 
         replaceFragmentContainerFragmentWith(fragmentLogin);
     }
@@ -174,6 +173,7 @@ public class ActivityMain extends Activity {
                     //WebAPI.doGetAllLogEntriesForAllUser(ActivityMain.this);
                     return true;
                 case MENU_BUTTON_SHOW_MY_PAGE:
+                    fragmentAccountSettings = new FragmentAccountSettings();
                     replaceFragmentContainerFragmentWith(fragmentAccountSettings);
                     return true;
                 case MENU_BUTTON_LOGOUT:
