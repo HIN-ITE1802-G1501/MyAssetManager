@@ -1,7 +1,9 @@
 package no.hin.student.myassetmanager.Classes;
 
+import android.app.Application;
 import android.nfc.Tag;
 import android.util.Log;
+import android.view.View;
 import android.widget.ListView;
 
 import com.google.gson.Gson;
@@ -9,6 +11,7 @@ import com.google.gson.Gson;
 import java.security.spec.ECField;
 import java.util.List;
 
+import no.hin.student.myassetmanager.Activities.ActivityMain;
 import no.hin.student.myassetmanager.R;
 
 /**
@@ -54,23 +57,24 @@ public class UserLogEntries extends AssetManagerObjects {
     }
 
     @Override
-    public String getListItemSubTitle() {
-        String tt = "";
+    public String getListItemSubTitle(View view) {
+        String result = "";
         try {
-            List<LogEntry> test = getLogEntries();
-            Log.d("-log", Integer.toString(test.size()) );
+            List<LogEntry> logEntries = getLogEntries();
+            for (LogEntry logEntry : logEntries) {
 
-            if (test.size() > 0) {
-                tt = test.get(0).getComment();
+                if (!result.equals(""))
+                    result = result + "\n";
+                result = result + logEntry.getE_id() + " " + logEntry.getOut() + " " + logEntry.getComment();
             }
         } catch (Exception e) {
             Log.d("-log", e.toString());
         }
-        return tt;
+        return result;
     }
 
     @Override
     public int getListItemImage() {
-        return R.drawable.logentry;
+        return R.drawable.user;
     }
 }

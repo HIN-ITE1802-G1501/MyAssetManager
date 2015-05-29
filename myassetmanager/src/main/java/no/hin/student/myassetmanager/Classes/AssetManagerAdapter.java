@@ -62,7 +62,7 @@ public class AssetManagerAdapter extends BaseAdapter {
 
             holder.ivListItemImage.setImageResource(arrayList.get(position).getListItemImage());
             holder.ivListItemTitle.setText(arrayList.get(position).getListItemTitle());
-            holder.ivListItemSubTitle.setText(arrayList.get(position).getListItemTitle());
+            holder.ivListItemSubTitle.setText(arrayList.get(position).getListItemSubTitle(convertView));
 
         } catch (Exception e) {
             Log.d("", e.toString());

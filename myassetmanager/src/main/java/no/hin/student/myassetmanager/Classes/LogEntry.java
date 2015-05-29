@@ -1,6 +1,8 @@
 package no.hin.student.myassetmanager.Classes;
 
 
+import android.view.View;
+
 import com.google.gson.Gson;
 
 import no.hin.student.myassetmanager.R;
@@ -111,7 +113,7 @@ public class LogEntry extends AssetManagerObjects {
     }
 
     @Override
-    public String getListItemSubTitle() {
+    public String getListItemSubTitle(View view) {
         return null;
     }
 

@@ -2,6 +2,7 @@ package no.hin.student.myassetmanager.Classes;
 
 import android.os.Environment;
 import android.util.Log;
+import android.view.View;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -48,7 +49,7 @@ public class Category extends AssetManagerObjects
     }
 
     @Override
-    public String getListItemSubTitle() {
+    public String getListItemSubTitle(View view) {
         return null;
     }
 
