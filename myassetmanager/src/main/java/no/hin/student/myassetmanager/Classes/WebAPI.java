@@ -166,18 +166,14 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
                         ((ActivityMain) context).addToList(equipment_type);
                         break;
                     case GET_USERS:
-                        Type get_users = new TypeToken<List<User>>() {
-                        }.getType();
+                        Type get_users = new TypeToken<List<User>>() {}.getType();
                         ArrayList<AssetManagerObjects> users = (ArrayList<AssetManagerObjects>) gson.fromJson(response.getJsonResponse(), get_users);
                         ((ActivityMain) context).addToList(users);
                         break;
                     case GET_ALL_LOG_ENTRIES_FOR_ALL_USER:
-                        Type get_all_log_entries_for_all_user = new TypeToken<List<LogEntry>>() {
-                        }.getType();
+                        Type get_all_log_entries_for_all_user = new TypeToken<List<UserLogEntries>>() {}.getType();
                         ArrayList<AssetManagerObjects> logEntries = (ArrayList<AssetManagerObjects>) gson.fromJson(response.getJsonResponse(), get_all_log_entries_for_all_user);
                         ((ActivityMain) context).addToList(logEntries);
-
-
                     case ADD_EQUIPMENT:
 
                         break;

@@ -2,6 +2,7 @@ package no.hin.student.myassetmanager.Classes;
 
 
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
 
 import com.google.gson.Gson;
@@ -163,6 +164,11 @@ public class Equipment extends AssetManagerObjects
     @Override
     public String getListItemTitle() {
         return this.getBrand() + " " + this.getModel();
+    }
+
+    @Override
+    public String getListItemSubTitle(View view) {
+        return null;
     }
 
 

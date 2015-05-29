@@ -1,7 +1,11 @@
 package no.hin.student.myassetmanager.Classes;
 
 
+import android.view.View;
+
 import com.google.gson.Gson;
+
+import no.hin.student.myassetmanager.R;
 
 
 /**
@@ -10,7 +14,7 @@ import com.google.gson.Gson;
  * Objekter av denne typen representerer "utlÃ¥n".
  * Et "utlÃ¥n" bestÃ¥r av en brukerid, utstyrsid, dato_ut og (etter hvert) dato_inn + evt. kommentar.
  */
-public class LogEntry {
+public class LogEntry extends AssetManagerObjects {
     private int le_id;      //PrimÃ¦rnÃ¸kkelfelt, autogenereres i databasen.
     private int u_id;       //BrukerID, tilsvarer u_id i User-tabellen.
     private int e_id;       //UstyrsID, tilsvarer e_id i Equipment-tabellen.
@@ -96,5 +100,25 @@ public class LogEntry {
         Gson gson = new Gson();
         String json = gson.toJson(this);
         return json;
+    }
+
+    @Override
+    public int getId() {
+        return 0;
+    }
+
+    @Override
+    public String getListItemTitle() {
+        return getU_id() + " " + getComment();
+    }
+
+    @Override
+    public String getListItemSubTitle(View view) {
+        return null;
+    }
+
+    @Override
+    public int getListItemImage() {
+        return R.drawable.logentry;
     }
 }

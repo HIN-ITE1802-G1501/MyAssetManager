@@ -1,6 +1,8 @@
 package no.hin.student.myassetmanager.Classes;
 
 import android.util.Log;
+import android.view.View;
+
 import com.google.gson.Gson;
 import org.apache.http.client.HttpClient;
 import no.hin.student.myassetmanager.Interfaces.MyInterface;
@@ -130,6 +132,11 @@ public class User extends AssetManagerObjects implements MyInterface {
     @Override
     public String getListItemTitle() {
         return this.firstname + " " + this.lastname;
+    }
+
+    @Override
+    public String getListItemSubTitle(View view) {
+        return null;
     }
 
 
