@@ -1,9 +1,11 @@
 package no.hin.student.myassetmanager.Activities;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -29,12 +31,13 @@ import no.hin.student.myassetmanager.Classes.AssetManagerAdapter;
 import no.hin.student.myassetmanager.Classes.AssetManagerObjects;
 import no.hin.student.myassetmanager.Classes.Category;
 import no.hin.student.myassetmanager.Classes.Equipment;
-import no.hin.student.myassetmanager.Classes.LogEntry;
 import no.hin.student.myassetmanager.Classes.User;
 import no.hin.student.myassetmanager.Classes.UserLogEntries;
 import no.hin.student.myassetmanager.Classes.WebAPI;
 import no.hin.student.myassetmanager.Fragments.FragmentAccountSettings;
+import no.hin.student.myassetmanager.Fragments.FragmentAsset;
 import no.hin.student.myassetmanager.Fragments.FragmentList;
+import no.hin.student.myassetmanager.Fragments.FragmentLoan;
 import no.hin.student.myassetmanager.Fragments.FragmentLogin;
 import no.hin.student.myassetmanager.Fragments.FragmentRegister;
 import no.hin.student.myassetmanager.Fragments.FragmentUser;
@@ -63,13 +66,16 @@ public class ActivityMain extends Activity {
 
     private FragmentList fragmentList;
     private FragmentUser fragmentUser;
+    private FragmentAsset fragmentAsset;
     private FragmentLogin fragmentLogin;
     private FragmentRegister fragmentRegister;
     private FragmentAccountSettings fragmentAccountSettings;
+    private FragmentLoan fragmentLoan;
     private AssetManagerAdapter adapter;
 
     private int loggedInUserStatus = IS_LOGGED_OUT;
     private User user;
+    private Equipment currentlyViewedEquipment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +99,7 @@ public class ActivityMain extends Activity {
 
         fragmentList = new FragmentList();
         fragmentUser = new FragmentUser();
+        fragmentAsset = new FragmentAsset();
         fragmentLogin = new FragmentLogin();
         fragmentRegister = new FragmentRegister();
 
@@ -168,7 +175,7 @@ public class ActivityMain extends Activity {
                     return true;
                 case MENU_BUTTON_SHOW_USERS:
                     Log.d(TAG, "Showing users");
-                    WebAPI.doGetUsers(ActivityMain.this);
+                    WebAPI.doGetUsers(ActivityMain.this, WebAPI.Method.GET_USERS);
                     //initializeFilterSpinner();
                     return true;
                 case MENU_BUTTON_SHOW_HISTORY:
@@ -215,29 +222,38 @@ public class ActivityMain extends Activity {
                 initializeFilterSpinner();
             }
             else if (clickedEquipment) {
-                replaceFragmentContainerFragmentWith(fragmentUser); // should be fragmentEquipment !! <<<<<
-                ((TextView)fragmentUser.getView().findViewById(R.id.tvUserFullName)).setText(((Equipment) adapter.getItem(position)).getDescription());
+                replaceFragmentContainerFragmentWith(fragmentAsset);
+                Equipment equipment = (Equipment)adapter.getItem(position);
+                populateAssetFragmentWithAssetData(equipment);
             }
             else if (clickedUser) {
                 replaceFragmentContainerFragmentWith(fragmentUser);
                 User user = ((User) adapter.getItem(position));
-                fillTextViewsWithUserData(user);
+                populateUserFragmentWithUserData(user);
             }
         }
     };
 
-    private void fillTextViewsWithUserData(User user) {
-        TextView textViewFullName = (TextView)fragmentUser.getView().findViewById(R.id.tvUserFullName);
-        TextView textViewUsername = (TextView)fragmentUser.getView().findViewById(R.id.tvUserName);
-        TextView textViewPhoneNumber = (TextView)fragmentUser.getView().findViewById(R.id.tvUserPhoneNumber);
+    private void populateAssetFragmentWithAssetData(Equipment equipment) {
+        currentlyViewedEquipment = equipment;
 
-        String fullName = user.getFirstname() + " " + user.getLastname();
-        String username = user.getUserName();
-        String phoneNumber = user.getPhone();
+        TextView textViewId = (TextView)fragmentAsset.getView().findViewById(R.id.textViewEquipmentId);
+        TextView textViewBrand = (TextView)fragmentAsset.getView().findViewById(R.id.textViewEquipmentBrand);
+        TextView textViewModel = (TextView)fragmentAsset.getView().findViewById(R.id.textViewEquipmentModel);
 
-        textViewFullName.setText(fullName);
-        textViewUsername.setText(username);
-        textViewPhoneNumber.setText(phoneNumber);
+        textViewId.setText("" + equipment.getE_id());
+        textViewBrand.setText(equipment.getBrand());
+        textViewModel.setText(equipment.getModel());
+    }
+
+    private void populateUserFragmentWithUserData(User user) {
+        TextView textViewFullName = (TextView)fragmentUser.getView().findViewById(R.id.textViewEquipmentBrand);
+        TextView textViewUsername = (TextView)fragmentUser.getView().findViewById(R.id.textViewEquipmentModel);
+        TextView textViewPhoneNumber = (TextView)fragmentUser.getView().findViewById(R.id.textViewEquipmentId);
+
+        textViewFullName.setText(user.getFirstname() + " " + user.getLastname());
+        textViewUsername.setText(user.getUserName());
+        textViewPhoneNumber.setText(user.getPhone());
     }
 
     private void initializeFilterSpinner()
@@ -313,7 +329,7 @@ public class ActivityMain extends Activity {
     }
 
     public void deleteUser() {
-        WebAPI.doGetUsers(ActivityMain.this);
+        WebAPI.doGetUsers(ActivityMain.this, WebAPI.Method.GET_USERS);
     }
 
 
@@ -382,6 +398,53 @@ public class ActivityMain extends Activity {
             Toast.makeText(this, "Passord matchet ikke hverandre. Prï¿½v pï¿½ nytt", Toast.LENGTH_LONG).show();
         else
             WebAPI.doChangeUserPassword(this, user.getU_id(), password);
+    }
+
+    public void onClickCreateNewLoanButton(View buttonView) {
+        fragmentLoan = new FragmentLoan();
+        replaceFragmentContainerFragmentWith(fragmentLoan);
+
+        if (currentlyViewedEquipment != null)
+            populateLoanFragmentWithData(currentlyViewedEquipment);
+    }
+
+    private void populateLoanFragmentWithData(Equipment equipment) {
+        TextView textViewId = (TextView)fragmentLoan.getView().findViewById(R.id.textViewLoanEquipmentId);
+        TextView textViewBrand = (TextView)fragmentLoan.getView().findViewById(R.id.textViewLoanEquipmentBrand);
+        TextView textViewModel = (TextView)fragmentLoan.getView().findViewById(R.id.textViewLoanEquipmentModel);
+
+        textViewId.setText("" + equipment.getE_id());
+        textViewBrand.setText(equipment.getBrand());
+        textViewModel.setText(equipment.getModel());
+
+        WebAPI.doGetUsers(ActivityMain.this, WebAPI.Method.GET_USERS_FOR_LOAN_FRAGMENT);
+    }
+
+    public void populateLoanListViewWithUsers(ArrayList<User> users) {
+        ListView listViewLoan = (ListView)fragmentLoan.getView().findViewById(R.id.listViewLoanUsers);
+        adapter = new AssetManagerAdapter(this, users);
+        listViewLoan.setAdapter(adapter);
+
+        listViewLoan.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                final User clickedUser = (User)adapter.getItem(position);
+
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(ActivityMain.this);
+                alertDialog.setTitle("Registrer lån");
+                alertDialog.setMessage("Vil du registrere et lån for bruker " + clickedUser.getFirstname() + " and equipment " + currentlyViewedEquipment.getModel() + "?");
+                alertDialog.setPositiveButton("Ja", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        WebAPI.doRegisterReservationOut(ActivityMain.this, clickedUser.getU_id(), currentlyViewedEquipment.getE_id());
+                    }
+                });
+
+                alertDialog.show();
+            }
+        });
     }
 
     public void onClickLoginButton(View buttonView) {

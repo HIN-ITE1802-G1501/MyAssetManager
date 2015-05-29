@@ -21,6 +21,7 @@ import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,7 +54,8 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
         GET_EQUIPMENT(2001, "getEquipment"),
         GET_EQUIPMENTTYPE(2002, "getEquipmentType"),
         GET_USERS(2003, "getUsers"),
-        GET_ALL_LOG_ENTRIES_FOR_ALL_USER(2004, "getAllLogEntriesForAllUser"),
+        GET_USERS_FOR_LOAN_FRAGMENT(2004, "getUsers"),
+        GET_ALL_LOG_ENTRIES_FOR_ALL_USER(2005, "getAllLogEntriesForAllUser"),
 
         ADD_EQUIPMENT(3001, "addEquipment"),
         ADD_USER_WITHOUT_LOGIN(3002, "addUserWithoutLogin"),
@@ -61,7 +63,9 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
         UPDATE_USER(4001, "updateUser"),
         CHANGE_USER_PASSWORD(4002, "changeUserPassword"),
 
-        DELETE_USER(5001, "deleteUser");
+        DELETE_USER(5001, "deleteUser"),
+
+        REGISTER_RESERVATION_OUT(6001, "registerReservationOut");
 
         private int type;
         private String text;
@@ -170,6 +174,11 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
                         ArrayList<AssetManagerObjects> users = (ArrayList<AssetManagerObjects>) gson.fromJson(response.getJsonResponse(), get_users);
                         ((ActivityMain) context).addToList(users);
                         break;
+                    case GET_USERS_FOR_LOAN_FRAGMENT:
+                        Type get_users_for_loan_fragment = new TypeToken<List<User>>() {}.getType();
+                        ArrayList<User> usersForLoanFragment = (ArrayList<User>)gson.fromJson(response.getJsonResponse(), get_users_for_loan_fragment);
+                        ((ActivityMain)context).populateLoanListViewWithUsers(usersForLoanFragment);
+                        break;
                     case GET_ALL_LOG_ENTRIES_FOR_ALL_USER:
                         Type get_all_log_entries_for_all_user = new TypeToken<List<UserLogEntries>>() {}.getType();
                         ArrayList<AssetManagerObjects> logEntries = (ArrayList<AssetManagerObjects>) gson.fromJson(response.getJsonResponse(), get_all_log_entries_for_all_user);
@@ -193,6 +202,11 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
 
                     case DELETE_USER:
                         ((ActivityMain) context).deleteUser();
+                        break;
+
+                    case REGISTER_RESERVATION_OUT:
+                        if (response.getResult() == true)
+                            Toast.makeText(context, "Lån registrert", Toast.LENGTH_LONG).show();
                         break;
                 }
             }
@@ -257,10 +271,10 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
         }
     }
 
-    public static void doGetUsers(Context context) {
+    public static void doGetUsers(Context context, Method method) {
         if (httpClient != null) {
             List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
-            new WebAPI(URL, Method.GET_USERS, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
+            new WebAPI(URL, method, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
         } else {
             Log.d(TAG, "Logg inn først!");
         }
@@ -353,5 +367,18 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
         nameValuePairs.add(new BasicNameValuePair("userId", String.valueOf(userId)));
         nameValuePairs.add(new BasicNameValuePair("newPassword", newPassword));
         new WebAPI(URL, Method.CHANGE_USER_PASSWORD, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
+    }
+
+    public static void doRegisterReservationOut(Context context, int userId, int equipmentId) {
+        if (httpClient == null)
+            httpClient = new DefaultHttpClient();
+
+        List<NameValuePair> nameValuePairs = null;
+        nameValuePairs = new ArrayList<NameValuePair>(4);
+        nameValuePairs.add(new BasicNameValuePair("userId", String.valueOf(userId)));
+        nameValuePairs.add(new BasicNameValuePair("equipmentId", String.valueOf(equipmentId)));
+        nameValuePairs.add(new BasicNameValuePair("dateOut", new SimpleDateFormat("dd.mm.yyyy").format(new java.util.Date())));
+        nameValuePairs.add(new BasicNameValuePair("comment", "midlertidig"));
+        new WebAPI(URL, Method.REGISTER_RESERVATION_OUT, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
     }
 }

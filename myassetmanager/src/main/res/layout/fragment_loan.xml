@@ -1,9 +1,135 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              tools:context="no.hin.student.myassetmanager.Fragments.FragmentLoan">
 
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:maxHeight="120dp"
+        android:layout_marginTop="10dp"
+        android:id="@+id/imageViewLoanEquipment"
+        android:src="@drawable/docking"
+        android:layout_below="@+id/viewLineSeparator"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
 
-</LinearLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Valgt utstyr"
+        android:id="@+id/textViewLoanEquipmentHeaderLabel"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:textIsSelectable="false"
+        android:textSize="25sp"/>
+
+    <View
+        android:layout_height="1dp"
+        android:layout_width="match_parent"
+        android:background="#728C93"
+        android:layout_marginTop="10dp"
+        android:id="@+id/viewLineSeparator"
+        android:layout_below="@+id/textViewLoanEquipmentHeaderLabel"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Id:"
+        android:id="@+id/textViewLoanEquipmentIdLabel"
+        android:layout_alignTop="@+id/imageViewLoanEquipment"
+        android:layout_toRightOf="@+id/imageViewLoanEquipment"
+        android:layout_toEndOf="@+id/imageViewLoanEquipment"
+        android:textSize="17sp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="0"
+        android:layout_marginLeft="40dp"
+        android:id="@+id/textViewLoanEquipmentId"
+        android:textSize="17sp"
+        android:layout_alignTop="@+id/textViewLoanEquipmentIdLabel"
+        android:layout_toRightOf="@+id/textViewLoanEquipmentIdLabel"
+        android:layout_toEndOf="@+id/textViewLoanEquipmentIdLabel"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Merke:"
+        android:id="@+id/textViewLoanEquipmentBrandLabel"
+        android:textSize="17sp"
+        android:layout_below="@+id/textViewLoanEquipmentIdLabel"
+        android:layout_toRightOf="@+id/imageViewLoanEquipment"
+        android:layout_toEndOf="@+id/imageViewLoanEquipment"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Microsoft"
+        android:id="@+id/textViewLoanEquipmentBrand"
+        android:textSize="17sp"
+        android:layout_below="@+id/textViewLoanEquipmentId"
+        android:layout_alignLeft="@+id/textViewLoanEquipmentId"
+        android:layout_alignStart="@+id/textViewLoanEquipmentId"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Modell:"
+        android:id="@+id/textViewLoanEquipmentModelLabel"
+        android:textSize="17sp"
+        android:layout_below="@+id/textViewLoanEquipmentBrandLabel"
+        android:layout_toRightOf="@+id/imageViewLoanEquipment"
+        android:layout_toEndOf="@+id/imageViewLoanEquipment"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Surface 3 Pro"
+        android:id="@+id/textViewLoanEquipmentModel"
+        android:textSize="17sp"
+        android:layout_alignTop="@+id/textViewLoanEquipmentModelLabel"
+        android:layout_alignLeft="@+id/textViewLoanEquipmentBrand"
+        android:layout_alignStart="@+id/textViewLoanEquipmentBrand"/>
+
+    <View
+        android:layout_height="1dp"
+        android:layout_width="match_parent"
+        android:background="#728C93"
+        android:layout_marginTop="10dp"
+        android:id="@+id/viewLineSeparator2"
+        android:layout_below="@+id/textViewLoanUserHeaderLabel"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Velg låner"
+        android:id="@+id/textViewLoanUserHeaderLabel"
+        android:layout_below="@+id/imageViewLoanEquipment"
+        android:layout_centerHorizontal="true"
+        android:textSize="25sp"/>
+
+    <ListView
+        android:id="@+id/listViewLoanUsers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/viewLineSeparator2" />
+
+</RelativeLayout>

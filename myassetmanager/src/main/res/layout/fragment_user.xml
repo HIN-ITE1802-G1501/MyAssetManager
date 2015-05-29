@@ -12,17 +12,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:id="@+id/imageView"/>
-
-    <Button
-        android:layout_width="198dp"
-        android:layout_height="wrap_content"
-        android:text="Registrer nytt lån"
-        android:layout_marginTop="5dp"
-        android:id="@+id/buttonUserRegisterLoan"
-        android:layout_below="@+id/tvUserPhoneNumber"
-        android:layout_toRightOf="@+id/imageView"
-        android:layout_toEndOf="@+id/imageView"/>
+        android:id="@+id/imageViewEquipmentFragment"/>
 
     <TextView
         android:layout_height="wrap_content"
@@ -31,60 +21,60 @@
         android:textSize="22dp"
         android:textColor="#50A7B3"
         android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/imageView"
-        android:layout_toEndOf="@+id/imageView"
-        android:id="@+id/textView2"/>
+        android:layout_toRightOf="@+id/imageViewEquipmentFragment"
+        android:layout_toEndOf="@+id/imageViewEquipmentFragment"
+        android:id="@+id/textViewEquipmentInfoLabel"/>
 
     <View
         android:layout_height="1dp"
         android:layout_width="match_parent"
         android:background="#728C93"
         android:layout_marginTop="30dp"
-        android:layout_toEndOf="@+id/imageView"
-        android:layout_toRightOf="@+id/imageView"
-        android:layout_below="@+id/imageView"
+        android:layout_toEndOf="@+id/imageViewEquipmentFragment"
+        android:layout_toRightOf="@+id/imageViewEquipmentFragment"
+        android:layout_below="@+id/imageViewEquipmentFragment"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:id="@+id/view"/>
 
     <TextView
-        android:id="@+id/tvUserFullName"
+        android:id="@+id/textViewEquipmentBrand"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:text="Fornavn Etternavn"
         android:textSize="16dp"
         android:textColor="#696969"
         android:layout_marginTop="10dp"
-        android:layout_below="@+id/textView2"
-        android:layout_toRightOf="@+id/imageView"
-        android:layout_toEndOf="@+id/imageView"/>
+        android:layout_below="@+id/textViewEquipmentInfoLabel"
+        android:layout_toRightOf="@+id/imageViewEquipmentFragment"
+        android:layout_toEndOf="@+id/imageViewEquipmentFragment"/>
 
     <TextView
-        android:id="@+id/tvUserName"
+        android:id="@+id/textViewEquipmentModel"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:text="Brukernavn"
         android:textSize="16dp"
         android:textColor="#6D6D6D"
         android:layout_marginTop="5dp"
-        android:layout_below="@+id/tvUserFullName"
-        android:layout_toRightOf="@+id/imageView"
-        android:layout_toEndOf="@+id/imageView"/>
+        android:layout_below="@+id/textViewEquipmentBrand"
+        android:layout_toRightOf="@+id/imageViewEquipmentFragment"
+        android:layout_toEndOf="@+id/imageViewEquipmentFragment"/>
 
     <TextView
-        android:id="@+id/tvUserPhoneNumber"
+        android:id="@+id/textViewEquipmentId"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:text="+47 917 55 967"
         android:textSize="16dp"
         android:textColor="#6D6D6D"
         android:layout_marginTop="5dp"
-        android:layout_below="@+id/tvUserName"
-        android:layout_toRightOf="@+id/imageView"
-        android:layout_toEndOf="@+id/imageView"/>
+        android:layout_below="@+id/textViewEquipmentModel"
+        android:layout_toRightOf="@+id/imageViewEquipmentFragment"
+        android:layout_toEndOf="@+id/imageViewEquipmentFragment"/>
 
     <TextView
-        android:id="@+id/textViewUserHistoryLabel"
+        android:id="@+id/textViewEquipmentHistoryLabel"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:text="Lånhistorikk"
@@ -98,7 +88,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textViewUserHistoryLabel">
+        android:layout_below="@+id/textViewEquipmentHistoryLabel">
 
         <ScrollView
             android:layout_width="wrap_content"

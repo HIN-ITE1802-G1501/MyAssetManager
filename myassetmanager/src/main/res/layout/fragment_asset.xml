@@ -1,5 +1,116 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:orientation="vertical">
-</LinearLayout>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context="no.hin.student.myassetmanager.Fragments.FragmentAsset">
+    <ImageView
+        android:src="@drawable/laptop"
+        android:adjustViewBounds="true"
+        android:maxHeight="160dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/imageViewEquipmentFragment"/>
+
+    <Button
+        android:layout_width="198dp"
+        android:layout_height="wrap_content"
+        android:text="Registrer nytt lån"
+        android:onClick="onClickCreateNewLoanButton"
+        android:layout_marginTop="5dp"
+        android:id="@+id/buttonEquipmentRegisterLoan"
+        android:layout_below="@+id/textViewEquipmentId"
+        android:layout_toRightOf="@+id/imageViewEquipmentFragment"
+        android:layout_toEndOf="@+id/imageViewEquipmentFragment"/>
+
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="Utstyrsinformasjon"
+        android:textSize="22dp"
+        android:textColor="#50A7B3"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/imageViewEquipmentFragment"
+        android:layout_toEndOf="@+id/imageViewEquipmentFragment"
+        android:id="@+id/textViewEquipmentInfoLabel"/>
+
+    <View
+        android:layout_height="1dp"
+        android:layout_width="match_parent"
+        android:background="#728C93"
+        android:layout_marginTop="30dp"
+        android:layout_toEndOf="@+id/imageViewEquipmentFragment"
+        android:layout_toRightOf="@+id/imageViewEquipmentFragment"
+        android:layout_below="@+id/imageViewEquipmentFragment"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/view"/>
+
+    <TextView
+        android:id="@+id/textViewEquipmentBrand"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="Microsoft"
+        android:textSize="16dp"
+        android:textColor="#696969"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/textViewEquipmentInfoLabel"
+        android:layout_toRightOf="@+id/imageViewEquipmentFragment"
+        android:layout_toEndOf="@+id/imageViewEquipmentFragment"/>
+
+    <TextView
+        android:id="@+id/textViewEquipmentModel"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="Modell"
+        android:textSize="16dp"
+        android:textColor="#6D6D6D"
+        android:layout_marginTop="5dp"
+        android:layout_below="@+id/textViewEquipmentBrand"
+        android:layout_toRightOf="@+id/imageViewEquipmentFragment"
+        android:layout_toEndOf="@+id/imageViewEquipmentFragment"/>
+
+    <TextView
+        android:id="@+id/textViewEquipmentId"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="id"
+        android:textSize="16dp"
+        android:textColor="#6D6D6D"
+        android:layout_marginTop="5dp"
+        android:layout_below="@+id/textViewEquipmentModel"
+        android:layout_toRightOf="@+id/imageViewEquipmentFragment"
+        android:layout_toEndOf="@+id/imageViewEquipmentFragment"/>
+
+    <TextView
+        android:id="@+id/textViewEquipmentHistoryLabel"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="Lånhistorikk"
+        android:textSize="22dp"
+        android:textColor="#50A7B3"
+        android:layout_below="@+id/view"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="24dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewEquipmentHistoryLabel">
+
+        <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ListView
+                android:id="@+id/listViewEquipmentHistory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"/>
+        </ScrollView>
+    </LinearLayout>
+
+</RelativeLayout>
