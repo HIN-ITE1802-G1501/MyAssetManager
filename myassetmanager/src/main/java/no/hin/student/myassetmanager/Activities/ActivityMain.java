@@ -29,7 +29,9 @@ import no.hin.student.myassetmanager.Classes.AssetManagerAdapter;
 import no.hin.student.myassetmanager.Classes.AssetManagerObjects;
 import no.hin.student.myassetmanager.Classes.Category;
 import no.hin.student.myassetmanager.Classes.Equipment;
+import no.hin.student.myassetmanager.Classes.LogEntry;
 import no.hin.student.myassetmanager.Classes.User;
+import no.hin.student.myassetmanager.Classes.UserLogEntries;
 import no.hin.student.myassetmanager.Classes.WebAPI;
 import no.hin.student.myassetmanager.Fragments.FragmentAccountSettings;
 import no.hin.student.myassetmanager.Fragments.FragmentList;
@@ -152,7 +154,7 @@ public class ActivityMain extends Activity {
     }
 
 
-
+    // Clicking on hamburger button
     final MenuItem.OnMenuItemClickListener mGlobal_OnMenuItemClickListener = new MenuItem.OnMenuItemClickListener() {
         @Override
         public boolean onMenuItemClick(MenuItem menuItem) {
@@ -170,7 +172,7 @@ public class ActivityMain extends Activity {
                     //initializeFilterSpinner();
                     return true;
                 case MENU_BUTTON_SHOW_HISTORY:
-                    //WebAPI.doGetAllLogEntriesForAllUser(ActivityMain.this);
+                    WebAPI.doGetAllLogEntriesForAllUser(ActivityMain.this);
                     return true;
                 case MENU_BUTTON_SHOW_MY_PAGE:
                     fragmentAccountSettings = new FragmentAccountSettings();
@@ -317,22 +319,28 @@ public class ActivityMain extends Activity {
 
 
     public void addToList(ArrayList<AssetManagerObjects> objects) {
+        try {
+            if (objects != null) {
+                ListView lvList = (ListView) fragmentList.getView().findViewById(R.id.lvList);
+                TextView tvTitle = ((TextView) fragmentList.getView().findViewById(R.id.tvTitle));
 
-        if (objects != null) {
-            ListView lvList = (ListView) fragmentList.getView().findViewById(R.id.lvList);
-            TextView tvTitle = ((TextView) fragmentList.getView().findViewById(R.id.tvTitle));
+                if (objects.get(0) instanceof Equipment)
+                    tvTitle.setText(((Equipment) objects.get(0)).getType());
+                else if (objects.get(0) instanceof User) {
+                    tvTitle.setText("Brukere");
+                } else if (objects.get(0) instanceof UserLogEntries) {
+                    tvTitle.setText("Utstyrslog");
+                }
 
-            if (objects.get(0) instanceof Equipment)
-                tvTitle.setText(((Equipment) objects.get(0)).getType());
-            else
-                tvTitle.setText("Brukere");
-
-            adapter = new AssetManagerAdapter(this, objects);
-            lvList.setAdapter(adapter);
-            lvList.setOnItemClickListener(mGlobal_OnItemClickListener);
-            registerForContextMenu(lvList);
-        } else {
-            Toast.makeText(this.getApplicationContext(), "Det finnes desverre ikke noe utstyr i denne kategorien.", Toast.LENGTH_SHORT).show();
+                adapter = new AssetManagerAdapter(this, objects);
+                lvList.setAdapter(adapter);
+                lvList.setOnItemClickListener(mGlobal_OnItemClickListener);
+                registerForContextMenu(lvList);
+            } else {
+                Toast.makeText(this.getApplicationContext(), "Det finnes desverre ikke noe utstyr i denne kategorien.", Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            Log.d(TAG, e.toString());
         }
     }
 
@@ -371,7 +379,7 @@ public class ActivityMain extends Activity {
         String repeatedPassword = ((EditText)fragmentAccountSettings.getView().findViewById(R.id.editTextSettingsRepeatPassword)).getText().toString();
 
         if (!password.equals(repeatedPassword))
-            Toast.makeText(this, "Passord matchet ikke hverandre. Prøv på nytt", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Passord matchet ikke hverandre. Prï¿½v pï¿½ nytt", Toast.LENGTH_LONG).show();
         else
             WebAPI.doChangeUserPassword(this, user.getU_id(), password);
     }

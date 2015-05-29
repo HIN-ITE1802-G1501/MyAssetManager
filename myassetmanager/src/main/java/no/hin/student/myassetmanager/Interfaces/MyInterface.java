@@ -7,5 +7,6 @@ import android.widget.ImageView;
 public interface MyInterface {
     int getId();
     String getListItemTitle();
+    String getListItemSubTitle();
     int getListItemImage();
 }

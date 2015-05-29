@@ -47,6 +47,11 @@ public class Category extends AssetManagerObjects
         return this.getName();
     }
 
+    @Override
+    public String getListItemSubTitle() {
+        return null;
+    }
+
     private enum Icons {
         Annet, Dataskjerm, Dockingstasjon, HDMIsvitsj, Hub, Laptop, Legosett, Nettbrett, Oculus, PC, Ruter, Smartklokker, Svitsj, TVskjerm;
     }

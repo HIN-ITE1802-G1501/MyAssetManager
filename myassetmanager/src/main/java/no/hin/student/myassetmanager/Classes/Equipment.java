@@ -165,6 +165,11 @@ public class Equipment extends AssetManagerObjects
         return this.getBrand() + " " + this.getModel();
     }
 
+    @Override
+    public String getListItemSubTitle() {
+        return null;
+    }
+
 
     @Override
     public int getListItemImage() {

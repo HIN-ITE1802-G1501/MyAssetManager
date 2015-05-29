@@ -132,6 +132,11 @@ public class User extends AssetManagerObjects implements MyInterface {
         return this.firstname + " " + this.lastname;
     }
 
+    @Override
+    public String getListItemSubTitle() {
+        return null;
+    }
+
 
     @Override
     public int getListItemImage() {
