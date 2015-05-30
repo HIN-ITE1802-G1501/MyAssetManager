@@ -19,9 +19,8 @@
         android:layout_height="wrap_content"
         android:text="Registrer nytt lån"
         android:onClick="onClickCreateNewLoanButton"
-        android:layout_marginTop="5dp"
         android:id="@+id/buttonEquipmentRegisterLoan"
-        android:layout_below="@+id/textViewEquipmentId"
+        android:layout_below="@+id/textViewEquipmentStatusLabel"
         android:layout_toRightOf="@+id/imageViewEquipmentFragment"
         android:layout_toEndOf="@+id/imageViewEquipmentFragment"/>
 
@@ -40,7 +39,7 @@
         android:layout_height="1dp"
         android:layout_width="match_parent"
         android:background="#728C93"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="35dp"
         android:layout_toEndOf="@+id/imageViewEquipmentFragment"
         android:layout_toRightOf="@+id/imageViewEquipmentFragment"
         android:layout_below="@+id/imageViewEquipmentFragment"
@@ -54,11 +53,11 @@
         android:layout_width="wrap_content"
         android:text="Microsoft"
         android:textSize="16dp"
+        android:layout_marginLeft="10dp"
         android:textColor="#696969"
-        android:layout_marginTop="10dp"
         android:layout_below="@+id/textViewEquipmentInfoLabel"
-        android:layout_toRightOf="@+id/imageViewEquipmentFragment"
-        android:layout_toEndOf="@+id/imageViewEquipmentFragment"/>
+        android:layout_toRightOf="@+id/textViewEquipmentModelLabel"
+        android:layout_toEndOf="@+id/textViewEquipmentModelLabel"/>
 
     <TextView
         android:id="@+id/textViewEquipmentModel"
@@ -67,10 +66,9 @@
         android:text="Modell"
         android:textSize="16dp"
         android:textColor="#6D6D6D"
-        android:layout_marginTop="5dp"
-        android:layout_below="@+id/textViewEquipmentBrand"
-        android:layout_toRightOf="@+id/imageViewEquipmentFragment"
-        android:layout_toEndOf="@+id/imageViewEquipmentFragment"/>
+        android:layout_alignTop="@+id/textViewEquipmentModelLabel"
+        android:layout_alignLeft="@+id/textViewEquipmentBrand"
+        android:layout_alignStart="@+id/textViewEquipmentBrand"/>
 
     <TextView
         android:id="@+id/textViewEquipmentId"
@@ -79,10 +77,9 @@
         android:text="id"
         android:textSize="16dp"
         android:textColor="#6D6D6D"
-        android:layout_marginTop="5dp"
-        android:layout_below="@+id/textViewEquipmentModel"
-        android:layout_toRightOf="@+id/imageViewEquipmentFragment"
-        android:layout_toEndOf="@+id/imageViewEquipmentFragment"/>
+        android:layout_alignTop="@+id/textViewEquipmentIdLabel"
+        android:layout_alignLeft="@+id/textViewEquipmentModel"
+        android:layout_alignStart="@+id/textViewEquipmentModel"/>
 
     <TextView
         android:id="@+id/textViewEquipmentHistoryLabel"
@@ -112,5 +109,63 @@
                 android:layout_centerHorizontal="true"/>
         </ScrollView>
     </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Merke:"
+        android:id="@+id/textViewEquipmentBrandLabel"
+        android:layout_below="@+id/textViewEquipmentInfoLabel"
+        android:layout_toRightOf="@+id/imageViewEquipmentFragment"
+        android:layout_toEndOf="@+id/imageViewEquipmentFragment"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Modell:"
+        android:layout_marginTop="5dp"
+        android:id="@+id/textViewEquipmentModelLabel"
+        android:layout_below="@+id/textViewEquipmentBrandLabel"
+        android:layout_toRightOf="@+id/imageViewEquipmentFragment"
+        android:layout_toEndOf="@+id/imageViewEquipmentFragment"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Id:"
+        android:layout_marginTop="5dp"
+        android:id="@+id/textViewEquipmentIdLabel"
+        android:layout_below="@+id/textViewEquipmentModel"
+        android:layout_toRightOf="@+id/imageViewEquipmentFragment"
+        android:layout_toEndOf="@+id/imageViewEquipmentFragment"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Status:"
+        android:layout_marginTop="5dp"
+        android:id="@+id/textViewEquipmentStatusLabel"
+        android:layout_below="@+id/textViewEquipmentIdLabel"
+        android:layout_toRightOf="@+id/imageViewEquipmentFragment"
+        android:layout_toEndOf="@+id/imageViewEquipmentFragment"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:id="@+id/textViewEquipmentStatus"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="status"
+        android:textSize="16dp"
+        android:textColor="#6D6D6D"
+        android:layout_alignTop="@+id/textViewEquipmentStatusLabel"
+        android:layout_alignLeft="@+id/textViewEquipmentId"
+        android:layout_alignStart="@+id/textViewEquipmentId"/>
 
 </RelativeLayout>

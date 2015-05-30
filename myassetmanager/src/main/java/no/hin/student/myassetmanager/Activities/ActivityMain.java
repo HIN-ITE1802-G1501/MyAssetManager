@@ -31,6 +31,7 @@ import no.hin.student.myassetmanager.Classes.AssetManagerAdapter;
 import no.hin.student.myassetmanager.Classes.AssetManagerObjects;
 import no.hin.student.myassetmanager.Classes.Category;
 import no.hin.student.myassetmanager.Classes.Equipment;
+import no.hin.student.myassetmanager.Classes.EquipmentStatus;
 import no.hin.student.myassetmanager.Classes.User;
 import no.hin.student.myassetmanager.Classes.UserLogEntries;
 import no.hin.student.myassetmanager.Classes.WebAPI;
@@ -170,7 +171,7 @@ public class ActivityMain extends Activity {
             switch (menuItem.getItemId()) {
                 case MENU_BUTTON_SHOW_ASSETS:
                     Log.d(TAG, "Showing assets");
-                    populateListViewWithCategories();
+                    adapter = fragmentList.populateListViewWithCategories(adapter, ActivityMain.this, mGlobal_OnItemClickListener);
                     //initializeFilterSpinner();
                     return true;
                 case MENU_BUTTON_SHOW_USERS:
@@ -196,16 +197,6 @@ public class ActivityMain extends Activity {
         }
     };
 
-    private void populateListViewWithCategories() {
-        ListView lvList = (ListView)fragmentList.getView().findViewById(R.id.lvList);
-        ((TextView)fragmentList.getView().findViewById(R.id.tvTitle)).setText("Kategori");
-        adapter = new AssetManagerAdapter(this, Category.getCategories());
-        lvList.setAdapter(adapter);
-        lvList.setOnItemClickListener(mGlobal_OnItemClickListener);
-        registerForContextMenu(lvList);
-    }
-
-
 
     // When clicking on a listview item
     final AdapterView.OnItemClickListener mGlobal_OnItemClickListener = new AdapterView.OnItemClickListener() {
@@ -224,37 +215,16 @@ public class ActivityMain extends Activity {
             else if (clickedEquipment) {
                 replaceFragmentContainerFragmentWith(fragmentAsset);
                 Equipment equipment = (Equipment)adapter.getItem(position);
-                populateAssetFragmentWithAssetData(equipment);
+                fragmentAsset.populateAssetFragmentWithAssetData(equipment, loggedInUserStatus);
+                currentlyViewedEquipment = equipment;
             }
             else if (clickedUser) {
                 replaceFragmentContainerFragmentWith(fragmentUser);
                 User user = ((User) adapter.getItem(position));
-                populateUserFragmentWithUserData(user);
+                fragmentUser.populateUserFragmentWithUserData(user);
             }
         }
     };
-
-    private void populateAssetFragmentWithAssetData(Equipment equipment) {
-        currentlyViewedEquipment = equipment;
-
-        TextView textViewId = (TextView)fragmentAsset.getView().findViewById(R.id.textViewEquipmentId);
-        TextView textViewBrand = (TextView)fragmentAsset.getView().findViewById(R.id.textViewEquipmentBrand);
-        TextView textViewModel = (TextView)fragmentAsset.getView().findViewById(R.id.textViewEquipmentModel);
-
-        textViewId.setText("" + equipment.getE_id());
-        textViewBrand.setText(equipment.getBrand());
-        textViewModel.setText(equipment.getModel());
-    }
-
-    private void populateUserFragmentWithUserData(User user) {
-        TextView textViewFullName = (TextView)fragmentUser.getView().findViewById(R.id.textViewEquipmentBrand);
-        TextView textViewUsername = (TextView)fragmentUser.getView().findViewById(R.id.textViewEquipmentModel);
-        TextView textViewPhoneNumber = (TextView)fragmentUser.getView().findViewById(R.id.textViewEquipmentId);
-
-        textViewFullName.setText(user.getFirstname() + " " + user.getLastname());
-        textViewUsername.setText(user.getUserName());
-        textViewPhoneNumber.setText(user.getPhone());
-    }
 
     private void initializeFilterSpinner()
     {
@@ -317,7 +287,8 @@ public class ActivityMain extends Activity {
             loggedInUserStatus = userStatus;
             this.user = user;
             replaceFragmentContainerFragmentWith(fragmentList);
-            populateListViewWithCategories();
+            adapter = fragmentList.populateListViewWithCategories(adapter, this, mGlobal_OnItemClickListener);
+            EquipmentStatus.getUpdateFromDatabase(this);
         }
         else {
             Toast.makeText(getApplicationContext(), "Feil brukernavn og/eller passord", Toast.LENGTH_LONG).show();
@@ -405,19 +376,7 @@ public class ActivityMain extends Activity {
         replaceFragmentContainerFragmentWith(fragmentLoan);
 
         if (currentlyViewedEquipment != null)
-            populateLoanFragmentWithData(currentlyViewedEquipment);
-    }
-
-    private void populateLoanFragmentWithData(Equipment equipment) {
-        TextView textViewId = (TextView)fragmentLoan.getView().findViewById(R.id.textViewLoanEquipmentId);
-        TextView textViewBrand = (TextView)fragmentLoan.getView().findViewById(R.id.textViewLoanEquipmentBrand);
-        TextView textViewModel = (TextView)fragmentLoan.getView().findViewById(R.id.textViewLoanEquipmentModel);
-
-        textViewId.setText("" + equipment.getE_id());
-        textViewBrand.setText(equipment.getBrand());
-        textViewModel.setText(equipment.getModel());
-
-        WebAPI.doGetUsers(ActivityMain.this, WebAPI.Method.GET_USERS_FOR_LOAN_FRAGMENT);
+            fragmentLoan.populateLoanFragmentWithData(currentlyViewedEquipment, this);
     }
 
     public void populateLoanListViewWithUsers(ArrayList<User> users) {
@@ -425,11 +384,13 @@ public class ActivityMain extends Activity {
         adapter = new AssetManagerAdapter(this, users);
         listViewLoan.setAdapter(adapter);
 
-        listViewLoan.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listViewLoan.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                final User clickedUser = (User)adapter.getItem(position);
-                final String comment = ((EditText)fragmentLoan.getView().findViewById(R.id.editTextLoanComment)).getText().toString();
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+            {
+                final User clickedUser = (User) adapter.getItem(position);
+                final String comment = ((EditText) fragmentLoan.getView().findViewById(R.id.editTextLoanComment)).getText().toString();
 
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(ActivityMain.this);
                 alertDialog.setTitle("Registrer lån");
@@ -442,13 +403,17 @@ public class ActivityMain extends Activity {
                     {
                         WebAPI.doRegisterReservationOut(ActivityMain.this, clickedUser.getU_id(), currentlyViewedEquipment.getE_id(), comment);
                         replaceFragmentContainerFragmentWith(fragmentList);
-                        populateListViewWithCategories();
+                        adapter = fragmentList.populateListViewWithCategories(adapter, ActivityMain.this, mGlobal_OnItemClickListener);
+
+                        EquipmentStatus.getUpdateFromDatabase(ActivityMain.this);
                     }
                 });
 
-                alertDialog.setNegativeButton("Nei", new DialogInterface.OnClickListener() {
+                alertDialog.setNegativeButton("Nei", new DialogInterface.OnClickListener()
+                {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                    public void onClick(DialogInterface dialog, int which)
+                    {
 
                     }
                 });

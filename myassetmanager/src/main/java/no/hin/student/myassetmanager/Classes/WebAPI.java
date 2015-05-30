@@ -51,11 +51,14 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
         LOG_IN_ADMIN(1002, "logInAdmin"),
         LOG_OUT(1999, "logOut"),
 
-        GET_EQUIPMENT(2001, "getEquipment"),
-        GET_EQUIPMENTTYPE(2002, "getEquipmentType"),
-        GET_USERS(2003, "getUsers"),
-        GET_USERS_FOR_LOAN_FRAGMENT(2004, "getUsers"),
-        GET_ALL_LOG_ENTRIES_FOR_ALL_USER(2005, "getAllLogEntriesForAllUser"),
+        GET_EQUIPMENT_ALL(2001, "getEquipment"),
+        GET_EQUIPMENT_ALL_FOR_EQUIPMENT_STATUS(2002, "getEquipment"),
+        GET_EQUIPMENT_AVAILABLE_FOR_EQUIPMENT_STATUS(2003, "getEquipment"),
+        GET_EQUIPMENT_IN_USE_FOR_EQUIPMENT_STATUS(2004, "getEquipment"),
+        GET_EQUIPMENTTYPE(2005, "getEquipmentType"),
+        GET_USERS(2006, "getUsers"),
+        GET_USERS_FOR_LOAN_FRAGMENT(2007, "getUsers"),
+        GET_ALL_LOG_ENTRIES_FOR_ALL_USER(2008, "getAllLogEntriesForAllUser"),
 
         ADD_EQUIPMENT(3001, "addEquipment"),
         ADD_USER_WITHOUT_LOGIN(3002, "addUserWithoutLogin"),
@@ -122,6 +125,7 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
             Log.d(TAG, result);
             Gson gson = new Gson();
             ResponseMsg response = gson.fromJson(result, ResponseMsg.class);
+            Log.e("RESPONSE_MESSAGE", response.getMessage());
             if (response.getMessage().contains("518")) {
                 Toast.makeText(context, "Du må være admin!", Toast.LENGTH_SHORT).show();
             } else {
@@ -157,11 +161,29 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
                         break;
 
 
-                    case GET_EQUIPMENT:
+                    case GET_EQUIPMENT_ALL:
                         Type get_equipment = new TypeToken<List<Equipment>>() {
                         }.getType();
                         ArrayList<AssetManagerObjects> equipment = (ArrayList<AssetManagerObjects>) gson.fromJson(response.getJsonResponse(), get_equipment);
                         ((ActivityMain) context).addToList(equipment);
+                        break;
+                    case GET_EQUIPMENT_ALL_FOR_EQUIPMENT_STATUS:
+                        Type get_all_for_equipment_status = new TypeToken<List<Equipment>>() {
+                        }.getType();
+                        ArrayList<Equipment> equipmentAllForEquipmentStatus = (ArrayList<Equipment>) gson.fromJson(response.getJsonResponse(), get_all_for_equipment_status);
+                        EquipmentStatus.setAllEquipment(equipmentAllForEquipmentStatus);
+                        break;
+                    case GET_EQUIPMENT_AVAILABLE_FOR_EQUIPMENT_STATUS:
+                        Type get_available_for_equipment_status = new TypeToken<List<Equipment>>() {
+                        }.getType();
+                        ArrayList<Equipment> equipmentAvailableForEquipmentStatus = (ArrayList<Equipment>) gson.fromJson(response.getJsonResponse(), get_available_for_equipment_status);
+                        EquipmentStatus.setAvailableEquipment(equipmentAvailableForEquipmentStatus);
+                        break;
+                    case GET_EQUIPMENT_IN_USE_FOR_EQUIPMENT_STATUS:
+                        Type get_in_use_for_equipment_status = new TypeToken<List<Equipment>>() {
+                        }.getType();
+                        ArrayList<Equipment> equipmentInUseForEquipmentStatus = (ArrayList<Equipment>) gson.fromJson(response.getJsonResponse(), get_in_use_for_equipment_status);
+                        EquipmentStatus.setInUseEquipment(equipmentInUseForEquipmentStatus);
                         break;
                     case GET_EQUIPMENTTYPE:
                         Type get_equipmenttype = new TypeToken<List<Equipment>>() {
@@ -280,16 +302,35 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
         }
     }
 
-    public static void doGetEquipment(Context context) {
+    public static void doGetEquipmentAll(Context context, Method method) {
         if (httpClient != null) {
             List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
             nameValuePairs.add(new BasicNameValuePair("which_equipment", "ALL"));
-            new WebAPI(URL, Method.GET_EQUIPMENT, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
+            new WebAPI(URL, method, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
         } else {
             Log.d(TAG, "Logg inn først!");
         }
     }
 
+    public static void doGetEquipmentAvailable(Context context, Method method) {
+        if (httpClient != null) {
+            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+            nameValuePairs.add(new BasicNameValuePair("which_equipment", "AVAILABLE"));
+            new WebAPI(URL, method, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
+        } else {
+            Log.d(TAG, "Logg inn først!");
+        }
+    }
+
+    public static void doGetEquipmentInUse(Context context, Method method) {
+        if (httpClient != null) {
+            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+            nameValuePairs.add(new BasicNameValuePair("which_equipment", "IN_USE"));
+            new WebAPI(URL, method, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
+        } else {
+            Log.d(TAG, "Logg inn først!");
+        }
+    }
 
     public static void doGetEquipmentType(Context context, String category) {
         if (httpClient != null) {
