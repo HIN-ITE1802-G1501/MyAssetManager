@@ -104,11 +104,11 @@ public class Category extends AssetManagerObjects
         return R.drawable.other;
     }
 
-    public static ArrayList<Category> getCategories() {
+    public static ArrayList<AssetManagerObjects> getCategories() {
         folder = Environment.getExternalStorageDirectory() + "/Download";
         ArrayList categoryStrings = readCategoriesFromFile(folder + "/products.txt");
         Collections.sort(categoryStrings, String.CASE_INSENSITIVE_ORDER);
-        ArrayList<Category> categories = new ArrayList<>();
+        ArrayList<AssetManagerObjects> categories = new ArrayList<>();
 
         for (int i = 0; i < categoryStrings.size(); i++)
             categories.add(new Category(i, categoryStrings.get(i).toString()));

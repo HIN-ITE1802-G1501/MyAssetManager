@@ -171,13 +171,11 @@ public class ActivityMain extends Activity {
             switch (menuItem.getItemId()) {
                 case MENU_BUTTON_SHOW_ASSETS:
                     Log.d(TAG, "Showing assets");
-                    adapter = fragmentList.populateListViewWithCategories(adapter, ActivityMain.this, mGlobal_OnItemClickListener);
-                    //initializeFilterSpinner();
+                    addToList(Category.getCategories());
                     return true;
                 case MENU_BUTTON_SHOW_USERS:
                     Log.d(TAG, "Showing users");
                     WebAPI.doGetUsers(ActivityMain.this, WebAPI.Method.GET_USERS);
-                    //initializeFilterSpinner();
                     return true;
                 case MENU_BUTTON_SHOW_HISTORY:
                     WebAPI.doGetAllLogEntriesForAllUser(ActivityMain.this);
@@ -210,7 +208,6 @@ public class ActivityMain extends Activity {
             if (clickedCategory) {
                 Log.d(TAG, ((Category) adapter.getItem(position)).getListItemTitle());
                 WebAPI.doGetEquipmentType(ActivityMain.this, ((Category) adapter.getItem(position)).getListItemTitle());
-                initializeFilterSpinner();
             }
             else if (clickedEquipment) {
                 replaceFragmentContainerFragmentWith(fragmentAsset);
@@ -224,16 +221,7 @@ public class ActivityMain extends Activity {
                 fragmentUser.populateUserFragmentWithUserData(user);
             }
         }
-    };
-
-    private void initializeFilterSpinner()
-    {
-        Spinner spFilter = (Spinner)findViewById(R.id.spFilter);
-        ArrayList<Category> categoryArray = new ArrayList<Category>();
-        ArrayAdapter<Category> adapterInstance;
-        adapterInstance = new ArrayAdapter<Category>(this, android.R.layout.simple_list_item_2, categoryArray);
-        spFilter.setAdapter(adapterInstance);
-    }
+    };    
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
@@ -287,7 +275,7 @@ public class ActivityMain extends Activity {
             loggedInUserStatus = userStatus;
             this.user = user;
             replaceFragmentContainerFragmentWith(fragmentList);
-            adapter = fragmentList.populateListViewWithCategories(adapter, this, mGlobal_OnItemClickListener);
+            addToList(Category.getCategories());
             EquipmentStatus.getUpdateFromDatabase(this);
         }
         else {
@@ -308,14 +296,29 @@ public class ActivityMain extends Activity {
     public void addToList(ArrayList<AssetManagerObjects> objects) {
         try {
             if (objects != null) {
+                Spinner spFilter = (Spinner)findViewById(R.id.spFilter);
+                ArrayList<String> spinnerArray = new ArrayList<String>();
+
                 ListView lvList = (ListView) fragmentList.getView().findViewById(R.id.lvList);
                 TextView tvTitle = ((TextView) fragmentList.getView().findViewById(R.id.tvTitle));
 
-                if (objects.get(0) instanceof Equipment)
+
+                if (objects.get(0) instanceof Equipment) {
+                    spinnerArray.add("Alle");
+                    spinnerArray.add("Tilgjengelig");
+                    spinnerArray.add("Utlånt");
                     tvTitle.setText(((Equipment) objects.get(0)).getType());
-                else if (objects.get(0) instanceof User) {
+                } else if (objects.get(0) instanceof Category) {
+                    spinnerArray.add("Alle");
+                    spinnerArray.add("Aktive");
+                    tvTitle.setText("Kategori");
+                } else if (objects.get(0) instanceof User) {
+                    spinnerArray.add("Alle");
+                    spinnerArray.add("Aktive");
                     tvTitle.setText("Brukere");
                 } else if (objects.get(0) instanceof UserLogEntries) {
+                    spinnerArray.add("All historie");
+                    spinnerArray.add("Med utlån");
                     tvTitle.setText("Utstyrslog");
                 }
 
@@ -323,6 +326,11 @@ public class ActivityMain extends Activity {
                 lvList.setAdapter(adapter);
                 lvList.setOnItemClickListener(mGlobal_OnItemClickListener);
                 registerForContextMenu(lvList);
+
+
+                ArrayAdapter<String> adapterInstance;
+                adapterInstance = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, spinnerArray);
+                spFilter.setAdapter(adapterInstance);
             } else {
                 Toast.makeText(this.getApplicationContext(), "Det finnes desverre ikke noe utstyr i denne kategorien.", Toast.LENGTH_SHORT).show();
             }
@@ -366,7 +374,7 @@ public class ActivityMain extends Activity {
         String repeatedPassword = ((EditText)fragmentAccountSettings.getView().findViewById(R.id.editTextSettingsRepeatPassword)).getText().toString();
 
         if (!password.equals(repeatedPassword))
-            Toast.makeText(this, "Passord matchet ikke hverandre. Prï¿½v pï¿½ nytt", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Passord matchet ikke hverandre. Pr?v p? nytt", Toast.LENGTH_LONG).show();
         else
             WebAPI.doChangeUserPassword(this, user.getU_id(), password);
     }
@@ -403,8 +411,7 @@ public class ActivityMain extends Activity {
                     {
                         WebAPI.doRegisterReservationOut(ActivityMain.this, clickedUser.getU_id(), currentlyViewedEquipment.getE_id(), comment);
                         replaceFragmentContainerFragmentWith(fragmentList);
-                        adapter = fragmentList.populateListViewWithCategories(adapter, ActivityMain.this, mGlobal_OnItemClickListener);
-
+                        addToList(Category.getCategories());
                         EquipmentStatus.getUpdateFromDatabase(ActivityMain.this);
                     }
                 });
