@@ -369,7 +369,7 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
         new WebAPI(URL, Method.CHANGE_USER_PASSWORD, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
     }
 
-    public static void doRegisterReservationOut(Context context, int userId, int equipmentId) {
+    public static void doRegisterReservationOut(Context context, int userId, int equipmentId, String comment) {
         if (httpClient == null)
             httpClient = new DefaultHttpClient();
 
@@ -378,7 +378,7 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
         nameValuePairs.add(new BasicNameValuePair("userId", String.valueOf(userId)));
         nameValuePairs.add(new BasicNameValuePair("equipmentId", String.valueOf(equipmentId)));
         nameValuePairs.add(new BasicNameValuePair("dateOut", new SimpleDateFormat("dd.MM.yyyy").format(new java.util.Date())));
-        nameValuePairs.add(new BasicNameValuePair("comment", "midlertidig"));
+        nameValuePairs.add(new BasicNameValuePair("comment", comment));
         new WebAPI(URL, Method.REGISTER_RESERVATION_OUT, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
     }
 }

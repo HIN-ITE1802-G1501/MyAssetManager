@@ -429,17 +429,18 @@ public class ActivityMain extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 final User clickedUser = (User)adapter.getItem(position);
+                final String comment = ((EditText)fragmentLoan.getView().findViewById(R.id.editTextLoanComment)).getText().toString();
 
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(ActivityMain.this);
                 alertDialog.setTitle("Registrer lån");
-                alertDialog.setMessage("Vil du registrere et lån for bruker " + clickedUser.getFirstname() + " and equipment " + currentlyViewedEquipment.getModel() + "?");
+                alertDialog.setMessage("Vil du registrere et lån for bruker " + clickedUser.getFirstname() + " og utstyr " + currentlyViewedEquipment.getModel() + "?");
 
                 alertDialog.setPositiveButton("Ja", new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int which)
                     {
-                        WebAPI.doRegisterReservationOut(ActivityMain.this, clickedUser.getU_id(), currentlyViewedEquipment.getE_id());
+                        WebAPI.doRegisterReservationOut(ActivityMain.this, clickedUser.getU_id(), currentlyViewedEquipment.getE_id(), comment);
                         replaceFragmentContainerFragmentWith(fragmentList);
                         populateListViewWithCategories();
                     }
