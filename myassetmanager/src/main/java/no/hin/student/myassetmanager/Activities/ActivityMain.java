@@ -433,12 +433,21 @@ public class ActivityMain extends Activity {
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(ActivityMain.this);
                 alertDialog.setTitle("Registrer lån");
                 alertDialog.setMessage("Vil du registrere et lån for bruker " + clickedUser.getFirstname() + " and equipment " + currentlyViewedEquipment.getModel() + "?");
+
                 alertDialog.setPositiveButton("Ja", new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int which)
                     {
                         WebAPI.doRegisterReservationOut(ActivityMain.this, clickedUser.getU_id(), currentlyViewedEquipment.getE_id());
+                        replaceFragmentContainerFragmentWith(fragmentList);
+                    }
+                });
+
+                alertDialog.setNegativeButton("Nei", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
                     }
                 });
 

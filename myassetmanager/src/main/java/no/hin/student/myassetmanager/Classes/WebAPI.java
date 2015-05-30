@@ -377,7 +377,7 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
         nameValuePairs = new ArrayList<NameValuePair>(4);
         nameValuePairs.add(new BasicNameValuePair("userId", String.valueOf(userId)));
         nameValuePairs.add(new BasicNameValuePair("equipmentId", String.valueOf(equipmentId)));
-        nameValuePairs.add(new BasicNameValuePair("dateOut", new SimpleDateFormat("dd.mm.yyyy").format(new java.util.Date())));
+        nameValuePairs.add(new BasicNameValuePair("dateOut", new SimpleDateFormat("dd.MM.yyyy").format(new java.util.Date())));
         nameValuePairs.add(new BasicNameValuePair("comment", "midlertidig"));
         new WebAPI(URL, Method.REGISTER_RESERVATION_OUT, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
     }
