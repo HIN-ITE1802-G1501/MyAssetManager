@@ -441,6 +441,7 @@ public class ActivityMain extends Activity {
                     {
                         WebAPI.doRegisterReservationOut(ActivityMain.this, clickedUser.getU_id(), currentlyViewedEquipment.getE_id());
                         replaceFragmentContainerFragmentWith(fragmentList);
+                        populateListViewWithCategories();
                     }
                 });
 
