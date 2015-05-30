@@ -86,6 +86,7 @@ public class ActivityMain extends Activity {
         File file = new File(Environment.getExternalStorageDirectory() + "/Download/products.txt");
         if (!(file.exists())) // If file doesn't exist, downloadCategoriesFile it
             Category.downloadCategoriesFile();
+
     }
 
     @Override
@@ -171,12 +172,10 @@ public class ActivityMain extends Activity {
                 case MENU_BUTTON_SHOW_ASSETS:
                     Log.d(TAG, "Showing assets");
                     populateListViewWithCategories();
-                    //initializeFilterSpinner();
                     return true;
                 case MENU_BUTTON_SHOW_USERS:
                     Log.d(TAG, "Showing users");
                     WebAPI.doGetUsers(ActivityMain.this, WebAPI.Method.GET_USERS);
-                    //initializeFilterSpinner();
                     return true;
                 case MENU_BUTTON_SHOW_HISTORY:
                     WebAPI.doGetAllLogEntriesForAllUser(ActivityMain.this);
@@ -219,7 +218,6 @@ public class ActivityMain extends Activity {
             if (clickedCategory) {
                 Log.d(TAG, ((Category) adapter.getItem(position)).getListItemTitle());
                 WebAPI.doGetEquipmentType(ActivityMain.this, ((Category) adapter.getItem(position)).getListItemTitle());
-                initializeFilterSpinner();
             }
             else if (clickedEquipment) {
                 replaceFragmentContainerFragmentWith(fragmentAsset);
@@ -254,15 +252,6 @@ public class ActivityMain extends Activity {
         textViewFullName.setText(user.getFirstname() + " " + user.getLastname());
         textViewUsername.setText(user.getUserName());
         textViewPhoneNumber.setText(user.getPhone());
-    }
-
-    private void initializeFilterSpinner()
-    {
-        Spinner spFilter = (Spinner)findViewById(R.id.spFilter);
-        ArrayList<Category> categoryArray = new ArrayList<Category>();
-        ArrayAdapter<Category> adapterInstance;
-        adapterInstance = new ArrayAdapter<Category>(this, android.R.layout.simple_list_item_2, categoryArray);
-        spFilter.setAdapter(adapterInstance);
     }
 
     @Override
@@ -337,14 +326,24 @@ public class ActivityMain extends Activity {
     public void addToList(ArrayList<AssetManagerObjects> objects) {
         try {
             if (objects != null) {
+                Spinner spFilter = (Spinner)findViewById(R.id.spFilter);
+                ArrayList<String> spinnerArray = new ArrayList<String>();
+
                 ListView lvList = (ListView) fragmentList.getView().findViewById(R.id.lvList);
                 TextView tvTitle = ((TextView) fragmentList.getView().findViewById(R.id.tvTitle));
 
-                if (objects.get(0) instanceof Equipment)
+                if (objects.get(0) instanceof Equipment) {
+                    spinnerArray.add("Alle");
+                    spinnerArray.add("Tilgjengelig");
+                    spinnerArray.add("UtlÃ¥nt");
                     tvTitle.setText(((Equipment) objects.get(0)).getType());
-                else if (objects.get(0) instanceof User) {
+                } else if (objects.get(0) instanceof User) {
+                    spinnerArray.add("Alle");
+                    spinnerArray.add("Aktive");
                     tvTitle.setText("Brukere");
                 } else if (objects.get(0) instanceof UserLogEntries) {
+                    spinnerArray.add("All historie");
+                    spinnerArray.add("Med utlÃ¥n");
                     tvTitle.setText("Utstyrslog");
                 }
 
@@ -352,6 +351,11 @@ public class ActivityMain extends Activity {
                 lvList.setAdapter(adapter);
                 lvList.setOnItemClickListener(mGlobal_OnItemClickListener);
                 registerForContextMenu(lvList);
+
+
+                ArrayAdapter<String> adapterInstance;
+                adapterInstance = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, spinnerArray);
+                spFilter.setAdapter(adapterInstance);
             } else {
                 Toast.makeText(this.getApplicationContext(), "Det finnes desverre ikke noe utstyr i denne kategorien.", Toast.LENGTH_SHORT).show();
             }
@@ -432,8 +436,8 @@ public class ActivityMain extends Activity {
                 final String comment = ((EditText)fragmentLoan.getView().findViewById(R.id.editTextLoanComment)).getText().toString();
 
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(ActivityMain.this);
-                alertDialog.setTitle("Registrer lån");
-                alertDialog.setMessage("Vil du registrere et lån for bruker " + clickedUser.getFirstname() + " og utstyr " + currentlyViewedEquipment.getModel() + "?");
+                alertDialog.setTitle("Registrer lï¿½n");
+                alertDialog.setMessage("Vil du registrere et lï¿½n for bruker " + clickedUser.getFirstname() + " og utstyr " + currentlyViewedEquipment.getModel() + "?");
 
                 alertDialog.setPositiveButton("Ja", new DialogInterface.OnClickListener()
                 {
