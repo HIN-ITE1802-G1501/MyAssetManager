@@ -171,7 +171,7 @@ public class ActivityMain extends Activity {
             switch (menuItem.getItemId()) {
                 case MENU_BUTTON_SHOW_ASSETS:
                     Log.d(TAG, "Showing assets");
-                    populateListViewWithCategories();
+                    addToList(Category.getCategories());
                     return true;
                 case MENU_BUTTON_SHOW_USERS:
                     Log.d(TAG, "Showing users");
@@ -195,14 +195,7 @@ public class ActivityMain extends Activity {
         }
     };
 
-    private void populateListViewWithCategories() {
-        ListView lvList = (ListView)fragmentList.getView().findViewById(R.id.lvList);
-        ((TextView)fragmentList.getView().findViewById(R.id.tvTitle)).setText("Kategori");
-        adapter = new AssetManagerAdapter(this, Category.getCategories());
-        lvList.setAdapter(adapter);
-        lvList.setOnItemClickListener(mGlobal_OnItemClickListener);
-        registerForContextMenu(lvList);
-    }
+
 
 
 
@@ -306,7 +299,7 @@ public class ActivityMain extends Activity {
             loggedInUserStatus = userStatus;
             this.user = user;
             replaceFragmentContainerFragmentWith(fragmentList);
-            populateListViewWithCategories();
+            addToList(Category.getCategories());
         }
         else {
             Toast.makeText(getApplicationContext(), "Feil brukernavn og/eller passord", Toast.LENGTH_LONG).show();
@@ -332,11 +325,16 @@ public class ActivityMain extends Activity {
                 ListView lvList = (ListView) fragmentList.getView().findViewById(R.id.lvList);
                 TextView tvTitle = ((TextView) fragmentList.getView().findViewById(R.id.tvTitle));
 
+
                 if (objects.get(0) instanceof Equipment) {
                     spinnerArray.add("Alle");
                     spinnerArray.add("Tilgjengelig");
                     spinnerArray.add("Utlånt");
                     tvTitle.setText(((Equipment) objects.get(0)).getType());
+                } else if (objects.get(0) instanceof Category) {
+                    spinnerArray.add("Alle");
+                    spinnerArray.add("Aktive");
+                    tvTitle.setText("Kategori");
                 } else if (objects.get(0) instanceof User) {
                     spinnerArray.add("Alle");
                     spinnerArray.add("Aktive");
@@ -446,7 +444,7 @@ public class ActivityMain extends Activity {
                     {
                         WebAPI.doRegisterReservationOut(ActivityMain.this, clickedUser.getU_id(), currentlyViewedEquipment.getE_id(), comment);
                         replaceFragmentContainerFragmentWith(fragmentList);
-                        populateListViewWithCategories();
+                        addToList(Category.getCategories());
                     }
                 });
 
