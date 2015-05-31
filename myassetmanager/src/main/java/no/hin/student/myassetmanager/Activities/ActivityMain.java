@@ -2,10 +2,13 @@ package no.hin.student.myassetmanager.Activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Application;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -27,6 +30,7 @@ import android.widget.Toast;
 import java.io.File;
 import java.util.ArrayList;
 
+import no.hin.student.myassetmanager.Classes.App;
 import no.hin.student.myassetmanager.Classes.AssetManagerAdapter;
 import no.hin.student.myassetmanager.Classes.AssetManagerObjects;
 import no.hin.student.myassetmanager.Classes.Category;
@@ -45,6 +49,27 @@ import no.hin.student.myassetmanager.R;
 
 
 public class ActivityMain extends Activity {
+
+
+    public enum Filter {
+        FILTER_EQUIPMENT_ALL(R.string.FILTER_EQUIPMENT_ALL),
+        FILTER_EQUIPMENT_AVAILABLE(R.string.FILTER_EQUIPMENT_AVAILABLE),
+        FILTER_EQUIPMENT_INUSE(R.string.FILTER_EQUIPMENT_INUSE),
+        FILTER_ALL_USERS(R.string.FILTER_ALL_USERS),
+        FILTER_ACTIVE_USERS(R.string.FILTER_ACTIVE_USERS),
+        FILTER_NOT_ACTIVE_USERS(R.string.FILTER_NOT_ACTIVE_USERS);
+
+        private int resourceId;
+
+        private Filter(int id) {
+            resourceId = id;
+        }
+
+        @Override
+        public String toString() {
+            return App.getContext().getString(resourceId);
+        }
+    }
 
     public static final int IS_ADMIN_USER = 1;
     public static final int IS_REGULAR_USER = 2;
@@ -320,7 +345,7 @@ public class ActivityMain extends Activity {
         try {
             if (objects != null) {
                 Spinner spFilter = (Spinner)findViewById(R.id.spFilter);
-                ArrayList<String> spinnerArray = new ArrayList<String>();
+                ArrayList<Filter> spinnerArray = new ArrayList<Filter>();
 
                 ListView lvList = (ListView) fragmentList.getView().findViewById(R.id.lvList);
                 TextView tvTitle = ((TextView) fragmentList.getView().findViewById(R.id.tvTitle));
@@ -336,23 +361,23 @@ public class ActivityMain extends Activity {
                 }
 
                 if (objects.get(0) instanceof Equipment) {
-                    spinnerArray.add("Alle");
-                    spinnerArray.add("Tilgjengelig");
-                    spinnerArray.add("Utlånt");
+                    spinnerArray.add(Filter.FILTER_EQUIPMENT_ALL);
+                    spinnerArray.add(Filter.FILTER_EQUIPMENT_AVAILABLE);
+                    spinnerArray.add(Filter.FILTER_EQUIPMENT_INUSE);
                     tvTitle.setText(((Equipment) objects.get(0)).getType());
                 } else if (objects.get(0) instanceof Category) {
-                    spinnerArray.add("Alle");
-                    spinnerArray.add("Aktive");
-                    tvTitle.setText("Kategori");
+                    spinnerArray.add(Filter.FILTER_ALL_USERS);
+                    spinnerArray.add(Filter.FILTER_ACTIVE_USERS);
+                    spinnerArray.add(Filter.FILTER_NOT_ACTIVE_USERS);
                 } else if (objects.get(0) instanceof User) {
-                    spinnerArray.add("Alle brukere");
-                    spinnerArray.add("Aktive brukere");
-                    spinnerArray.add("Ikke aktive brukere");
+                    spinnerArray.add(Filter.FILTER_ALL_USERS);
+                    spinnerArray.add(Filter.FILTER_ACTIVE_USERS);
+                    spinnerArray.add(Filter.FILTER_NOT_ACTIVE_USERS);
                     tvTitle.setText("Brukere");
                 } else if (objects.get(0) instanceof UserLogEntries) {
-                    spinnerArray.add("All historie");
-                    spinnerArray.add("Med utlån");
-                    tvTitle.setText("Utstyrslog");
+                    spinnerArray.add(Filter.FILTER_ALL_USERS);
+                    spinnerArray.add(Filter.FILTER_ACTIVE_USERS);
+                    spinnerArray.add(Filter.FILTER_NOT_ACTIVE_USERS);
                 }
 
                 adapter = new AssetManagerAdapter(this, objects);
@@ -361,8 +386,8 @@ public class ActivityMain extends Activity {
                 registerForContextMenu(lvList);
 
 
-                ArrayAdapter<String> adapterInstance;
-                adapterInstance = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, spinnerArray);
+                ArrayAdapter<Filter> adapterInstance;
+                adapterInstance = new ArrayAdapter<Filter>(this, android.R.layout.simple_list_item_1, spinnerArray);
                 spFilter.setAdapter(adapterInstance);
                 spFilter.setSelection(spPos);
                 spFilter.setTag(R.id.pos, spPos);
@@ -374,13 +399,13 @@ public class ActivityMain extends Activity {
                         if ((Integer)spFilter.getTag(R.id.pos) != position) {
                             String selectedItem = parent.getItemAtPosition(position).toString();
                             Toast.makeText(view.getContext(), selectedItem, Toast.LENGTH_SHORT).show();
-                            if (selectedItem.equals("Alle brukere")) {
+                            if (selectedItem.equals(Filter.FILTER_ALL_USERS)) {
                                 WebAPI.doGetUsers(view.getContext(), WebAPI.Method.GET_USERS);
                             }
-                            if (selectedItem.equals("Aktive brukere")) {
+                            if (selectedItem.equals(Filter.FILTER_ACTIVE_USERS)) {
                                 WebAPI.doGetUsers(view.getContext(), WebAPI.Method.GET_ACTIVE_USERS);
                             }
-                            if (selectedItem.equals("Ikke aktive brukere")) {
+                            if (selectedItem.equals(Filter.FILTER_NOT_ACTIVE_USERS)) {
                                 WebAPI.doGetUsers(view.getContext(), WebAPI.Method.GET_NOT_ACTIVED_USERS);
                             }
                         }
