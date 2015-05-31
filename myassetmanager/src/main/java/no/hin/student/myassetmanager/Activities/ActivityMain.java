@@ -407,6 +407,7 @@ public class ActivityMain extends Activity {
                 });
             } else {
                 Toast.makeText(this.getApplicationContext(), "Det finnes desverre ikke noe utstyr i denne kategorien.", Toast.LENGTH_SHORT).show();
+                
             }
         } catch (Exception e) {
             Log.d(TAG, e.toString());
