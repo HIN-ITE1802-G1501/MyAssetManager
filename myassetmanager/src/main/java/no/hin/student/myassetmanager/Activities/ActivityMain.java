@@ -25,8 +25,12 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.reflect.TypeToken;
+
 import java.io.File;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 
 import no.hin.student.myassetmanager.Classes.App;
 import no.hin.student.myassetmanager.Classes.AssetManagerAdapter;
@@ -53,12 +57,16 @@ public class ActivityMain extends Activity {
 
     public enum Filter {
         FILTER_CATEGORY_ALL(R.string.FILTER_CATEGORY_ALL),
+
         FILTER_EQUIPMENT_ALL(R.string.FILTER_EQUIPMENT_ALL),
         FILTER_EQUIPMENT_AVAILABLE(R.string.FILTER_EQUIPMENT_AVAILABLE),
         FILTER_EQUIPMENT_INUSE(R.string.FILTER_EQUIPMENT_INUSE),
+
         FILTER_USERS_ALL(R.string.FILTER_ALL_USERS),
         FILTER_USERS_ACTIVE(R.string.FILTER_ACTIVE_USERS),
-        FILTER_USERS_NOT_ACTIVE(R.string.FILTER_NOT_ACTIVE_USERS);
+        FILTER_USERS_NOT_ACTIVE(R.string.FILTER_NOT_ACTIVE_USERS),
+
+        FILTER_HISTORY_ALL(R.string.FILTER_HISTORY_ALL);
 
         private int resourceId;
 
@@ -329,7 +337,7 @@ public class ActivityMain extends Activity {
 
 
 
-    public void addToList(ArrayList<AssetManagerObjects> objects) {
+    public void addToList(final ArrayList<AssetManagerObjects> objects) {
         try {
             if (objects != null) {
                 Spinner spFilter = (Spinner)findViewById(R.id.spFilter);
@@ -354,18 +362,15 @@ public class ActivityMain extends Activity {
                     spinnerArray.add(Filter.FILTER_EQUIPMENT_INUSE);
                     tvTitle.setText(((Equipment) objects.get(0)).getType());
                 } else if (objects.get(0) instanceof Category) {
-                    spinnerArray.add(Filter.FILTER_USERS_ALL);
-                    spinnerArray.add(Filter.FILTER_USERS_ACTIVE);
-                    spinnerArray.add(Filter.FILTER_USERS_NOT_ACTIVE);
+                    spinnerArray.add(Filter.FILTER_CATEGORY_ALL);
+                    tvTitle.setText("Utstyr");
                 } else if (objects.get(0) instanceof User) {
                     spinnerArray.add(Filter.FILTER_USERS_ALL);
                     spinnerArray.add(Filter.FILTER_USERS_ACTIVE);
                     spinnerArray.add(Filter.FILTER_USERS_NOT_ACTIVE);
                     tvTitle.setText("Brukere");
                 } else if (objects.get(0) instanceof UserLogEntries) {
-                    spinnerArray.add(Filter.FILTER_USERS_ALL);
-                    spinnerArray.add(Filter.FILTER_USERS_ACTIVE);
-                    spinnerArray.add(Filter.FILTER_USERS_NOT_ACTIVE);
+                    spinnerArray.add(Filter.FILTER_HISTORY_ALL);
                 }
 
                 adapter = new AssetManagerAdapter(this, objects);
@@ -385,6 +390,7 @@ public class ActivityMain extends Activity {
                         Log.d(TAG, "Position " + Integer.toString(position));
 
                         if ((Integer)spFilter.getTag(R.id.pos) != position) {
+                            TextView tvttt = (TextView)findViewById(R.id.tvTitle);
                             Object selectedItem = parent.getItemAtPosition(position);
                             if (selectedItem.equals(Filter.FILTER_USERS_ALL)) {
                                 WebAPI.doGetUsers(view.getContext(), WebAPI.Method.GET_USERS);
@@ -392,6 +398,14 @@ public class ActivityMain extends Activity {
                                 WebAPI.doGetUsers(view.getContext(), WebAPI.Method.GET_ACTIVE_USERS);
                             } else  if (selectedItem.equals(Filter.FILTER_USERS_NOT_ACTIVE)) {
                                 WebAPI.doGetUsers(view.getContext(), WebAPI.Method.GET_NOT_ACTIVED_USERS);
+                            } else  if (selectedItem.equals(Filter.FILTER_EQUIPMENT_ALL)) {
+                                WebAPI.doGetEquipmentType(view.getContext(), tvttt.getText().toString());
+                            } else  if (selectedItem.equals(Filter.FILTER_EQUIPMENT_AVAILABLE)) {
+                                addToList((ArrayList<AssetManagerObjects>)EquipmentStatus.getAvailableEquipment(tvttt.getText().toString()).clone());
+                            } else  if (selectedItem.equals(Filter.FILTER_EQUIPMENT_INUSE)) {
+                                addToList((ArrayList<AssetManagerObjects>)EquipmentStatus.getInUseEquipment(tvttt.getText().toString()).clone());
+                            } else  if (selectedItem.equals(Filter.FILTER_CATEGORY_ALL)) {
+                                addToList(Category.getCategories());
                             }
                         }
                     }
@@ -402,6 +416,7 @@ public class ActivityMain extends Activity {
                 });
             } else {
                 Toast.makeText(this.getApplicationContext(), "Det finnes desverre ikke noe utstyr i denne kategorien.", Toast.LENGTH_SHORT).show();
+                
             }
         } catch (Exception e) {
             Log.d(TAG, e.toString());

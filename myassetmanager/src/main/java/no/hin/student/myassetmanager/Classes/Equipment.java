@@ -163,12 +163,12 @@ public class Equipment extends AssetManagerObjects
 
     @Override
     public String getListItemTitle() {
-        return this.getBrand() + " " + this.getModel();
+        return this.getModel();
     }
 
     @Override
     public String getListItemSubTitle(View view) {
-        return null;
+        return "Id: " + this.getE_id() + ", brand: " + this.getBrand() ;
     }
 
 
