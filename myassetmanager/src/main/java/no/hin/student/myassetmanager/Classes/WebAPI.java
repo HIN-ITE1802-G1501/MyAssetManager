@@ -233,7 +233,11 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
                         break;
 
                     case ADD_EQUIPMENT:
-
+                        if (response.getResult() == true) {
+                            Toast.makeText(context, "Utstyr lagret", Toast.LENGTH_LONG).show();
+                            EquipmentStatus.getUpdateFromDatabase(context);
+                            ((ActivityMain)context).sendToFragmentList();
+                        }
                         break;
                     case ADD_USER_WITHOUT_LOGIN:
                         Toast.makeText(context, response.getMessage().toString(), Toast.LENGTH_LONG).show();
@@ -392,10 +396,9 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
         }
     }
 
-    public static void addEquipment(Context context, Equipment equipment) {
+    public static void doAddEquipment(Context context, Equipment equipment) {
         if (httpClient != null) {
             List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
-            Log.d(TAG, "Before adding: " + equipment.toJSONString());
             nameValuePairs.add(new BasicNameValuePair("equipment", equipment.toJSONString()));
             new WebAPI(URL, Method.ADD_EQUIPMENT, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
         } else {

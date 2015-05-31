@@ -38,6 +38,7 @@ import no.hin.student.myassetmanager.Classes.User;
 import no.hin.student.myassetmanager.Classes.UserLogEntries;
 import no.hin.student.myassetmanager.Classes.WebAPI;
 import no.hin.student.myassetmanager.Fragments.FragmentAccountSettings;
+import no.hin.student.myassetmanager.Fragments.FragmentAddEquipment;
 import no.hin.student.myassetmanager.Fragments.FragmentAsset;
 import no.hin.student.myassetmanager.Fragments.FragmentList;
 import no.hin.student.myassetmanager.Fragments.FragmentLoan;
@@ -93,6 +94,8 @@ public class ActivityMain extends Activity {
     private static final int MENU_BUTTON_LOGIN = 10301;
     private static final int MENU_BUTTON_LOGOUT = 10302;
 
+    private static final int MENU_BUTTON_ADD_EQUIPMENT = 10401;
+
     private static final String TAG = "MyAssetManger-log";
 
     private FragmentList fragmentList;
@@ -102,6 +105,7 @@ public class ActivityMain extends Activity {
     private FragmentRegister fragmentRegister;
     private FragmentAccountSettings fragmentAccountSettings;
     private FragmentLoan fragmentLoan;
+    private FragmentAddEquipment fragmentAddEquipment;
     private AssetManagerAdapter adapter;
 
     private int loggedInUserStatus = IS_LOGGED_OUT;
@@ -133,6 +137,7 @@ public class ActivityMain extends Activity {
         fragmentAsset = new FragmentAsset();
         fragmentLogin = new FragmentLogin();
         fragmentRegister = new FragmentRegister();
+        fragmentAddEquipment = new FragmentAddEquipment();
 
         replaceFragmentContainerFragmentWith(fragmentLogin);
     }
@@ -180,6 +185,7 @@ public class ActivityMain extends Activity {
         popup.getMenu().add(Menu.NONE, MENU_BUTTON_SHOW_USERS, Menu.NONE, R.string.MENU_BUTTON_SHOW_USERS).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
         popup.getMenu().add(Menu.NONE, MENU_BUTTON_SHOW_HISTORY, Menu.NONE, R.string.MENU_BUTTON_SHOW_HISTORY).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
         popup.getMenu().add(Menu.NONE, MENU_BUTTON_SHOW_MY_PAGE, Menu.NONE, R.string.MENU_BUTTON_SHOW_MY_PAGE).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
+        popup.getMenu().add(Menu.NONE, MENU_BUTTON_ADD_EQUIPMENT, Menu.NONE, R.string.MENU_BUTTON_ADD_EQUIPMENT).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
         popup.getMenu().add(Menu.NONE, MENU_BUTTON_LOGOUT, Menu.NONE, R.string.MENU_BUTTON_LOGOUT).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
         popup.show();
     }
@@ -219,6 +225,9 @@ public class ActivityMain extends Activity {
                     WebAPI.logOut(ActivityMain.this);
                     replaceFragmentContainerFragmentWith(fragmentLogin);
                     return true;
+                case MENU_BUTTON_ADD_EQUIPMENT:
+                    replaceFragmentContainerFragmentWith(fragmentAddEquipment);
+                    fragmentAddEquipment.populateListViewWithCategories(ActivityMain.this);
                 default:
                     return true;
             }
@@ -456,7 +465,7 @@ public class ActivityMain extends Activity {
         String repeatedPassword = ((EditText)fragmentAccountSettings.getView().findViewById(R.id.editTextSettingsRepeatPassword)).getText().toString();
 
         if (!password.equals(repeatedPassword))
-            Toast.makeText(this, "Passord matchet ikke hverandre. Pr?v p? nytt", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Passord matchet ikke hverandre. Prøv på nytt", Toast.LENGTH_LONG).show();
         else
             WebAPI.doChangeUserPassword(this, user.getU_id(), password);
     }
@@ -564,5 +573,10 @@ public class ActivityMain extends Activity {
 
     public int getCurrentUserStatus() {
         return loggedInUserStatus;
+    }
+
+    public void sendToFragmentList() {
+        replaceFragmentContainerFragmentWith(fragmentList);
+        addToList(Category.getCategories());
     }
 }
