@@ -136,7 +136,7 @@ public class User extends AssetManagerObjects implements MyInterface {
 
     @Override
     public String getListItemSubTitle(View view) {
-        return null;
+        return (isUser_activated() ? "Aktivert" : "Ikke aktivert");
     }
 
 

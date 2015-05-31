@@ -197,6 +197,9 @@ public class ActivityMain extends Activity {
     };
 
 
+
+
+
     // When clicking on a listview item
     final AdapterView.OnItemClickListener mGlobal_OnItemClickListener = new AdapterView.OnItemClickListener() {
         public void onItemClick(AdapterView<?> adapterView, View row, int position, long index) {
@@ -303,6 +306,15 @@ public class ActivityMain extends Activity {
                 ListView lvList = (ListView) fragmentList.getView().findViewById(R.id.lvList);
                 TextView tvTitle = ((TextView) fragmentList.getView().findViewById(R.id.tvTitle));
 
+                int spPos = 0;
+                Log.d(TAG, "Before counting");
+                if (lvList.getCount() > 0) {
+                    Log.d(TAG, "Before checking objects");
+                    if (objects.get(0).getClass().equals(lvList.getItemAtPosition(0).getClass()) ) {
+                        spPos = spFilter.getSelectedItemPosition();
+                        Log.d(TAG, "Settings spos" + Integer.toString(spPos));
+                    }
+                }
 
                 if (objects.get(0) instanceof Equipment) {
                     spinnerArray.add("Alle");
@@ -314,8 +326,9 @@ public class ActivityMain extends Activity {
                     spinnerArray.add("Aktive");
                     tvTitle.setText("Kategori");
                 } else if (objects.get(0) instanceof User) {
-                    spinnerArray.add("Alle");
-                    spinnerArray.add("Aktive");
+                    spinnerArray.add("Alle brukere");
+                    spinnerArray.add("Aktive brukere");
+                    spinnerArray.add("Ikke aktive brukere");
                     tvTitle.setText("Brukere");
                 } else if (objects.get(0) instanceof UserLogEntries) {
                     spinnerArray.add("All historie");
@@ -332,6 +345,32 @@ public class ActivityMain extends Activity {
                 ArrayAdapter<String> adapterInstance;
                 adapterInstance = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, spinnerArray);
                 spFilter.setAdapter(adapterInstance);
+                spFilter.setSelection(spPos);
+                spFilter.setTag(R.id.pos, spPos);
+                spFilter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        Spinner spFilter = (Spinner)findViewById(R.id.spFilter);
+                        Log.d(TAG, "Position " + Integer.toString(position));
+
+                        if ((Integer)spFilter.getTag(R.id.pos) != position) {
+                            String selectedItem = parent.getItemAtPosition(position).toString();
+                            Toast.makeText(view.getContext(), selectedItem, Toast.LENGTH_SHORT).show();
+                            if (selectedItem.equals("Alle brukere")) {
+                                WebAPI.doGetUsers(view.getContext(), WebAPI.Method.GET_USERS);
+                            }
+                            if (selectedItem.equals("Aktive brukere")) {
+                                WebAPI.doGetUsers(view.getContext(), WebAPI.Method.GET_ACTIVE_USERS);
+                            }
+                            if (selectedItem.equals("Ikke aktive brukere")) {
+                                WebAPI.doGetUsers(view.getContext(), WebAPI.Method.GET_NOT_ACTIVED_USERS);
+                            }
+                        }
+                    }
+
+                    public void onNothingSelected(AdapterView<?> parent) {
+
+                    }
+                });
             } else {
                 Toast.makeText(this.getApplicationContext(), "Det finnes desverre ikke noe utstyr i denne kategorien.", Toast.LENGTH_SHORT).show();
             }
@@ -421,13 +460,11 @@ public class ActivityMain extends Activity {
         adapter = new AssetManagerAdapter(this, users);
         listViewLoan.setAdapter(adapter);
 
-        listViewLoan.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
+        listViewLoan.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-            {
-                final User clickedUser = (User) adapter.getItem(position);
-                final String comment = ((EditText) fragmentLoan.getView().findViewById(R.id.editTextLoanComment)).getText().toString();
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                final User clickedUser = (User)adapter.getItem(position);
+                final String comment = ((EditText)fragmentLoan.getView().findViewById(R.id.editTextLoanComment)).getText().toString();
 
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(ActivityMain.this);
                 alertDialog.setTitle("Registrer lån");
@@ -445,11 +482,9 @@ public class ActivityMain extends Activity {
                     }
                 });
 
-                alertDialog.setNegativeButton("Nei", new DialogInterface.OnClickListener()
-                {
+                alertDialog.setNegativeButton("Nei", new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
+                    public void onClick(DialogInterface dialog, int which) {
 
                     }
                 });

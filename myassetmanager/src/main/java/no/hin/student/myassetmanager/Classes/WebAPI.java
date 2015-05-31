@@ -60,6 +60,8 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
         GET_USERS_FOR_LOAN_FRAGMENT(2007, "getUsers"),
         GET_ALL_LOG_ENTRIES_FOR_ALL_USER(2008, "getAllLogEntriesForAllUser"),
         GET_OPEN_LOG_ENTRIES_FOR_REGISTER_RESERVATION_IN(2009, "getOpenLogEntries"),
+        GET_ACTIVE_USERS(2010, "getUsers"),
+        GET_NOT_ACTIVED_USERS(2011, "getNotActivatedUsers"),
 
         ADD_EQUIPMENT(3001, "addEquipment"),
         ADD_USER_WITHOUT_LOGIN(3002, "addUserWithoutLogin"),
@@ -197,6 +199,16 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
                         Type get_users = new TypeToken<List<User>>() {}.getType();
                         ArrayList<AssetManagerObjects> users = (ArrayList<AssetManagerObjects>) gson.fromJson(response.getJsonResponse(), get_users);
                         ((ActivityMain) context).addToList(users);
+                        break;
+                    case GET_ACTIVE_USERS:
+                        Type get_activeusers = new TypeToken<List<User>>() {}.getType();
+                        ArrayList<AssetManagerObjects> activeusers = (ArrayList<AssetManagerObjects>) gson.fromJson(response.getJsonResponse(), get_activeusers);
+                        ((ActivityMain) context).addToList(activeusers);
+                        break;
+                    case GET_NOT_ACTIVED_USERS:
+                        Type get_notactivedusers = new TypeToken<List<User>>() {}.getType();
+                        ArrayList<AssetManagerObjects> notactivedusers = (ArrayList<AssetManagerObjects>) gson.fromJson(response.getJsonResponse(), get_notactivedusers);
+                        ((ActivityMain) context).addToList(notactivedusers);
                         break;
                     case GET_USERS_FOR_LOAN_FRAGMENT:
                         Type get_users_for_loan_fragment = new TypeToken<List<User>>() {}.getType();
