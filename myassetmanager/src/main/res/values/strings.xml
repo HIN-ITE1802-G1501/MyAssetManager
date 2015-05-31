@@ -25,15 +25,18 @@
 
     <string name="LOGTAG">Test</string>
 
-    <string name="FILTER_CATEGORY_ALL">Alle kategorier</string>
+    <string name="FILTER_CATEGORY_ALL">Kategorier</string>
+    <string name="FILTER_EQUIPMENT_AVAILABLE">Tilgjengelig</string>
+    <string name="FILTER_EQUIPMENT_INUSE">I bruk</string>
 
     <string name="FILTER_ALL_USERS">Alle brukere</string>
     <string name="FILTER_ACTIVE_USERS">Aktive brukere</string>
     <string name="FILTER_NOT_ACTIVE_USERS">Ikke aktive brukere</string>
 
+
     <string name="FILTER_EQUIPMENT_ALL">Alt utstyr</string>
-    <string name="FILTER_EQUIPMENT_AVAILABLE">Tilgjengelig</string>
-    <string name="FILTER_EQUIPMENT_INUSE">Utlånt</string>
+    <string name="FILTER_EQUIPMENT_AVAILABLE_BYCATEGORY">Tilgjengelig</string>
+    <string name="FILTER_EQUIPMENT_INUSE_BYCATEGORY">Utlånt</string>
 
     <string name="FILTER_HISTORY_ALL">All historie</string>
     <string name="FILTER_HISTORY_INUSE">Kun utlån</string>

@@ -3,6 +3,8 @@ package no.hin.student.myassetmanager.Classes;
 import android.content.Context;
 import android.util.Log;
 
+import org.apache.http.NameValuePair;
+
 import java.util.ArrayList;
 
 public class EquipmentStatus {
@@ -68,6 +70,24 @@ public class EquipmentStatus {
         for (Equipment equipment : inUseEquipment) {
             if (equipment.getType().equals(category))
                 result.add(equipment);
+        }
+        return result;
+    }
+
+    public static int countEquipmentAvailable(String category) {
+        int result = 0;
+        for (Equipment equipment : availableEquipment) {
+            if (equipment.getType().equals(category))
+                result++;
+        }
+        return result;
+    }
+
+    public static int countEquipmentInUse(String category) {
+        int result = 0;
+        for (Equipment equipment : inUseEquipment) {
+            if (equipment.getType().equals(category))
+                result++;
         }
         return result;
     }
