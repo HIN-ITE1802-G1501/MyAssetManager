@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -32,6 +33,7 @@ import no.hin.student.myassetmanager.Classes.AssetManagerAdapter;
 import no.hin.student.myassetmanager.Classes.AssetManagerObjects;
 import no.hin.student.myassetmanager.Classes.Category;
 import no.hin.student.myassetmanager.Classes.Equipment;
+import no.hin.student.myassetmanager.Classes.EquipmentStatus;
 import no.hin.student.myassetmanager.Classes.User;
 import no.hin.student.myassetmanager.Classes.UserLogEntries;
 import no.hin.student.myassetmanager.Classes.WebAPI;
@@ -49,12 +51,13 @@ public class ActivityMain extends Activity {
 
 
     public enum Filter {
+        FILTER_CATEGORY_ALL(R.string.FILTER_CATEGORY_ALL),
         FILTER_EQUIPMENT_ALL(R.string.FILTER_EQUIPMENT_ALL),
         FILTER_EQUIPMENT_AVAILABLE(R.string.FILTER_EQUIPMENT_AVAILABLE),
         FILTER_EQUIPMENT_INUSE(R.string.FILTER_EQUIPMENT_INUSE),
-        FILTER_ALL_USERS(R.string.FILTER_ALL_USERS),
-        FILTER_ACTIVE_USERS(R.string.FILTER_ACTIVE_USERS),
-        FILTER_NOT_ACTIVE_USERS(R.string.FILTER_NOT_ACTIVE_USERS);
+        FILTER_USERS_ALL(R.string.FILTER_ALL_USERS),
+        FILTER_USERS_ACTIVE(R.string.FILTER_ACTIVE_USERS),
+        FILTER_USERS_NOT_ACTIVE(R.string.FILTER_NOT_ACTIVE_USERS);
 
         private int resourceId;
 
@@ -108,7 +111,6 @@ public class ActivityMain extends Activity {
         File file = new File(Environment.getExternalStorageDirectory() + "/Download/products.txt");
         if (!(file.exists())) // If file doesn't exist, downloadCategoriesFile it
             Category.downloadCategoriesFile();
-
     }
 
     @Override
@@ -237,37 +239,16 @@ public class ActivityMain extends Activity {
             else if (clickedEquipment) {
                 replaceFragmentContainerFragmentWith(fragmentAsset);
                 Equipment equipment = (Equipment)adapter.getItem(position);
-                populateAssetFragmentWithAssetData(equipment);
+                fragmentAsset.populateAssetFragmentWithAssetData(equipment, loggedInUserStatus);
+                currentlyViewedEquipment = equipment;
             }
             else if (clickedUser) {
                 replaceFragmentContainerFragmentWith(fragmentUser);
                 User user = ((User) adapter.getItem(position));
-                populateUserFragmentWithUserData(user);
+                fragmentUser.populateUserFragmentWithUserData(user);
             }
         }
     };
-
-    private void populateAssetFragmentWithAssetData(Equipment equipment) {
-        currentlyViewedEquipment = equipment;
-
-        TextView textViewId = (TextView)fragmentAsset.getView().findViewById(R.id.textViewEquipmentId);
-        TextView textViewBrand = (TextView)fragmentAsset.getView().findViewById(R.id.textViewEquipmentBrand);
-        TextView textViewModel = (TextView)fragmentAsset.getView().findViewById(R.id.textViewEquipmentModel);
-
-        textViewId.setText("" + equipment.getE_id());
-        textViewBrand.setText(equipment.getBrand());
-        textViewModel.setText(equipment.getModel());
-    }
-
-    private void populateUserFragmentWithUserData(User user) {
-        TextView textViewFullName = (TextView)fragmentUser.getView().findViewById(R.id.textViewEquipmentBrand);
-        TextView textViewUsername = (TextView)fragmentUser.getView().findViewById(R.id.textViewEquipmentModel);
-        TextView textViewPhoneNumber = (TextView)fragmentUser.getView().findViewById(R.id.textViewEquipmentId);
-
-        textViewFullName.setText(user.getFirstname() + " " + user.getLastname());
-        textViewUsername.setText(user.getUserName());
-        textViewPhoneNumber.setText(user.getPhone());
-    }
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
@@ -322,6 +303,7 @@ public class ActivityMain extends Activity {
             this.user = user;
             replaceFragmentContainerFragmentWith(fragmentList);
             addToList(Category.getCategories());
+            EquipmentStatus.getUpdateFromDatabase(this);
         }
         else {
             Toast.makeText(getApplicationContext(), "Feil brukernavn og/eller passord", Toast.LENGTH_LONG).show();
@@ -363,18 +345,18 @@ public class ActivityMain extends Activity {
                     spinnerArray.add(Filter.FILTER_EQUIPMENT_INUSE);
                     tvTitle.setText(((Equipment) objects.get(0)).getType());
                 } else if (objects.get(0) instanceof Category) {
-                    spinnerArray.add(Filter.FILTER_ALL_USERS);
-                    spinnerArray.add(Filter.FILTER_ACTIVE_USERS);
-                    spinnerArray.add(Filter.FILTER_NOT_ACTIVE_USERS);
+                    spinnerArray.add(Filter.FILTER_USERS_ALL);
+                    spinnerArray.add(Filter.FILTER_USERS_ACTIVE);
+                    spinnerArray.add(Filter.FILTER_USERS_NOT_ACTIVE);
                 } else if (objects.get(0) instanceof User) {
-                    spinnerArray.add(Filter.FILTER_ALL_USERS);
-                    spinnerArray.add(Filter.FILTER_ACTIVE_USERS);
-                    spinnerArray.add(Filter.FILTER_NOT_ACTIVE_USERS);
+                    spinnerArray.add(Filter.FILTER_USERS_ALL);
+                    spinnerArray.add(Filter.FILTER_USERS_ACTIVE);
+                    spinnerArray.add(Filter.FILTER_USERS_NOT_ACTIVE);
                     tvTitle.setText("Brukere");
                 } else if (objects.get(0) instanceof UserLogEntries) {
-                    spinnerArray.add(Filter.FILTER_ALL_USERS);
-                    spinnerArray.add(Filter.FILTER_ACTIVE_USERS);
-                    spinnerArray.add(Filter.FILTER_NOT_ACTIVE_USERS);
+                    spinnerArray.add(Filter.FILTER_USERS_ALL);
+                    spinnerArray.add(Filter.FILTER_USERS_ACTIVE);
+                    spinnerArray.add(Filter.FILTER_USERS_NOT_ACTIVE);
                 }
 
                 adapter = new AssetManagerAdapter(this, objects);
@@ -394,15 +376,12 @@ public class ActivityMain extends Activity {
                         Log.d(TAG, "Position " + Integer.toString(position));
 
                         if ((Integer)spFilter.getTag(R.id.pos) != position) {
-                            String selectedItem = parent.getItemAtPosition(position).toString();
-                            Toast.makeText(view.getContext(), selectedItem, Toast.LENGTH_SHORT).show();
-                            if (selectedItem.equals(Filter.FILTER_ALL_USERS)) {
+                            Object selectedItem = parent.getItemAtPosition(position);
+                            if (selectedItem.equals(Filter.FILTER_USERS_ALL)) {
                                 WebAPI.doGetUsers(view.getContext(), WebAPI.Method.GET_USERS);
-                            }
-                            if (selectedItem.equals(Filter.FILTER_ACTIVE_USERS)) {
+                            } else if (selectedItem.equals(Filter.FILTER_USERS_ACTIVE)) {
                                 WebAPI.doGetUsers(view.getContext(), WebAPI.Method.GET_ACTIVE_USERS);
-                            }
-                            if (selectedItem.equals(Filter.FILTER_NOT_ACTIVE_USERS)) {
+                            } else  if (selectedItem.equals(Filter.FILTER_USERS_NOT_ACTIVE)) {
                                 WebAPI.doGetUsers(view.getContext(), WebAPI.Method.GET_NOT_ACTIVED_USERS);
                             }
                         }
@@ -455,29 +434,45 @@ public class ActivityMain extends Activity {
         String repeatedPassword = ((EditText)fragmentAccountSettings.getView().findViewById(R.id.editTextSettingsRepeatPassword)).getText().toString();
 
         if (!password.equals(repeatedPassword))
-            Toast.makeText(this, "Passord matchet ikke hverandre. Pr�v p� nytt", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Passord matchet ikke hverandre. Pr?v p? nytt", Toast.LENGTH_LONG).show();
         else
             WebAPI.doChangeUserPassword(this, user.getU_id(), password);
     }
 
-    public void onClickCreateNewLoanButton(View buttonView) {
-        fragmentLoan = new FragmentLoan();
-        replaceFragmentContainerFragmentWith(fragmentLoan);
+    public void onClickLoanButton(View buttonView) {
+        Button buttonLoan = (Button)buttonView;
+        String buttonText = buttonLoan.getText().toString();
 
-        if (currentlyViewedEquipment != null)
-            populateLoanFragmentWithData(currentlyViewedEquipment);
-    }
+        if (buttonText.equals("Registrer utlån")) {
+            fragmentLoan = new FragmentLoan();
+            replaceFragmentContainerFragmentWith(fragmentLoan);
 
-    private void populateLoanFragmentWithData(Equipment equipment) {
-        TextView textViewId = (TextView)fragmentLoan.getView().findViewById(R.id.textViewLoanEquipmentId);
-        TextView textViewBrand = (TextView)fragmentLoan.getView().findViewById(R.id.textViewLoanEquipmentBrand);
-        TextView textViewModel = (TextView)fragmentLoan.getView().findViewById(R.id.textViewLoanEquipmentModel);
+            if (currentlyViewedEquipment != null)
+                fragmentLoan.populateLoanFragmentWithData(currentlyViewedEquipment, this);
+        }
+        else {
+            AlertDialog.Builder alertDialog = new AlertDialog.Builder(ActivityMain.this);
+            alertDialog.setTitle("Registrer innlevering");
+            alertDialog.setMessage("Registrer innlevering for utstyr " + currentlyViewedEquipment.getModel() + "?");
 
-        textViewId.setText("" + equipment.getE_id());
-        textViewBrand.setText(equipment.getBrand());
-        textViewModel.setText(equipment.getModel());
+            alertDialog.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    WebAPI.doGetOpenLogEntries(ActivityMain.this, WebAPI.Method.GET_OPEN_LOG_ENTRIES_FOR_REGISTER_RESERVATION_IN, user.getU_id());
+                    replaceFragmentContainerFragmentWith(fragmentList);
+                    addToList(Category.getCategories());
+                }
+            });
 
-        WebAPI.doGetUsers(ActivityMain.this, WebAPI.Method.GET_USERS_FOR_LOAN_FRAGMENT);
+            alertDialog.setNegativeButton("Nei", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            });
+
+            alertDialog.show();
+        }
     }
 
     public void populateLoanListViewWithUsers(ArrayList<User> users) {
@@ -485,17 +480,15 @@ public class ActivityMain extends Activity {
         adapter = new AssetManagerAdapter(this, users);
         listViewLoan.setAdapter(adapter);
 
-        listViewLoan.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
+        listViewLoan.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-            {
-                final User clickedUser = (User) adapter.getItem(position);
-                final String comment = ((EditText) fragmentLoan.getView().findViewById(R.id.editTextLoanComment)).getText().toString();
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                final User clickedUser = (User)adapter.getItem(position);
+                final String comment = ((EditText)fragmentLoan.getView().findViewById(R.id.editTextLoanComment)).getText().toString();
 
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(ActivityMain.this);
-                alertDialog.setTitle("Registrer l�n");
-                alertDialog.setMessage("Vil du registrere et l�n for bruker " + clickedUser.getFirstname() + " og utstyr " + currentlyViewedEquipment.getModel() + "?");
+                alertDialog.setTitle("Registrer lån");
+                alertDialog.setMessage("Vil du registrere et lån for bruker " + clickedUser.getFirstname() + " og utstyr " + currentlyViewedEquipment.getModel() + "?");
 
                 alertDialog.setPositiveButton("Ja", new DialogInterface.OnClickListener()
                 {
@@ -505,11 +498,11 @@ public class ActivityMain extends Activity {
                         WebAPI.doRegisterReservationOut(ActivityMain.this, clickedUser.getU_id(), currentlyViewedEquipment.getE_id(), comment);
                         replaceFragmentContainerFragmentWith(fragmentList);
                         addToList(Category.getCategories());
+                        EquipmentStatus.getUpdateFromDatabase(ActivityMain.this);
                     }
                 });
 
-                alertDialog.setNegativeButton("Nei", new DialogInterface.OnClickListener()
-                {
+                alertDialog.setNegativeButton("Nei", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which)
                     {
@@ -522,7 +515,8 @@ public class ActivityMain extends Activity {
         });
     }
 
-    public void onClickLoginButton(View buttonView) {
+    public void onClickLoginButton(View buttonView)
+    {
         String username = ((EditText)fragmentLogin.getView().findViewById(R.id.editTextUsername)).getText().toString();
         String password = ((EditText)fragmentLogin.getView().findViewById(R.id.editTextPassword)).getText().toString();
         boolean isAdmin = ((CheckBox)fragmentLogin.getView().findViewById(R.id.checkBoxIsAdmin)).isChecked();
