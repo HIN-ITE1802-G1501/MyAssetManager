@@ -23,6 +23,8 @@
     <string name="MENU_BUTTON_LOGIN">Logg inn</string>
     <string name="MENU_BUTTON_LOGOUT">Logg ut</string>
 
+    <string name="MENU_BUTTON_ADD_EQUIPMENT">Legg til utstyr</string>
+
     <string name="LOGTAG">Test</string>
 
     <string name="FILTER_CATEGORY_ALL">Alle kategorier</string>
@@ -37,4 +39,7 @@
 
     <string name="FILTER_HISTORY_ALL">All historie</string>
     <string name="FILTER_HISTORY_INUSE">Kun utlån</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
