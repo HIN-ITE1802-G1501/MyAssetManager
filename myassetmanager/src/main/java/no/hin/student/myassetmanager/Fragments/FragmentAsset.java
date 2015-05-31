@@ -41,14 +41,14 @@ public class FragmentAsset extends Fragment {
 
         if (userStatus == ActivityMain.IS_ADMIN_USER && EquipmentStatus.isEquipmentAvailable(equipment)) {
             buttonLoan.setVisibility(View.VISIBLE);
-            buttonLoan.setText("Registrer utlån");
+            buttonLoan.setText("Registrer utlÃ¥n");
             textViewStatusLabel.setVisibility(View.VISIBLE);
             textViewStatus.setVisibility(View.VISIBLE);
-            textViewStatus.setText("På lager");
+            textViewStatus.setText("PÃ¥ lager");
         }
         else if (userStatus == ActivityMain.IS_ADMIN_USER && !EquipmentStatus.isEquipmentAvailable(equipment)) {
             buttonLoan.setText("Registrer innlevering");
-            textViewStatus.setText("Utlånt");
+            textViewStatus.setText("UtlÃ¥nt");
         }
         else if (userStatus == ActivityMain.IS_REGULAR_USER) {
             buttonLoan.setVisibility(View.INVISIBLE);

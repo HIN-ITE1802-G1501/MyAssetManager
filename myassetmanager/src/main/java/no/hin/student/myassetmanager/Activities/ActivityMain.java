@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -444,7 +445,7 @@ public class ActivityMain extends Activity {
         Button buttonLoan = (Button)buttonView;
         String buttonText = buttonLoan.getText().toString();
 
-        if (buttonText.equals("Registrer utlån")) {
+        if (buttonText.equals("Registrer utlÃ¥n")) {
             fragmentLoan = new FragmentLoan();
             replaceFragmentContainerFragmentWith(fragmentLoan);
 
@@ -488,8 +489,8 @@ public class ActivityMain extends Activity {
                 final String comment = ((EditText)fragmentLoan.getView().findViewById(R.id.editTextLoanComment)).getText().toString();
 
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(ActivityMain.this);
-                alertDialog.setTitle("Registrer lån");
-                alertDialog.setMessage("Vil du registrere et lån for bruker " + clickedUser.getFirstname() + " og utstyr " + currentlyViewedEquipment.getModel() + "?");
+                alertDialog.setTitle("Registrer lÃ¥n");
+                alertDialog.setMessage("Vil du registrere et lÃ¥n for bruker " + clickedUser.getFirstname() + " og utstyr " + currentlyViewedEquipment.getModel() + "?");
 
                 alertDialog.setPositiveButton("Ja", new DialogInterface.OnClickListener()
                 {
