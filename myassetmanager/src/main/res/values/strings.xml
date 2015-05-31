@@ -25,6 +25,8 @@
 
     <string name="LOGTAG">Test</string>
 
+    <string name="FILTER_CATEGORY_ALL">Alle kategorier</string>
+
     <string name="FILTER_ALL_USERS">Alle brukere</string>
     <string name="FILTER_ACTIVE_USERS">Aktive brukere</string>
     <string name="FILTER_NOT_ACTIVE_USERS">Ikke aktive brukere</string>
@@ -33,6 +35,6 @@
     <string name="FILTER_EQUIPMENT_AVAILABLE">Tilgjengelig</string>
     <string name="FILTER_EQUIPMENT_INUSE">Utlånt</string>
 
-<!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="FILTER_HISTORY_ALL">All historie</string>
+    <string name="FILTER_HISTORY_INUSE">Kun utlån</string>
 </resources>

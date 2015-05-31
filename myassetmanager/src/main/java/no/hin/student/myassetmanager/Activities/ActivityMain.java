@@ -50,12 +50,13 @@ public class ActivityMain extends Activity {
 
 
     public enum Filter {
+        FILTER_CATEGORY_ALL(R.string.FILTER_CATEGORY_ALL),
         FILTER_EQUIPMENT_ALL(R.string.FILTER_EQUIPMENT_ALL),
         FILTER_EQUIPMENT_AVAILABLE(R.string.FILTER_EQUIPMENT_AVAILABLE),
         FILTER_EQUIPMENT_INUSE(R.string.FILTER_EQUIPMENT_INUSE),
-        FILTER_ALL_USERS(R.string.FILTER_ALL_USERS),
-        FILTER_ACTIVE_USERS(R.string.FILTER_ACTIVE_USERS),
-        FILTER_NOT_ACTIVE_USERS(R.string.FILTER_NOT_ACTIVE_USERS);
+        FILTER_USERS_ALL(R.string.FILTER_ALL_USERS),
+        FILTER_USERS_ACTIVE(R.string.FILTER_ACTIVE_USERS),
+        FILTER_USERS_NOT_ACTIVE(R.string.FILTER_NOT_ACTIVE_USERS);
 
         private int resourceId;
 
@@ -343,18 +344,18 @@ public class ActivityMain extends Activity {
                     spinnerArray.add(Filter.FILTER_EQUIPMENT_INUSE);
                     tvTitle.setText(((Equipment) objects.get(0)).getType());
                 } else if (objects.get(0) instanceof Category) {
-                    spinnerArray.add(Filter.FILTER_ALL_USERS);
-                    spinnerArray.add(Filter.FILTER_ACTIVE_USERS);
-                    spinnerArray.add(Filter.FILTER_NOT_ACTIVE_USERS);
+                    spinnerArray.add(Filter.FILTER_USERS_ALL);
+                    spinnerArray.add(Filter.FILTER_USERS_ACTIVE);
+                    spinnerArray.add(Filter.FILTER_USERS_NOT_ACTIVE);
                 } else if (objects.get(0) instanceof User) {
-                    spinnerArray.add(Filter.FILTER_ALL_USERS);
-                    spinnerArray.add(Filter.FILTER_ACTIVE_USERS);
-                    spinnerArray.add(Filter.FILTER_NOT_ACTIVE_USERS);
+                    spinnerArray.add(Filter.FILTER_USERS_ALL);
+                    spinnerArray.add(Filter.FILTER_USERS_ACTIVE);
+                    spinnerArray.add(Filter.FILTER_USERS_NOT_ACTIVE);
                     tvTitle.setText("Brukere");
                 } else if (objects.get(0) instanceof UserLogEntries) {
-                    spinnerArray.add(Filter.FILTER_ALL_USERS);
-                    spinnerArray.add(Filter.FILTER_ACTIVE_USERS);
-                    spinnerArray.add(Filter.FILTER_NOT_ACTIVE_USERS);
+                    spinnerArray.add(Filter.FILTER_USERS_ALL);
+                    spinnerArray.add(Filter.FILTER_USERS_ACTIVE);
+                    spinnerArray.add(Filter.FILTER_USERS_NOT_ACTIVE);
                 }
 
                 adapter = new AssetManagerAdapter(this, objects);
@@ -374,15 +375,12 @@ public class ActivityMain extends Activity {
                         Log.d(TAG, "Position " + Integer.toString(position));
 
                         if ((Integer)spFilter.getTag(R.id.pos) != position) {
-                            String selectedItem = parent.getItemAtPosition(position).toString();
-                            Toast.makeText(view.getContext(), selectedItem, Toast.LENGTH_SHORT).show();
-                            if (selectedItem.equals(Filter.FILTER_ALL_USERS)) {
+                            Object selectedItem = parent.getItemAtPosition(position);
+                            if (selectedItem.equals(Filter.FILTER_USERS_ALL)) {
                                 WebAPI.doGetUsers(view.getContext(), WebAPI.Method.GET_USERS);
-                            }
-                            if (selectedItem.equals(Filter.FILTER_ACTIVE_USERS)) {
+                            } else if (selectedItem.equals(Filter.FILTER_USERS_ACTIVE)) {
                                 WebAPI.doGetUsers(view.getContext(), WebAPI.Method.GET_ACTIVE_USERS);
-                            }
-                            if (selectedItem.equals(Filter.FILTER_NOT_ACTIVE_USERS)) {
+                            } else  if (selectedItem.equals(Filter.FILTER_USERS_NOT_ACTIVE)) {
                                 WebAPI.doGetUsers(view.getContext(), WebAPI.Method.GET_NOT_ACTIVED_USERS);
                             }
                         }
