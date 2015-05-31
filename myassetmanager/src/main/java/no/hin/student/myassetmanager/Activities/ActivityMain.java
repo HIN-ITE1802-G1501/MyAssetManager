@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -379,12 +380,40 @@ public class ActivityMain extends Activity {
             WebAPI.doChangeUserPassword(this, user.getU_id(), password);
     }
 
-    public void onClickCreateNewLoanButton(View buttonView) {
-        fragmentLoan = new FragmentLoan();
-        replaceFragmentContainerFragmentWith(fragmentLoan);
+    public void onClickLoanButton(View buttonView) {
+        Button buttonLoan = (Button)buttonView;
+        String buttonText = buttonLoan.getText().toString();
 
-        if (currentlyViewedEquipment != null)
-            fragmentLoan.populateLoanFragmentWithData(currentlyViewedEquipment, this);
+        if (buttonText.equals("Registrer utlån")) {
+            fragmentLoan = new FragmentLoan();
+            replaceFragmentContainerFragmentWith(fragmentLoan);
+
+            if (currentlyViewedEquipment != null)
+                fragmentLoan.populateLoanFragmentWithData(currentlyViewedEquipment, this);
+        }
+        else {
+            AlertDialog.Builder alertDialog = new AlertDialog.Builder(ActivityMain.this);
+            alertDialog.setTitle("Registrer innlevering");
+            alertDialog.setMessage("Registrer innlevering for utstyr " + currentlyViewedEquipment.getModel() + "?");
+
+            alertDialog.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    WebAPI.doGetOpenLogEntries(ActivityMain.this, WebAPI.Method.GET_OPEN_LOG_ENTRIES_FOR_REGISTER_RESERVATION_IN, user.getU_id());
+                    replaceFragmentContainerFragmentWith(fragmentList);
+                    addToList(Category.getCategories());
+                }
+            });
+
+            alertDialog.setNegativeButton("Nei", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            });
+
+            alertDialog.show();
+        }
     }
 
     public void populateLoanListViewWithUsers(ArrayList<User> users) {
@@ -448,6 +477,10 @@ public class ActivityMain extends Activity {
 
     public User getCurrentUser() {
         return user;
+    }
+
+    public Equipment getCurrentlyViewedEquipment() {
+        return currentlyViewedEquipment;
     }
 
     public int getCurrentUserStatus() {

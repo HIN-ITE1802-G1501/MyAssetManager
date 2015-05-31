@@ -54,11 +54,12 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
         GET_EQUIPMENT_ALL(2001, "getEquipment"),
         GET_EQUIPMENT_ALL_FOR_EQUIPMENT_STATUS(2002, "getEquipment"),
         GET_EQUIPMENT_AVAILABLE_FOR_EQUIPMENT_STATUS(2003, "getEquipment"),
-        GET_EQUIPMENT_IN_USE_FOR_EQUIPMENT_STATUS(2004, "getEquipment"),
+        GET_EQUIPMENT_IN_USE_FOR_EQUIPMENT_STATUS(2004  , "getEquipment"),
         GET_EQUIPMENTTYPE(2005, "getEquipmentType"),
         GET_USERS(2006, "getUsers"),
         GET_USERS_FOR_LOAN_FRAGMENT(2007, "getUsers"),
         GET_ALL_LOG_ENTRIES_FOR_ALL_USER(2008, "getAllLogEntriesForAllUser"),
+        GET_OPEN_LOG_ENTRIES_FOR_REGISTER_RESERVATION_IN(2009, "getOpenLogEntries"),
 
         ADD_EQUIPMENT(3001, "addEquipment"),
         ADD_USER_WITHOUT_LOGIN(3002, "addUserWithoutLogin"),
@@ -68,7 +69,8 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
 
         DELETE_USER(5001, "deleteUser"),
 
-        REGISTER_RESERVATION_OUT(6001, "registerReservationOut");
+        REGISTER_RESERVATION_OUT(6001, "registerReservationOut"),
+        REGISTER_RESERVATION_IN(6002, "registerReservationIn");
 
         private int type;
         private String text;
@@ -205,6 +207,20 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
                         Type get_all_log_entries_for_all_user = new TypeToken<List<UserLogEntries>>() {}.getType();
                         ArrayList<AssetManagerObjects> logEntries = (ArrayList<AssetManagerObjects>) gson.fromJson(response.getJsonResponse(), get_all_log_entries_for_all_user);
                         ((ActivityMain) context).addToList(logEntries);
+                        break;
+                    case GET_OPEN_LOG_ENTRIES_FOR_REGISTER_RESERVATION_IN:
+                        Type get_open_log_entries_for_user_for_in = new TypeToken<List<LogEntry>>() {}.getType();
+                        ArrayList<LogEntry> openLogEntriesForUser = (ArrayList<LogEntry>) gson.fromJson(response.getJsonResponse(), get_open_log_entries_for_user_for_in);
+                        Equipment equipmentToRegisterIn = ((ActivityMain)context).getCurrentlyViewedEquipment();
+                        int equipmentId = equipmentToRegisterIn.getE_id();
+
+                        for (LogEntry entry : openLogEntriesForUser)
+                            if (entry.getE_id() == equipmentId) {
+                                WebAPI.doRegisterReservationIn(context, entry.getLe_id());
+                                break;
+                            }
+                        break;
+
                     case ADD_EQUIPMENT:
 
                         break;
@@ -227,8 +243,16 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
                         break;
 
                     case REGISTER_RESERVATION_OUT:
-                        if (response.getResult() == true)
+                        if (response.getResult() == true) {
                             Toast.makeText(context, "Lån registrert", Toast.LENGTH_LONG).show();
+                            EquipmentStatus.getUpdateFromDatabase(context);
+                        }
+                        break;
+                    case REGISTER_RESERVATION_IN:
+                        if (response.getResult() == true) {
+                            Toast.makeText(context, "Innlevering registrert", Toast.LENGTH_LONG).show();
+                            EquipmentStatus.getUpdateFromDatabase(context);
+                        }
                         break;
                 }
             }
@@ -312,7 +336,8 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
         }
     }
 
-    public static void doGetEquipmentAvailable(Context context, Method method) {
+    public static void doGetEquipmentAvailable(Context context, Method method)
+    {
         if (httpClient != null) {
             List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
             nameValuePairs.add(new BasicNameValuePair("which_equipment", "AVAILABLE"));
@@ -322,7 +347,8 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
         }
     }
 
-    public static void doGetEquipmentInUse(Context context, Method method) {
+    public static void doGetEquipmentInUse(Context context, Method method)
+    {
         if (httpClient != null) {
             List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
             nameValuePairs.add(new BasicNameValuePair("which_equipment", "IN_USE"));
@@ -369,6 +395,16 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
         if (httpClient != null) {
             List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
             new WebAPI(URL, Method.GET_ALL_LOG_ENTRIES_FOR_ALL_USER, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
+        } else {
+            Log.d(TAG, "Logg inn først!");
+        }
+    }
+
+    public static void doGetOpenLogEntries(Context context, Method method, int userId) {
+        if (httpClient != null) {
+            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+            nameValuePairs.add(new BasicNameValuePair("userId", String.valueOf(userId)));
+            new WebAPI(URL, method, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
         } else {
             Log.d(TAG, "Logg inn først!");
         }
@@ -421,5 +457,16 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
         nameValuePairs.add(new BasicNameValuePair("dateOut", new SimpleDateFormat("dd.MM.yyyy").format(new java.util.Date())));
         nameValuePairs.add(new BasicNameValuePair("comment", comment));
         new WebAPI(URL, Method.REGISTER_RESERVATION_OUT, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
+    }
+
+    public static void doRegisterReservationIn(Context context, int logEntryId) {
+        if (httpClient == null)
+            httpClient = new DefaultHttpClient();
+
+        List<NameValuePair> nameValuePairs = null;
+        nameValuePairs = new ArrayList<NameValuePair>(2);
+        nameValuePairs.add(new BasicNameValuePair("le_id", String.valueOf(logEntryId)));
+        nameValuePairs.add(new BasicNameValuePair("dateIn", new SimpleDateFormat("dd.MM.yyyy").format(new java.util.Date())));
+        new WebAPI(URL, Method.REGISTER_RESERVATION_IN, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
     }
 }

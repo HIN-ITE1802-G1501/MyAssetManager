@@ -18,8 +18,8 @@
         android:layout_width="198dp"
         android:layout_height="wrap_content"
         android:text="Registrer nytt lån"
-        android:onClick="onClickCreateNewLoanButton"
-        android:id="@+id/buttonEquipmentRegisterLoan"
+        android:onClick="onClickLoanButton"
+        android:id="@+id/buttonEquipmentLoan"
         android:layout_below="@+id/textViewEquipmentStatusLabel"
         android:layout_toRightOf="@+id/imageViewEquipmentFragment"
         android:layout_toEndOf="@+id/imageViewEquipmentFragment"/>
