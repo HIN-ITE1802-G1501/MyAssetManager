@@ -6,6 +6,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
+import android.content.pm.FeatureInfo;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -70,6 +71,10 @@ public class ActivityMain extends Activity {
 
         private Filter(int id) {
             resourceId = id;
+        }
+
+        public int getId() {
+            return resourceId;
         }
 
         @Override
@@ -246,6 +251,7 @@ public class ActivityMain extends Activity {
             boolean clickedCategory = adapter.getItem(position).getClass().equals(Category.class);
             boolean clickedEquipment = adapter.getItem(position).getClass().equals(Equipment.class);
             boolean clickedUser = adapter.getItem(position).getClass().equals(User.class);
+            boolean clickedUserLogEntries = adapter.getItem(position).getClass().equals(UserLogEntries.class);
 
             if (clickedCategory) {
                 Log.d(TAG, ((Category) adapter.getItem(position)).getListItemTitle());
@@ -261,6 +267,10 @@ public class ActivityMain extends Activity {
                 replaceFragmentContainerFragmentWith(fragmentUser);
                 User user = ((User) adapter.getItem(position));
                 fragmentUser.populateUserFragmentWithUserData(user);
+            } if ( clickedUserLogEntries ) {
+                replaceFragmentContainerFragmentWith(fragmentUser);
+                UserLogEntries user = ((UserLogEntries) adapter.getItem(position));
+                fragmentUser.populateUserFragmentWithUserData(user.getUser());
             }
         }
     };
@@ -389,6 +399,7 @@ public class ActivityMain extends Activity {
                         Spinner spFilter = (Spinner)findViewById(R.id.spFilter);
                         Log.d(TAG, "Position " + Integer.toString(position));
 
+
                         if ((Integer)spFilter.getTag(R.id.pos) != position) {
                             TextView tvttt = (TextView)findViewById(R.id.tvTitle);
                             Object selectedItem = parent.getItemAtPosition(position);
@@ -405,7 +416,7 @@ public class ActivityMain extends Activity {
                             } else  if (selectedItem.equals(Filter.FILTER_EQUIPMENT_INUSE_BYCATEGORY)) {
                                 addToList((ArrayList<AssetManagerObjects>)EquipmentStatus.getInUseEquipment(tvttt.getText().toString()).clone());
                             } else  if (selectedItem.equals(Filter.FILTER_CATEGORY_ALL)) {
-                                addToList(Category.getCategories());
+                                addToList(Category.getCategories(), false);
                             } else  if (selectedItem.equals(Filter.FILTER_EQUIPMENT_AVAILABLE)) {
                                 addToList((ArrayList<AssetManagerObjects>)EquipmentStatus.getAvailableEquipment().clone(), false);
                             } else  if (selectedItem.equals(Filter.FILTER_EQUIPMENT_INUSE)) {

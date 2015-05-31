@@ -142,7 +142,8 @@ public class User extends AssetManagerObjects implements MyInterface {
 
     @Override
     public int getListItemImage() {
-        return R.drawable.user;
+
+        return (user_activated) ? R.drawable.user : R.drawable.user_notactive;
     }
 
 

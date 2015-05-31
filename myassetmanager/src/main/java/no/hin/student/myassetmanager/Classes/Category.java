@@ -50,7 +50,7 @@ public class Category extends AssetManagerObjects
 
     @Override
     public String getListItemSubTitle(View view) {
-        return "Lager: " + Integer.toString(EquipmentStatus.countEquipmentAvailable(this.getName())) + ", Utlånt: " + Integer.toString(EquipmentStatus.countEquipmentInUse(this.getName()));
+        return "Lager: " + Integer.toString(EquipmentStatus.countEquipmentAvailable(this.getName())) + ", Lånt: " + Integer.toString(EquipmentStatus.countEquipmentInUse(this.getName()));
     }
 
     private enum Icons {

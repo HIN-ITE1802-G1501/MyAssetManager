@@ -65,7 +65,7 @@ public class UserLogEntries extends AssetManagerObjects {
 
                 if (!result.equals(""))
                     result = result + "\n";
-                result = result + logEntry.getE_id() + " " + logEntry.getOut() + " " + logEntry.getComment();
+                result = result + "Utstyr: " + EquipmentStatus.getEquipmentById(logEntry.getE_id()) + "\nUtlån: " + logEntry.getOut() + "\nLevert: " + logEntry.getIn() + "\n=============================";
             }
         } catch (Exception e) {
             Log.d("-log", e.toString());

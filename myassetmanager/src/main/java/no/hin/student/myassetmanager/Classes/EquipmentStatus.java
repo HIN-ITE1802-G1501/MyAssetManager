@@ -91,4 +91,13 @@ public class EquipmentStatus {
         }
         return result;
     }
+
+    public static String getEquipmentById(int id) {
+        String result = "";
+        for (Equipment equipment : inUseEquipment) {
+            if (equipment.getE_id() == id)
+                result = equipment.getType();
+        }
+        return result;
+    }
 }
