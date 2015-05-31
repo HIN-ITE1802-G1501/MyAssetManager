@@ -39,11 +39,11 @@ public class FragmentAsset extends Fragment {
             getView().findViewById(R.id.buttonEquipmentRegisterLoan).setVisibility(View.VISIBLE);
             getView().findViewById(R.id.textViewEquipmentStatusLabel).setVisibility(View.VISIBLE);
             getView().findViewById(R.id.textViewEquipmentStatus).setVisibility(View.VISIBLE);
-            textViewStatus.setText("På lager");
+            textViewStatus.setText("PÃ¥ lager");
         }
         else if (userStatus == ActivityMain.IS_ADMIN_USER && !EquipmentStatus.isEquipmentAvailable(equipment)) {
             getView().findViewById(R.id.buttonEquipmentRegisterLoan).setVisibility(View.INVISIBLE);
-            textViewStatus.setText("Utlånt");
+            textViewStatus.setText("UtlÃ¥nt");
         }
         else if (userStatus == ActivityMain.IS_REGULAR_USER) {
             getView().findViewById(R.id.buttonEquipmentRegisterLoan).setVisibility(View.INVISIBLE);

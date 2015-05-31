@@ -31,7 +31,6 @@ import no.hin.student.myassetmanager.Classes.AssetManagerAdapter;
 import no.hin.student.myassetmanager.Classes.AssetManagerObjects;
 import no.hin.student.myassetmanager.Classes.Category;
 import no.hin.student.myassetmanager.Classes.Equipment;
-import no.hin.student.myassetmanager.Classes.EquipmentStatus;
 import no.hin.student.myassetmanager.Classes.User;
 import no.hin.student.myassetmanager.Classes.UserLogEntries;
 import no.hin.student.myassetmanager.Classes.WebAPI;
@@ -87,6 +86,7 @@ public class ActivityMain extends Activity {
         File file = new File(Environment.getExternalStorageDirectory() + "/Download/products.txt");
         if (!(file.exists())) // If file doesn't exist, downloadCategoriesFile it
             Category.downloadCategoriesFile();
+
     }
 
     @Override
@@ -196,6 +196,9 @@ public class ActivityMain extends Activity {
     };
 
 
+
+
+
     // When clicking on a listview item
     final AdapterView.OnItemClickListener mGlobal_OnItemClickListener = new AdapterView.OnItemClickListener() {
         public void onItemClick(AdapterView<?> adapterView, View row, int position, long index) {
@@ -212,16 +215,37 @@ public class ActivityMain extends Activity {
             else if (clickedEquipment) {
                 replaceFragmentContainerFragmentWith(fragmentAsset);
                 Equipment equipment = (Equipment)adapter.getItem(position);
-                fragmentAsset.populateAssetFragmentWithAssetData(equipment, loggedInUserStatus);
-                currentlyViewedEquipment = equipment;
+                populateAssetFragmentWithAssetData(equipment);
             }
             else if (clickedUser) {
                 replaceFragmentContainerFragmentWith(fragmentUser);
                 User user = ((User) adapter.getItem(position));
-                fragmentUser.populateUserFragmentWithUserData(user);
+                populateUserFragmentWithUserData(user);
             }
         }
-    };    
+    };
+
+    private void populateAssetFragmentWithAssetData(Equipment equipment) {
+        currentlyViewedEquipment = equipment;
+
+        TextView textViewId = (TextView)fragmentAsset.getView().findViewById(R.id.textViewEquipmentId);
+        TextView textViewBrand = (TextView)fragmentAsset.getView().findViewById(R.id.textViewEquipmentBrand);
+        TextView textViewModel = (TextView)fragmentAsset.getView().findViewById(R.id.textViewEquipmentModel);
+
+        textViewId.setText("" + equipment.getE_id());
+        textViewBrand.setText(equipment.getBrand());
+        textViewModel.setText(equipment.getModel());
+    }
+
+    private void populateUserFragmentWithUserData(User user) {
+        TextView textViewFullName = (TextView)fragmentUser.getView().findViewById(R.id.textViewEquipmentBrand);
+        TextView textViewUsername = (TextView)fragmentUser.getView().findViewById(R.id.textViewEquipmentModel);
+        TextView textViewPhoneNumber = (TextView)fragmentUser.getView().findViewById(R.id.textViewEquipmentId);
+
+        textViewFullName.setText(user.getFirstname() + " " + user.getLastname());
+        textViewUsername.setText(user.getUserName());
+        textViewPhoneNumber.setText(user.getPhone());
+    }
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
@@ -276,7 +300,6 @@ public class ActivityMain extends Activity {
             this.user = user;
             replaceFragmentContainerFragmentWith(fragmentList);
             addToList(Category.getCategories());
-            EquipmentStatus.getUpdateFromDatabase(this);
         }
         else {
             Toast.makeText(getApplicationContext(), "Feil brukernavn og/eller passord", Toast.LENGTH_LONG).show();
@@ -302,23 +325,33 @@ public class ActivityMain extends Activity {
                 ListView lvList = (ListView) fragmentList.getView().findViewById(R.id.lvList);
                 TextView tvTitle = ((TextView) fragmentList.getView().findViewById(R.id.tvTitle));
 
+                int spPos = 0;
+                Log.d(TAG, "Before counting");
+                if (lvList.getCount() > 0) {
+                    Log.d(TAG, "Before checking objects");
+                    if (objects.get(0).getClass().equals(lvList.getItemAtPosition(0).getClass()) ) {
+                        spPos = spFilter.getSelectedItemPosition();
+                        Log.d(TAG, "Settings spos" + Integer.toString(spPos));
+                    }
+                }
 
                 if (objects.get(0) instanceof Equipment) {
                     spinnerArray.add("Alle");
                     spinnerArray.add("Tilgjengelig");
-                    spinnerArray.add("Utlånt");
+                    spinnerArray.add("UtlÃ¥nt");
                     tvTitle.setText(((Equipment) objects.get(0)).getType());
                 } else if (objects.get(0) instanceof Category) {
                     spinnerArray.add("Alle");
                     spinnerArray.add("Aktive");
                     tvTitle.setText("Kategori");
                 } else if (objects.get(0) instanceof User) {
-                    spinnerArray.add("Alle");
-                    spinnerArray.add("Aktive");
+                    spinnerArray.add("Alle brukere");
+                    spinnerArray.add("Aktive brukere");
+                    spinnerArray.add("Ikke aktive brukere");
                     tvTitle.setText("Brukere");
                 } else if (objects.get(0) instanceof UserLogEntries) {
                     spinnerArray.add("All historie");
-                    spinnerArray.add("Med utlån");
+                    spinnerArray.add("Med utlÃ¥n");
                     tvTitle.setText("Utstyrslog");
                 }
 
@@ -331,6 +364,32 @@ public class ActivityMain extends Activity {
                 ArrayAdapter<String> adapterInstance;
                 adapterInstance = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, spinnerArray);
                 spFilter.setAdapter(adapterInstance);
+                spFilter.setSelection(spPos);
+                spFilter.setTag(R.id.pos, spPos);
+                spFilter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        Spinner spFilter = (Spinner)findViewById(R.id.spFilter);
+                        Log.d(TAG, "Position " + Integer.toString(position));
+
+                        if ((Integer)spFilter.getTag(R.id.pos) != position) {
+                            String selectedItem = parent.getItemAtPosition(position).toString();
+                            Toast.makeText(view.getContext(), selectedItem, Toast.LENGTH_SHORT).show();
+                            if (selectedItem.equals("Alle brukere")) {
+                                WebAPI.doGetUsers(view.getContext(), WebAPI.Method.GET_USERS);
+                            }
+                            if (selectedItem.equals("Aktive brukere")) {
+                                WebAPI.doGetUsers(view.getContext(), WebAPI.Method.GET_ACTIVE_USERS);
+                            }
+                            if (selectedItem.equals("Ikke aktive brukere")) {
+                                WebAPI.doGetUsers(view.getContext(), WebAPI.Method.GET_NOT_ACTIVED_USERS);
+                            }
+                        }
+                    }
+
+                    public void onNothingSelected(AdapterView<?> parent) {
+
+                    }
+                });
             } else {
                 Toast.makeText(this.getApplicationContext(), "Det finnes desverre ikke noe utstyr i denne kategorien.", Toast.LENGTH_SHORT).show();
             }
@@ -374,7 +433,7 @@ public class ActivityMain extends Activity {
         String repeatedPassword = ((EditText)fragmentAccountSettings.getView().findViewById(R.id.editTextSettingsRepeatPassword)).getText().toString();
 
         if (!password.equals(repeatedPassword))
-            Toast.makeText(this, "Passord matchet ikke hverandre. Pr?v p? nytt", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Passord matchet ikke hverandre. Prï¿½v pï¿½ nytt", Toast.LENGTH_LONG).show();
         else
             WebAPI.doChangeUserPassword(this, user.getU_id(), password);
     }
@@ -384,7 +443,19 @@ public class ActivityMain extends Activity {
         replaceFragmentContainerFragmentWith(fragmentLoan);
 
         if (currentlyViewedEquipment != null)
-            fragmentLoan.populateLoanFragmentWithData(currentlyViewedEquipment, this);
+            populateLoanFragmentWithData(currentlyViewedEquipment);
+    }
+
+    private void populateLoanFragmentWithData(Equipment equipment) {
+        TextView textViewId = (TextView)fragmentLoan.getView().findViewById(R.id.textViewLoanEquipmentId);
+        TextView textViewBrand = (TextView)fragmentLoan.getView().findViewById(R.id.textViewLoanEquipmentBrand);
+        TextView textViewModel = (TextView)fragmentLoan.getView().findViewById(R.id.textViewLoanEquipmentModel);
+
+        textViewId.setText("" + equipment.getE_id());
+        textViewBrand.setText(equipment.getBrand());
+        textViewModel.setText(equipment.getModel());
+
+        WebAPI.doGetUsers(ActivityMain.this, WebAPI.Method.GET_USERS_FOR_LOAN_FRAGMENT);
     }
 
     public void populateLoanListViewWithUsers(ArrayList<User> users) {
@@ -392,17 +463,15 @@ public class ActivityMain extends Activity {
         adapter = new AssetManagerAdapter(this, users);
         listViewLoan.setAdapter(adapter);
 
-        listViewLoan.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
+        listViewLoan.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-            {
-                final User clickedUser = (User) adapter.getItem(position);
-                final String comment = ((EditText) fragmentLoan.getView().findViewById(R.id.editTextLoanComment)).getText().toString();
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                final User clickedUser = (User)adapter.getItem(position);
+                final String comment = ((EditText)fragmentLoan.getView().findViewById(R.id.editTextLoanComment)).getText().toString();
 
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(ActivityMain.this);
-                alertDialog.setTitle("Registrer lån");
-                alertDialog.setMessage("Vil du registrere et lån for bruker " + clickedUser.getFirstname() + " og utstyr " + currentlyViewedEquipment.getModel() + "?");
+                alertDialog.setTitle("Registrer lï¿½n");
+                alertDialog.setMessage("Vil du registrere et lï¿½n for bruker " + clickedUser.getFirstname() + " og utstyr " + currentlyViewedEquipment.getModel() + "?");
 
                 alertDialog.setPositiveButton("Ja", new DialogInterface.OnClickListener()
                 {
@@ -412,15 +481,12 @@ public class ActivityMain extends Activity {
                         WebAPI.doRegisterReservationOut(ActivityMain.this, clickedUser.getU_id(), currentlyViewedEquipment.getE_id(), comment);
                         replaceFragmentContainerFragmentWith(fragmentList);
                         addToList(Category.getCategories());
-                        EquipmentStatus.getUpdateFromDatabase(ActivityMain.this);
                     }
                 });
 
-                alertDialog.setNegativeButton("Nei", new DialogInterface.OnClickListener()
-                {
+                alertDialog.setNegativeButton("Nei", new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
+                    public void onClick(DialogInterface dialog, int which) {
 
                     }
                 });
