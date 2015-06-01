@@ -6,8 +6,7 @@
     android:layout_marginTop="7dp"
     android:layout_marginRight="7dp"
     android:layout_marginBottom="7dp">
-    <LinearLayout
-        android:orientation="horizontal"
+    <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
         <TextView
@@ -15,15 +14,17 @@
             android:text= "Tittel"
             android:textSize="20dp"
             android:gravity="center_vertical|left"
-            android:layout_width="120dp"
-            android:layout_height="55dp" />
+            android:layout_width="wrap_content"
+            android:layout_height="55dp"
+            android:layout_alignParentLeft="true" />
         <Spinner
             android:id="@+id/spFilter"
             android:textSize="20dp"
             android:spinnerMode="dropdown"
             android:layout_width="wrap_content"
-            android:layout_height="55dp" />
-    </LinearLayout>
+            android:layout_height="55dp"
+            android:layout_alignParentRight="true" />
+    </RelativeLayout>
     <ListView
         android:id="@+id/lvList"
         android:layout_width="wrap_content"

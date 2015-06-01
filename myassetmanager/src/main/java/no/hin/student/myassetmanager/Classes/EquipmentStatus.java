@@ -13,7 +13,7 @@ public class EquipmentStatus {
     private static ArrayList<Equipment> inUseEquipment = new ArrayList<>();
 
     public static void getUpdateFromDatabase(Context context) {
-        //WebAPI.doGetEquipmentAll(context);
+        WebAPI.doGetEquipmentAllForStatus(context);
         WebAPI.doGetEquipmentAvailable(context);
         WebAPI.doGetEquipmentInUse(context);
         Log.e("EquipmentStatus", "getUpdateFromDatabase called");
@@ -92,12 +92,12 @@ public class EquipmentStatus {
         return result;
     }
 
-    public static String getEquipmentById(int id) {
-        String result = "";
-        for (Equipment equipment : inUseEquipment) {
+    public static Equipment getEquipmentById(int id) {
+
+        for (Equipment equipment : allEquipment) {
             if (equipment.getE_id() == id)
-                result = equipment.getType();
+                return equipment;
         }
-        return result;
+        return null;
     }
 }

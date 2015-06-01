@@ -84,7 +84,7 @@ public class LogEntry extends AssetManagerObjects {
     }
 
     public String getComment() {
-        return comment;
+        return comment.trim();
     }
 
     public void setComment(String comment) {
@@ -104,12 +104,14 @@ public class LogEntry extends AssetManagerObjects {
 
     @Override
     public String getListItemTitle() {
-        return EquipmentStatus.getEquipmentById(getE_id());
+        Equipment equipment = EquipmentStatus.getEquipmentById(getE_id());
+        return equipment.getBrand() + " " + equipment.getModel();
     }
 
     @Override
     public String getListItemSubTitle(View view) {
-        return (getIn().equals("") ? "" : "Levert inn: " + getIn() + "\n") + "Levert ut: " + getOut() + "\n" + (getComment().equals("") ? "" : getComment() );
+        Equipment equipment = EquipmentStatus.getEquipmentById(getE_id());
+        return "Kategori: " + equipment.getType() + "\n" + (getIn().equals("") ? "" : "Levert inn: " + getIn() + "\n") + "Levert ut: " + getOut() + (getComment().equals("") ? "" : "\n" + getComment() );
     }
 
     @Override

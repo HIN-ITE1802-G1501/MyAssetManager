@@ -6,8 +6,8 @@
         android:id="@+id/image"
         android:scaleType="fitXY"
         android:adjustViewBounds="true"
-        android:maxWidth="42dp"
-        android:maxHeight="42dp"
+        android:maxWidth="64dp"
+        android:maxHeight="64dp"
         android:src="@drawable/user"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
@@ -17,6 +17,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="4dp"
+        android:textSize="20dp"
         android:textStyle="bold"
         android:text="title"
         android:layout_toRightOf="@id/image" />
@@ -26,6 +27,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="4dp"
+        android:textSize="20dp"
         android:text="subtitle"
         android:layout_toRightOf="@+id/image"
         android:layout_below="@id/title"/>

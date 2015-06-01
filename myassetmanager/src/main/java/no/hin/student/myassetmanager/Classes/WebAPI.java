@@ -372,6 +372,16 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
         }
     }
 
+    public static void doGetEquipmentAllForStatus(Context context) {
+        if (httpClient != null) {
+            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+            nameValuePairs.add(new BasicNameValuePair("which_equipment", "ALL"));
+            new WebAPI(URL, Method.GET_EQUIPMENT_ALL_FOR_EQUIPMENT_STATUS, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
+        } else {
+            Log.d(TAG, "Logg inn først!");
+        }
+    }
+
     public static void doGetEquipmentAvailable(Context context)
     {
         if (httpClient != null) {

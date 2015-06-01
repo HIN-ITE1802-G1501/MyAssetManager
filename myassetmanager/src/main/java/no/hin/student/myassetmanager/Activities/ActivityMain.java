@@ -6,7 +6,9 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.FeatureInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -538,10 +540,10 @@ public class ActivityMain extends Activity {
                     @Override
                     public void onClick(DialogInterface dialog, int which)
                     {
-                        WebAPI.doRegisterReservationOut(ActivityMain.this, clickedUser.getU_id(), currentlyViewedEquipment.getE_id(), comment);
-                        replaceFragmentContainerFragmentWith(fragmentList);
-                        addToList(Category.getCategories());
-                        EquipmentStatus.getUpdateFromDatabase(ActivityMain.this);
+                WebAPI.doRegisterReservationOut(ActivityMain.this, clickedUser.getU_id(), currentlyViewedEquipment.getE_id(), comment);
+                replaceFragmentContainerFragmentWith(fragmentList);
+                addToList(Category.getCategories());
+                EquipmentStatus.getUpdateFromDatabase(ActivityMain.this);
                     }
                 });
 
@@ -560,9 +562,21 @@ public class ActivityMain extends Activity {
 
     public void populateUserListViewWithUsers(ArrayList<LogEntry> logEntries) {
         Log.d(TAG, "Populating listview with userlogentries");
-        ListView listViewLoan = (ListView)fragmentUser.getView().findViewById(R.id.lvUserHistory);
+        ListView lvUserHistory = (ListView)fragmentUser.getView().findViewById(R.id.lvUserHistory);
         adapter = new AssetManagerAdapter(this, logEntries);
-        listViewLoan.setAdapter(adapter);
+        lvUserHistory.setAdapter(adapter);
+
+        lvUserHistory.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(AdapterView<?> adapter, View v, int position, long arg3) {
+                replaceFragmentContainerFragmentWith(fragmentAsset);
+                LogEntry logEntry = (LogEntry)adapter.getItemAtPosition(position);
+                Equipment equipment = EquipmentStatus.getEquipmentById(logEntry.getE_id());
+                fragmentAsset.populateAssetFragmentWithAssetData(equipment, loggedInUserStatus);
+                currentlyViewedEquipment = equipment;
+            }
+        });
     }
 
     public void onClickLoginButton(View buttonView)
@@ -574,6 +588,22 @@ public class ActivityMain extends Activity {
         attemptLogin(username, password, isAdmin);
     }
 
+    public void onClickSendUserSMS(View buttonView) {
+        Intent smsIntent = new Intent(Intent.ACTION_VIEW);
+        smsIntent.setType("vnd.android-dir/mms-sms");
+        smsIntent.putExtra("address", fragmentUser.getUser().getPhone());
+        smsIntent.putExtra("sms_body","Dette er en test");
+        startActivity(smsIntent);
+    }
+
+    public void onClickCallUserPhone(View buttonView) {
+        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + fragmentUser.getUser().getPhone()));
+        startActivity(intent);
+    }
+
+    public void onClickActivateUser(View buttonView) {
+
+    }
 
     private void attemptLogin(String username, String password, boolean isAdmin) {
         if (isAdmin)
