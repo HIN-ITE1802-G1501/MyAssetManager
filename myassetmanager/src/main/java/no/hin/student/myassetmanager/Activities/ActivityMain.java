@@ -35,6 +35,7 @@ import no.hin.student.myassetmanager.Classes.AssetManagerObjects;
 import no.hin.student.myassetmanager.Classes.Category;
 import no.hin.student.myassetmanager.Classes.Equipment;
 import no.hin.student.myassetmanager.Classes.EquipmentStatus;
+import no.hin.student.myassetmanager.Classes.LogEntry;
 import no.hin.student.myassetmanager.Classes.User;
 import no.hin.student.myassetmanager.Classes.UserLogEntries;
 import no.hin.student.myassetmanager.Classes.WebAPI;
@@ -266,11 +267,11 @@ public class ActivityMain extends Activity {
             else if (clickedUser) {
                 replaceFragmentContainerFragmentWith(fragmentUser);
                 User user = ((User) adapter.getItem(position));
-                fragmentUser.populateUserFragmentWithUserData(user);
+                fragmentUser.populateUserFragmentWithUserData(user, ActivityMain.this);
             } if ( clickedUserLogEntries ) {
                 replaceFragmentContainerFragmentWith(fragmentUser);
                 UserLogEntries user = ((UserLogEntries) adapter.getItem(position));
-                fragmentUser.populateUserFragmentWithUserData(user.getUser());
+                fragmentUser.populateUserFragmentWithUserData(user.getUser(), ActivityMain.this);
             }
         }
     };
@@ -555,6 +556,13 @@ public class ActivityMain extends Activity {
                 alertDialog.show();
             }
         });
+    }
+
+    public void populateUserListViewWithUsers(ArrayList<LogEntry> logEntries) {
+        Log.d(TAG, "Populating listview with userlogentries");
+        ListView listViewLoan = (ListView)fragmentUser.getView().findViewById(R.id.lvUserHistory);
+        adapter = new AssetManagerAdapter(this, logEntries);
+        listViewLoan.setAdapter(adapter);
     }
 
     public void onClickLoginButton(View buttonView)

@@ -1,13 +1,16 @@
 package no.hin.student.myassetmanager.Fragments;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import no.hin.student.myassetmanager.Classes.App;
 import no.hin.student.myassetmanager.Classes.User;
+import no.hin.student.myassetmanager.Classes.WebAPI;
 import no.hin.student.myassetmanager.R;
 
 
@@ -24,7 +27,7 @@ public class FragmentUser extends Fragment {
         return view;
     }
 
-    public void populateUserFragmentWithUserData(User user) {
+    public void populateUserFragmentWithUserData(User user, Context context) {
         TextView textViewFullName = (TextView)getView().findViewById(R.id.textViewEquipmentBrand);
         TextView textViewUsername = (TextView)getView().findViewById(R.id.textViewEquipmentModel);
         TextView textViewPhoneNumber = (TextView)getView().findViewById(R.id.textViewEquipmentId);
@@ -32,5 +35,7 @@ public class FragmentUser extends Fragment {
         textViewFullName.setText(user.getFirstname() + " " + user.getLastname());
         textViewUsername.setText(user.getUserName());
         textViewPhoneNumber.setText(user.getPhone());
+
+        WebAPI.doGetOpenLogEntriesForUser(context, WebAPI.Method.GET_LOG_ENTRIES_FOR_USER_FRAGMENT, user.getId());
     }
 }

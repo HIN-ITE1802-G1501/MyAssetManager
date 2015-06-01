@@ -8,19 +8,14 @@ import com.google.gson.Gson;
 import no.hin.student.myassetmanager.R;
 
 
-/**
- * Created by wfa on 07.04.2015.
- *
- * Objekter av denne typen representerer "utlÃ¥n".
- * Et "utlÃ¥n" bestÃ¥r av en brukerid, utstyrsid, dato_ut og (etter hvert) dato_inn + evt. kommentar.
- */
+
 public class LogEntry extends AssetManagerObjects {
-    private int le_id;      //PrimÃ¦rnÃ¸kkelfelt, autogenereres i databasen.
-    private int u_id;       //BrukerID, tilsvarer u_id i User-tabellen.
-    private int e_id;       //UstyrsID, tilsvarer e_id i Equipment-tabellen.
-    private String out;     //Dato for utlÃ¥n, format "dd.mm.Ã¥Ã¥Ã¥Ã¥"
-    private String in;      //Dato for innlevering, format "dd.mm.Ã¥Ã¥Ã¥Ã¥"
-    private String comment; //Evt. kommentar.
+    private int le_id;
+    private int u_id;
+    private int e_id;
+    private String out;
+    private String in;
+    private String comment;
 
     public LogEntry() {
         this.le_id = 0;
@@ -109,16 +104,16 @@ public class LogEntry extends AssetManagerObjects {
 
     @Override
     public String getListItemTitle() {
-        return getU_id() + " " + getComment();
+        return EquipmentStatus.getEquipmentById(getE_id());
     }
 
     @Override
     public String getListItemSubTitle(View view) {
-        return null;
+        return (getIn().equals("") ? "" : "Levert inn: " + getIn() + "\n") + "Levert ut: " + getOut() + "\n" + (getComment().equals("") ? "" : getComment() );
     }
 
     @Override
     public int getListItemImage() {
-        return R.drawable.logentry;
+        return (getIn().equals("")) ? R.drawable.logentry_out : R.drawable.logentry_in;
     }
 }

@@ -63,6 +63,7 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
         GET_OPEN_LOG_ENTRIES_FOR_REGISTER_RESERVATION_IN(2009, "getOpenLogEntries"),
         GET_ACTIVE_USERS(2010, "getUsers"),
         GET_NOT_ACTIVED_USERS(2011, "getNotActivatedUsers"),
+        GET_LOG_ENTRIES_FOR_USER_FRAGMENT(2007, "getLogEntriesForUser"),
 
         ADD_EQUIPMENT(3001, "addEquipment"),
         ADD_USER_WITHOUT_LOGIN(3002, "addUserWithoutLogin"),
@@ -231,6 +232,13 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
                                 break;
                             }
                         break;
+                    case  GET_LOG_ENTRIES_FOR_USER_FRAGMENT:
+                        Log.d(TAG, "Finished thread, adding user logentries");
+                        Type get_log_entries_for_user_fragment = new TypeToken<List<LogEntry>>() {}.getType();
+                        ArrayList<LogEntry> logEntriesForUserFragment = (ArrayList<LogEntry>) gson.fromJson(response.getJsonResponse(), get_log_entries_for_user_fragment);
+                        ((ActivityMain) context).populateUserListViewWithUsers(logEntriesForUserFragment);
+                        break;
+
 
                     case ADD_EQUIPMENT:
                         if (response.getResult() == true) {
@@ -341,6 +349,18 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
             Log.d(TAG, "Logg inn først!");
         }
     }
+
+
+    public static void doGetOpenLogEntriesForUser(Context context, Method method, int userId) {
+        if (httpClient != null) {
+            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+            new WebAPI(URL, method, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
+            nameValuePairs.add(new BasicNameValuePair("userId", Integer.toString(userId)));
+        } else {
+            Log.d(TAG, "Logg inn først!");
+        }
+    }
+
 
     public static void doGetEquipmentAll(Context context) {
         if (httpClient != null) {
