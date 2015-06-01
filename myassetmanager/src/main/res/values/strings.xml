@@ -11,6 +11,11 @@
     <string name="action_edit">Endre</string>
     <string name="action_delete">Slett</string>
 
+    <string name="fragment_user_tvUserInfo">Brukerinformasjon</string>
+    <string name="fragment_user_tvUserFullName">Fornavn Etternavn</string>
+    <string name="fragment_user_tvUserUsername">Brukernavn</string>
+    <string name="fragment_user_tvUserPhonenumber">+47 999 99 999</string>
+
     <string name="MENU_CONTEXT_LIST_SHOW">Vis</string>
     <string name="MENU_CONTEXT_LIST_EDIT">Rediger</string>
     <string name="MENU_CONTEXT_LIST_DELETE">Slett</string>

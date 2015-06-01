@@ -5,6 +5,7 @@
                 tools:context="no.hin.student.myassetmanager.Fragments.FragmentAccountSettings">
     <ImageView
         android:src="@drawable/user"
+        android:contentDescription="hh"
         android:adjustViewBounds="true"
         android:maxHeight="90dp"
         android:layout_width="wrap_content"
@@ -14,16 +15,51 @@
         android:layout_alignParentStart="true"
         android:layout_marginTop="10dp"
         android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp"
         android:id="@+id/ivUserFragment"/>
 
     <TextView
         android:id="@+id/textViewEquipmentInfoLabel"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:text="Brukerinformasjon"
-        android:textSize="22dp"
+        android:text="@string/fragment_user_tvUserInfo"
+        android:textSize="22sp"
         android:textColor="#50A7B3"
         android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/ivUserFragment"
+        android:layout_toEndOf="@+id/ivUserFragment"/>
+
+    <TextView
+        android:id="@+id/textViewEquipmentBrand"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="@string/fragment_user_tvUserFullName"
+        android:textSize="16sp"
+        android:textColor="#696969"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/textViewEquipmentInfoLabel"
+        android:layout_toRightOf="@+id/ivUserFragment"
+        android:layout_toEndOf="@+id/ivUserFragment"/>
+
+    <TextView
+        android:id="@+id/textViewEquipmentModel"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="@string/fragment_user_tvUserUsername"
+        android:textSize="16sp"
+        android:textColor="#6D6D6D"
+        android:layout_below="@+id/textViewEquipmentBrand"
+        android:layout_toRightOf="@+id/ivUserFragment"
+        android:layout_toEndOf="@+id/ivUserFragment"/>
+
+    <TextView
+        android:id="@+id/textViewEquipmentId"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="@string/fragment_user_tvUserPhonenumber"
+        android:textSize="16sp"
+        android:textColor="#6D6D6D"
+        android:layout_below="@+id/textViewEquipmentModel"
         android:layout_toRightOf="@+id/ivUserFragment"
         android:layout_toEndOf="@+id/ivUserFragment"/>
 
@@ -38,58 +74,14 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginBottom="5dp"
-        android:id="@+id/view"/>
-
-    <TextView
-        android:id="@+id/textViewEquipmentBrand"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:text="Fornavn Etternavn"
-        android:textSize="16dp"
-        android:textColor="#696969"
-        android:layout_marginTop="10dp"
-        android:layout_below="@+id/textViewEquipmentInfoLabel"
-        android:layout_toRightOf="@+id/ivUserFragment"
-        android:layout_toEndOf="@+id/ivUserFragment"/>
-
-    <TextView
-        android:id="@+id/textViewEquipmentModel"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:text="Brukernavn"
-        android:textSize="16dp"
-        android:textColor="#6D6D6D"
-        android:layout_below="@+id/textViewEquipmentBrand"
-        android:layout_toRightOf="@+id/ivUserFragment"
-        android:layout_toEndOf="@+id/ivUserFragment"/>
-
-    <TextView
-        android:id="@+id/textViewEquipmentId"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:text="+47 917 55 967"
-        android:textSize="16dp"
-        android:textColor="#6D6D6D"
-        android:layout_below="@+id/textViewEquipmentModel"
-        android:layout_toRightOf="@+id/ivUserFragment"
-        android:layout_toEndOf="@+id/ivUserFragment"/>
-
-    <View
-        android:layout_height="1dp"
-        android:layout_width="match_parent"
-        android:background="#728C93"
-        android:layout_marginTop="5dp"
-        android:layout_below="@+id/rlActions"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:id="@+id/view2"/>
+        android:id="@+id/vwLine1"/>
 
     <RelativeLayout
         android:id="@+id/rlActions"
         android:layout_centerHorizontal="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/view">
+        android:layout_below="@+id/vwLine1">
         <ImageButton
             android:id="@+id/btnUserCall"
             android:onClick="onClickCallUserPhone"
@@ -138,14 +130,25 @@
             android:layout_toRightOf="@id/btnUserActivate"/>
     </RelativeLayout>
 
+
+    <View
+        android:id="@+id/vwLine2"
+        android:layout_height="1dp"
+        android:layout_width="match_parent"
+        android:background="#728C93"
+        android:layout_marginTop="5dp"
+        android:layout_below="@+id/rlActions"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
+
     <TextView
         android:id="@+id/tvEquipmentHistoryLabel"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:text="Lånehistorikk"
-        android:textSize="22dp"
+        android:textSize="22sp"
         android:textColor="#50A7B3"
-        android:layout_below="@+id/view2"
+        android:layout_below="@+id/vwLine2"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginTop="24dp"/>
