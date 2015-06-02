@@ -129,11 +129,6 @@ public class ActivityMain extends Activity {
         File file = new File(Environment.getExternalStorageDirectory() + "/Download/products.txt");
         if (!(file.exists())) // If file doesn't exist, downloadCategoriesFile it
             Category.downloadCategoriesFile();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
 
         WebAPI.setDatabaseLoginInformation(
                 getResources().getString(R.string.db_user),
@@ -146,17 +141,32 @@ public class ActivityMain extends Activity {
         fragmentLogin = new FragmentLogin();
         fragmentRegister = new FragmentRegister();
         fragmentAddEquipment = new FragmentAddEquipment();
+    }
 
-        replaceFragmentContainerFragmentWith(fragmentLogin);
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        // Save the user's current game state
+        //savedInstanceState.putInt(STATE_SCORE, mCurrentScore);
+        //savedInstanceState.putInt(STATE_LEVEL, mCurrentLevel);
+
+        // Always call the superclass so it can save the view hierarchy state
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        replaceFragmentContainerFragmentWith(fragmentList);
+        WebAPI.doGetEquipmentWithoutLogin(this);
     }
 
     private void replaceFragmentContainerFragmentWith(Fragment fragment) {
         TableLayout topMenu = (TableLayout)this.findViewById(R.id.tableLayoutTopMenu);
 
-        if (fragment instanceof FragmentLogin || fragment instanceof FragmentRegister)
-            topMenu.setVisibility(View.GONE);
-        else
-            topMenu.setVisibility(View.VISIBLE);
+        //if (fragment instanceof FragmentLogin || fragment instanceof FragmentRegister)
+        //    topMenu.setVisibility(View.GONE);
+        //else
+        //    topMenu.setVisibility(View.VISIBLE);
 
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -168,8 +178,9 @@ public class ActivityMain extends Activity {
 
     @Override
     public void onStop() {
-        WebAPI.logOut(ActivityMain.this);
         super.onStop();
+        if (loggedInUserStatus != IS_LOGGED_OUT)
+            WebAPI.logOut(ActivityMain.this);
     }
 
     // When clicking show view button
@@ -183,6 +194,8 @@ public class ActivityMain extends Activity {
                         showAdminMenu(popup);
                     else if (loggedInUserStatus == IS_REGULAR_USER)
                         showRegularUserMenu(popup);
+                    else if (loggedInUserStatus == IS_LOGGED_OUT)
+                        showAnonymousUserMenu(popup);
                     break;
             }
         }
@@ -205,6 +218,12 @@ public class ActivityMain extends Activity {
         popup.show();
     }
 
+    private void showAnonymousUserMenu(PopupMenu popup) {
+        popup.getMenu().add(Menu.NONE, MENU_BUTTON_SHOW_ASSETS, Menu.NONE, R.string.MENU_BUTTON_SHOW_ASSETS).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
+        popup.getMenu().add(Menu.NONE, MENU_BUTTON_LOGIN, Menu.NONE, R.string.MENU_BUTTON_LOGIN).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
+        popup.show();
+    }
+
 
     // Clicking on hamburger button
     final MenuItem.OnMenuItemClickListener mGlobal_OnMenuItemClickListener = new MenuItem.OnMenuItemClickListener() {
@@ -215,7 +234,9 @@ public class ActivityMain extends Activity {
             switch (menuItem.getItemId()) {
                 case MENU_BUTTON_SHOW_ASSETS:
                     Log.d(TAG, "Showing assets");
-                    addToList(Category.getCategories());
+                    if (loggedInUserStatus == IS_LOGGED_OUT)
+                        WebAPI.doGetEquipmentWithoutLogin(ActivityMain.this);
+                    else addToList(Category.getCategories());
                     return true;
                 case MENU_BUTTON_SHOW_USERS:
                     Log.d(TAG, "Showing users");
@@ -229,8 +250,9 @@ public class ActivityMain extends Activity {
                     replaceFragmentContainerFragmentWith(fragmentAccountSettings);
                     return true;
                 case MENU_BUTTON_LOGOUT:
-                    Log.d(TAG, "Starting logout from MainMenu");
                     WebAPI.logOut(ActivityMain.this);
+                    return true;
+                case MENU_BUTTON_LOGIN:
                     replaceFragmentContainerFragmentWith(fragmentLogin);
                     return true;
                 case MENU_BUTTON_ADD_EQUIPMENT:
@@ -340,6 +362,8 @@ public class ActivityMain extends Activity {
 
     public void logOut() {
         loggedInUserStatus = IS_LOGGED_OUT;
+        replaceFragmentContainerFragmentWith(fragmentList);
+        WebAPI.doGetEquipmentWithoutLogin(ActivityMain.this);
     }
 
     public void deleteUser() {
@@ -374,10 +398,15 @@ public class ActivityMain extends Activity {
                     spinnerArray.add(Filter.FILTER_EQUIPMENT_INUSE);
                     tvTitle.setText("Utstyr");
                 } else if (objects.get(0) instanceof Equipment) {
-                    spinnerArray.add(Filter.FILTER_EQUIPMENT_ALL);
-                    spinnerArray.add(Filter.FILTER_EQUIPMENT_AVAILABLE_BYCATEGORY);
-                    spinnerArray.add(Filter.FILTER_EQUIPMENT_INUSE_BYCATEGORY);
-                    tvTitle.setText(((Equipment) objects.get(0)).getType());
+                    if (loggedInUserStatus == IS_LOGGED_OUT) {
+                        spinnerArray.add(Filter.FILTER_EQUIPMENT_ALL);
+                        tvTitle.setText("Utstyr");
+                    } else {
+                        spinnerArray.add(Filter.FILTER_EQUIPMENT_ALL);
+                        spinnerArray.add(Filter.FILTER_EQUIPMENT_AVAILABLE_BYCATEGORY);
+                        spinnerArray.add(Filter.FILTER_EQUIPMENT_INUSE_BYCATEGORY);
+                        tvTitle.setText(((Equipment) objects.get(0)).getType());
+                    }
                 } else if (objects.get(0) instanceof Category) {
                     spinnerArray.add(Filter.FILTER_CATEGORY_ALL);
                     spinnerArray.add(Filter.FILTER_EQUIPMENT_AVAILABLE);

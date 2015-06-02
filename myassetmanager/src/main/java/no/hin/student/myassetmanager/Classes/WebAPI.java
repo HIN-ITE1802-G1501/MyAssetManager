@@ -74,7 +74,10 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
         DELETE_USER(5001, "deleteUser"),
 
         REGISTER_RESERVATION_OUT(6001, "registerReservationOut"),
-        REGISTER_RESERVATION_IN(6002, "registerReservationIn");
+        REGISTER_RESERVATION_IN(6002, "registerReservationIn"),
+
+        GET_EQUIPMENT_WITHOUT_LOGIN(9001, "getEquipmentWithoutLogin");
+
 
         private int type;
         private String text;
@@ -179,8 +182,7 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
                         EquipmentStatus.setAllEquipment(equipmentAllForEquipmentStatus);
                         break;
                     case GET_EQUIPMENT_AVAILABLE_FOR_EQUIPMENT_STATUS:
-                        Type get_available_for_equipment_status = new TypeToken<List<Equipment>>() {
-                        }.getType();
+                        Type get_available_for_equipment_status = new TypeToken<List<Equipment>>() {}.getType();
                         ArrayList<Equipment> equipmentAvailableForEquipmentStatus = (ArrayList<Equipment>) gson.fromJson(response.getJsonResponse(), get_available_for_equipment_status);
                         EquipmentStatus.setAvailableEquipment(equipmentAvailableForEquipmentStatus);
                         break;
@@ -238,8 +240,6 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
                         ArrayList<LogEntry> logEntriesForUserFragment = (ArrayList<LogEntry>) gson.fromJson(response.getJsonResponse(), get_log_entries_for_user_fragment);
                         ((ActivityMain) context).populateUserListViewWithUsers(logEntriesForUserFragment);
                         break;
-
-
                     case ADD_EQUIPMENT:
                         if (response.getResult() == true) {
                             Toast.makeText(context, "Utstyr lagret", Toast.LENGTH_LONG).show();
@@ -276,6 +276,12 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
                             Toast.makeText(context, "Innlevering registrert", Toast.LENGTH_LONG).show();
                             EquipmentStatus.getUpdateFromDatabase(context);
                         }
+                        break;
+                    case GET_EQUIPMENT_WITHOUT_LOGIN:
+                        Type get_equipment_without_login = new TypeToken<List<Equipment>>() { }.getType();
+                        ArrayList<AssetManagerObjects> equipment_without_login = (ArrayList<AssetManagerObjects>) gson.fromJson(response.getJsonResponse(), get_equipment_without_login);
+                        ((ActivityMain) context).addToList(equipment_without_login);
+                        closeSession();
                         break;
                 }
             }
@@ -513,5 +519,20 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
         nameValuePairs.add(new BasicNameValuePair("le_id", String.valueOf(logEntryId)));
         nameValuePairs.add(new BasicNameValuePair("dateIn", new SimpleDateFormat("dd.MM.yyyy").format(new java.util.Date())));
         new WebAPI(URL, Method.REGISTER_RESERVATION_IN, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
+    }
+
+    public static void doGetEquipmentWithoutLogin(Context context) {
+        if (httpClient == null) {
+            httpClient = new DefaultHttpClient();
+            List<NameValuePair> nameValuePairs = null;
+            nameValuePairs = new ArrayList<NameValuePair>(6);
+            nameValuePairs.add(new BasicNameValuePair("connectstring", "jdbc:mysql://" + sql + ":" + sqlport + "/"));
+            nameValuePairs.add(new BasicNameValuePair("dbName", db));
+            nameValuePairs.add(new BasicNameValuePair("db_uid", databaseUsername));
+            nameValuePairs.add(new BasicNameValuePair("db_pwd", databasePassword));
+            new WebAPI(URL, Method.GET_EQUIPMENT_WITHOUT_LOGIN, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
+        } else {
+            Log.d(TAG, "Du er allerede logget inn!");
+        }
     }
 }
