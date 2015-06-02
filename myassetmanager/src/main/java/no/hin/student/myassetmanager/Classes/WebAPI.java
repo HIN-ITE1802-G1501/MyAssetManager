@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import no.hin.student.myassetmanager.Activities.ActivityMain;
+import no.hin.student.myassetmanager.R;
 
 
 public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Void, String> {
@@ -135,9 +136,17 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
             Gson gson = new Gson();
             ResponseMsg response = gson.fromJson(result, ResponseMsg.class);
             Log.e("RESPONSE_MESSAGE", response.getMessage());
-            if (response.getMessage().contains("518")) {
-                Toast.makeText(context, "Du må være admin!", Toast.LENGTH_SHORT).show();
-            } else {
+
+            if (response.getMessage().contains("500")) {
+                notifyUser(R.string.WEBAPI_CODE_500);
+            } else if (response.getMessage().contains("518")) {
+                notifyUser(R.string.WEBAPI_CODE_518);
+            } else if (response.getMessage().contains("512")) {
+                notifyUser(R.string.WEBAPI_CODE_512);
+                ((ActivityMain) context).logIn(null, false, ActivityMain.IS_LOGGED_OUT);
+                closeSession();
+            }
+            else  {
                 switch (method) {
                     case LOG_IN:
                         if (response.getMessage().contains("512")) {
@@ -150,12 +159,8 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
                         }
                         break;
                     case LOG_IN_ADMIN:
-                        if (response.getMessage().contains("512")) {
-                            ((ActivityMain) context).logIn(null, false, ActivityMain.IS_LOGGED_OUT);
-                            closeSession();
-                        }
-                        else if (response.getMessage().contains("517")) {
-                            Toast.makeText(context, "Denne admin-brukeren er allerede logget inn", Toast.LENGTH_LONG).show();
+                        if (response.getMessage().contains("517")) {
+                            notifyUser(R.string.WEBAPI_CODE_517);
                             closeSession();
                         }
                         else {
@@ -235,17 +240,18 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
                             }
                         break;
                     case  GET_LOG_ENTRIES_FOR_USER_FRAGMENT:
-                        Log.d(TAG, "Finished thread, adding user logentries");
                         Type get_log_entries_for_user_fragment = new TypeToken<List<LogEntry>>() {}.getType();
                         ArrayList<LogEntry> logEntriesForUserFragment = (ArrayList<LogEntry>) gson.fromJson(response.getJsonResponse(), get_log_entries_for_user_fragment);
                         ((ActivityMain) context).populateUserListViewWithUsers(logEntriesForUserFragment);
                         break;
                     case ADD_EQUIPMENT:
                         if (response.getResult() == true) {
-                            Toast.makeText(context, "Utstyr lagret", Toast.LENGTH_LONG).show();
+                            notifyUser(R.string.WEB_API_ADD_EQUIPMENT_SUCCESS);
                             EquipmentStatus.getUpdateFromDatabase(context);
                             ((ActivityMain)context).sendToFragmentList();
-                        }
+                        } else if (response.getMessage().contains("515")) {
+                            notifyUser(R.string.WEBAPI_CODE_515);
+                        } else notifyUser(R.string.WEBAPI_CODE_ERROR);
                         break;
                     case ADD_USER_WITHOUT_LOGIN:
                         Toast.makeText(context, response.getMessage().toString(), Toast.LENGTH_LONG).show();
@@ -288,6 +294,10 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
         } catch (Exception e) {
             Log.d(TAG, e.toString());
         }
+    }
+
+    private void notifyUser(int resourceId) {
+        Toast.makeText(context, App.getContext().getString(resourceId), Toast.LENGTH_LONG).show();
     }
 
     private void closeSession() {

@@ -1,166 +1,117 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             tools:context="no.hin.student.myassetmanager.Fragments.FragmentAddEquipment">
-
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="7dp"
+    android:layout_marginTop="7dp"
+    android:layout_marginRight="7dp"
+    android:layout_marginBottom="7dp"
+    tools:context="no.hin.student.myassetmanager.Fragments.FragmentAddEquipment"
+    android:orientation="vertical">
 
     <TextView
+        android:id="@+id/tvAddEquipmentHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Legg til utstyr"
-        android:id="@+id/textViewAddEquipmentHeaderLabel"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:textSize="30sp"/>
+        android:layout_marginBottom="10dp"
+        android:textSize="20sp"/>
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Velg kategori:"
-        android:id="@+id/textViewAddEquipmentCategoryListLabel"
-        android:layout_below="@+id/textViewAddEquipmentHeaderLabel"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="38dp"/>
+        android:layout_below="@+id/tvAddEquipmentHeaderLabel">
 
-    <TextView
-        android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/tvAddEquipmentCategory"
+            android:layout_width="110dp"
+            android:layout_height="fill_parent"
+            android:gravity="bottom|left"
+        android:textSize="20sp"
+            android:text="Merke:"/>
+
+        <EditText
+            android:id="@+id/etAddEquipmentCategory"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:textSize="20sp"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Kategori:"
-        android:id="@+id/textViewAddEquipmentCategoryLabel"
-        android:layout_marginTop="86dp"
-        android:layout_below="@+id/textViewAddEquipmentCategoryListLabel"
-        android:layout_toLeftOf="@+id/textViewAddEquipmentCategoryListLabel"
-        android:layout_toStartOf="@+id/textViewAddEquipmentCategoryListLabel"/>
+        android:layout_below="@+id/tvAddEquipmentHeaderLabel">
 
-    <TextView
-        android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/tvAddEquipmentModel"
+            android:layout_width="110dp"
+            android:layout_height="fill_parent"
+            android:gravity="bottom|left"
+            android:textSize="20sp"
+            android:text="Modell:"/>
+
+        <EditText
+            android:id="@+id/etAddEquipmentModel"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:textSize="20sp"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:layout_marginLeft="5dp"
-        android:id="@+id/textViewAddEquipmentCategory"
-        android:layout_alignBottom="@+id/textViewAddEquipmentCategoryLabel"
-        android:layout_toRightOf="@+id/textViewAddEquipmentCategoryLabel"
-        android:layout_toEndOf="@+id/textViewAddEquipmentCategoryLabel"/>
+        android:layout_below="@+id/tvAddEquipmentHeaderLabel">
 
-    <TextView
-        android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/tvAddEquipmentItNumber"
+            android:layout_width="110dp"
+            android:layout_height="fill_parent"
+            android:gravity="bottom|left"
+            android:textSize="20sp"
+            android:text="IT-nummer:"/>
+
+        <EditText
+            android:id="@+id/etAddEquipmentItNumber"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:textSize="20sp"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Merke:"
-        android:layout_marginTop="10dp"
-        android:id="@+id/textViewAddEquipmentBrandLabel"
-        android:layout_below="@+id/textViewAddEquipmentCategoryLabel"
-        android:layout_alignRight="@+id/textViewAddEquipmentCategoryLabel"
-        android:layout_alignEnd="@+id/textViewAddEquipmentCategoryLabel"/>
+        android:layout_below="@+id/tvAddEquipmentHeaderLabel">
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/editTextAddEquipmentBrand"
-        android:layout_alignBottom="@+id/textViewAddEquipmentBrandLabel"
-        android:layout_alignRight="@+id/textViewAddEquipmentHeaderLabel"
-        android:layout_alignEnd="@+id/textViewAddEquipmentHeaderLabel"
-        android:layout_alignLeft="@+id/textViewAddEquipmentCategory"
-        android:layout_alignStart="@+id/textViewAddEquipmentCategory"/>
+        <TextView
+            android:id="@+id/tvAddEquipmentDescription"
+            android:layout_width="110dp"
+            android:layout_height="fill_parent"
+            android:gravity="bottom|left"
+            android:textSize="20sp"
+            android:text="Beskrivelse:"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Modell:"
-        android:layout_marginTop="10dp"
-        android:id="@+id/textViewAddEquipmentModelLabel"
-        android:layout_below="@+id/editTextAddEquipmentBrand"
-        android:layout_alignRight="@+id/textViewAddEquipmentBrandLabel"
-        android:layout_alignEnd="@+id/textViewAddEquipmentBrandLabel"/>
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/editTextAddEquipmentModel"
-        android:layout_alignBottom="@+id/textViewAddEquipmentModelLabel"
-        android:layout_toRightOf="@+id/textViewAddEquipmentBrandLabel"
-        android:layout_alignRight="@+id/editTextAddEquipmentBrand"
-        android:layout_alignEnd="@+id/editTextAddEquipmentBrand"
-        android:layout_alignLeft="@+id/textViewAddEquipmentCategory"
-        android:layout_alignStart="@+id/textViewAddEquipmentCategory"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Beskrivelse:"
-        android:layout_marginTop="10dp"
-        android:id="@+id/textViewAddEquipmentDescriptionLabel"
-        android:layout_below="@+id/editTextAddEquipmentModel"
-        android:layout_alignRight="@+id/textViewAddEquipmentBrandLabel"
-        android:layout_alignEnd="@+id/textViewAddEquipmentBrandLabel"/>
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/editTextAddEquipmentDescription"
-        android:layout_alignBottom="@+id/textViewAddEquipmentDescriptionLabel"
-        android:layout_alignLeft="@+id/editTextAddEquipmentModel"
-        android:layout_alignStart="@+id/editTextAddEquipmentModel"
-        android:layout_alignRight="@+id/editTextAddEquipmentModel"
-        android:layout_alignEnd="@+id/editTextAddEquipmentModel"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="ITE_no:"
-        android:layout_marginTop="10dp"
-        android:id="@+id/textViewAddEquipmentItNoLabel"
-        android:layout_below="@+id/editTextAddEquipmentDescription"
-        android:layout_alignRight="@+id/textViewAddEquipmentBrandLabel"
-        android:layout_alignEnd="@+id/textViewAddEquipmentBrandLabel"/>
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/editTextAddEquipmentItNo"
-        android:layout_alignBottom="@+id/textViewAddEquipmentItNoLabel"
-        android:layout_alignLeft="@+id/editTextAddEquipmentDescription"
-        android:layout_alignStart="@+id/editTextAddEquipmentDescription"
-        android:layout_alignRight="@+id/editTextAddEquipmentDescription"
-        android:layout_alignEnd="@+id/editTextAddEquipmentDescription"/>
-
+        <EditText
+            android:id="@+id/etAddEquipmentDescription"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:textSize="20sp"/>
+    </LinearLayout>
+    <ListView
+        android:id="@+id/lwAddEquipmentCategory"
+        android:layout_width="fill_parent"
+        android:layout_height="200dp"
+        android:choiceMode="singleChoice"
+        android:listSelector="@android:color/darker_gray"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="10dp"/>
     <Button
-        android:layout_width="wrap_content"
+        android:id="@+id/btnAddEquipmentAdd"
+        android:layout_width="140dp"
         android:layout_height="wrap_content"
         android:text="Legg til utstyr"
-        android:id="@+id/buttonAddEquipment"
-        android:layout_below="@+id/editTextAddEquipmentItNo"
-        android:layout_alignRight="@+id/editTextAddEquipmentItNo"
-        android:layout_alignEnd="@+id/editTextAddEquipmentItNo"
-        android:layout_marginTop="25dp"
-        android:layout_alignLeft="@+id/textViewAddEquipmentBrandLabel"
-        android:layout_alignStart="@+id/textViewAddEquipmentBrandLabel"/>
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/textViewAddEquipmentCategoryListLabel"
-        android:layout_above="@+id/textViewAddEquipmentCategory"
-        android:layout_alignLeft="@+id/textViewAddEquipmentCategoryLabel"
-        android:layout_alignStart="@+id/textViewAddEquipmentCategoryLabel"
-        android:layout_alignRight="@+id/editTextAddEquipmentBrand"
-        android:layout_alignEnd="@+id/editTextAddEquipmentBrand">
-
-        <ListView
-            android:layout_width="239dp"
-            android:layout_height="match_parent"
-            android:id="@+id/listViewAddEquipmentCategory"
-            android:layout_above="@+id/textViewAddEquipmentCategoryLabel"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/textViewAddEquipmentCategoryListLabel"/>
-    </FrameLayout>
-
-</RelativeLayout>
+        android:layout_marginTop="10dp"/>
+</LinearLayout>

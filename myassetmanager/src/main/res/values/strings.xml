@@ -29,6 +29,7 @@
     <string name="MENU_BUTTON_LOGOUT">Logg ut</string>
 
     <string name="MENU_BUTTON_ADD_EQUIPMENT">Legg til utstyr</string>
+    <string name="MENU_BUTTON_NEW_USER">Opprett bruker</string>
 
     <string name="LOGTAG">Test</string>
 
@@ -48,6 +49,19 @@
     <string name="FILTER_HISTORY_ALL">All historie</string>
     <string name="FILTER_HISTORY_INUSE">Kun utlån</string>
 
-<!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+    <string name="WEB_API_ADD_EQUIPMENT_SUCCESS">Utstyr er lagret i databasen.</string>
+
+    <string name="WEBAPI_CODE_200">Forespørsel OK. Ingen feilmelding.</string>
+    <string name="WEBAPI_CODE_500">Generell database/server-feil. Mer info i message.</string>
+    <string name="WEBAPI_CODE_512">Feil brukernavn og/eller passord evt. timeout.</string>
+    <string name="WEBAPI_CODE_513">Kan ikke logge ut siden brukeren ikke er logget inn.</string>
+    <string name="WEBAPI_CODE_514">Manglende parametre. Mer info i message.</string>
+    <string name="WEBAPI_CODE_515">Duplikat data (eks. IT-nr). Mer info i message.</string>
+    <string name="WEBAPI_CODE_516">Generell Exception. Mer info i message.</string>
+    <string name="WEBAPI_CODE_517">Duplikat pålogging av admin. En annen admin er allerede logget inn.</string>
+    <string name="WEBAPI_CODE_518">Denne operasjonen krever admin-rettigheter.</string>
+
+    <string name="WEBAPI_CODE_ERROR">Noe gikk galt.</string>
 </resources>

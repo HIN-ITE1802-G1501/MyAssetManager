@@ -10,6 +10,22 @@ import no.hin.student.myassetmanager.R;
 
 
 public class User extends AssetManagerObjects implements MyInterface {
+    public enum LoginState {
+        NOT_LOGGED_IN(1),
+        LOGGED_IN_ADMIN(2),
+        LOGGED_IN_USER(3);
+
+        private int logInState;
+
+        private LoginState(int id) {
+            logInState = id;
+        }
+
+        public int getLoginState() {
+            return logInState;
+        }
+    }
+
     private int u_id;
     private String userName;
     private String password;
@@ -17,6 +33,7 @@ public class User extends AssetManagerObjects implements MyInterface {
     private String lastname;
     private String phone;
     private boolean user_activated;
+    private LoginState loginState = LoginState.NOT_LOGGED_IN;
 
 
     private static HttpClient httpClient = null;
@@ -106,6 +123,14 @@ public class User extends AssetManagerObjects implements MyInterface {
 
     public void setUser_activated(boolean user_activated) {
         this.user_activated = user_activated;
+    }
+
+    public LoginState getLoginState() {
+        return this.loginState;
+    }
+
+    public void setLoginState(LoginState loginState) {
+        this.loginState = loginState;
     }
 
     public String toJSONString() {

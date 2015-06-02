@@ -103,6 +103,7 @@ public class ActivityMain extends Activity {
     private static final int MENU_BUTTON_LOGOUT = 10302;
 
     private static final int MENU_BUTTON_ADD_EQUIPMENT = 10401;
+    private static final int MENU_BUTTON_NEW_USER = 10402;
 
     private static final String TAG = "MyAssetManger-log";
 
@@ -200,6 +201,7 @@ public class ActivityMain extends Activity {
         popup.getMenu().add(Menu.NONE, MENU_BUTTON_SHOW_HISTORY, Menu.NONE, R.string.MENU_BUTTON_SHOW_HISTORY).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
         popup.getMenu().add(Menu.NONE, MENU_BUTTON_SHOW_MY_PAGE, Menu.NONE, R.string.MENU_BUTTON_SHOW_MY_PAGE).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
         popup.getMenu().add(Menu.NONE, MENU_BUTTON_ADD_EQUIPMENT, Menu.NONE, R.string.MENU_BUTTON_ADD_EQUIPMENT).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
+        popup.getMenu().add(Menu.NONE, MENU_BUTTON_NEW_USER, Menu.NONE, R.string.MENU_BUTTON_NEW_USER).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
         popup.getMenu().add(Menu.NONE, MENU_BUTTON_LOGOUT, Menu.NONE, R.string.MENU_BUTTON_LOGOUT).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
         popup.show();
     }
@@ -249,6 +251,10 @@ public class ActivityMain extends Activity {
                 case MENU_BUTTON_ADD_EQUIPMENT:
                     replaceFragmentContainerFragmentWith(fragmentAddEquipment);
                     fragmentAddEquipment.populateListViewWithCategories(ActivityMain.this);
+                    return true;
+                case MENU_BUTTON_NEW_USER:
+                    replaceFragmentContainerFragmentWith(fragmentRegister);
+                    return true;
                 default:
                     return true;
             }
@@ -291,19 +297,41 @@ public class ActivityMain extends Activity {
         }
     };
 
+
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         switch (v.getId()) {
-            case R.id.lvList:
+            case R.id.lvList: // When right clicking in list
 
                 super.onCreateContextMenu(menu, v, menuInfo);
                 AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-                String title = ((AssetManagerObjects)(adapter.getItem(info.position))).getListItemTitle();
+                if (((AssetManagerObjects)(adapter.getItem(info.position))) instanceof Equipment) {
+                    String title = ((AssetManagerObjects)(adapter.getItem(info.position))).getListItemTitle();
 
-                menu.setHeaderTitle(title);
-                menu.add(Menu.NONE, MENU_CONTEXT_LIST_SHOW, Menu.NONE, R.string.MENU_CONTEXT_LIST_SHOW);
-                menu.add(Menu.NONE, MENU_CONTEXT_LIST_EDIT, Menu.NONE, R.string.MENU_CONTEXT_LIST_EDIT);
-                menu.add(Menu.NONE, MENU_CONTEXT_LIST_DELETE, Menu.NONE, R.string.MENU_CONTEXT_LIST_DELETE);
+                    menu.setHeaderTitle(title);
+                    menu.add(Menu.NONE, MENU_CONTEXT_LIST_SHOW, Menu.NONE, R.string.MENU_CONTEXT_LIST_SHOW);
+                    if (loggedInUserStatus == IS_ADMIN_USER) {
+                        menu.add(Menu.NONE, MENU_CONTEXT_LIST_EDIT, Menu.NONE, R.string.MENU_CONTEXT_LIST_EDIT);
+                        menu.add(Menu.NONE, MENU_CONTEXT_LIST_DELETE, Menu.NONE, R.string.MENU_CONTEXT_LIST_DELETE);
+                    }
+                } else if (((AssetManagerObjects)(adapter.getItem(info.position))) instanceof User) {
+                    String title = ((AssetManagerObjects)(adapter.getItem(info.position))).getListItemTitle();
+
+                    menu.setHeaderTitle(title);
+                    menu.add(Menu.NONE, MENU_CONTEXT_LIST_SHOW, Menu.NONE, R.string.MENU_CONTEXT_LIST_SHOW);
+                    if (loggedInUserStatus == IS_ADMIN_USER) {
+                        menu.add(Menu.NONE, MENU_CONTEXT_LIST_EDIT, Menu.NONE, R.string.MENU_CONTEXT_LIST_EDIT);
+                        menu.add(Menu.NONE, MENU_CONTEXT_LIST_DELETE, Menu.NONE, R.string.MENU_CONTEXT_LIST_DELETE);
+                    }
+                } else if (((AssetManagerObjects)(adapter.getItem(info.position))) instanceof Category) {
+                    String title = ((AssetManagerObjects)(adapter.getItem(info.position))).getListItemTitle();
+                    menu.setHeaderTitle(title);
+                    menu.add(Menu.NONE, MENU_CONTEXT_LIST_SHOW, Menu.NONE, R.string.MENU_CONTEXT_LIST_SHOW);
+                } else if (((AssetManagerObjects)(adapter.getItem(info.position))) instanceof UserLogEntries) {
+                    String title = ((AssetManagerObjects)(adapter.getItem(info.position))).getListItemTitle();
+                    menu.setHeaderTitle(title);
+                    menu.add(Menu.NONE, MENU_CONTEXT_LIST_SHOW, Menu.NONE, R.string.MENU_CONTEXT_LIST_SHOW);
+                }
                 break;
         }
     }
@@ -316,7 +344,19 @@ public class ActivityMain extends Activity {
             case MENU_CONTEXT_LIST_SHOW:
                 if (adapter.getItem(info.position).getClass().equals(Category.class) ) {
                     WebAPI.doGetEquipmentType(ActivityMain.this, ((Category) adapter.getItem(info.position)).getListItemTitle());
-                    Log.d(TAG, "Menu context show category!");
+                } else if (adapter.getItem(info.position).getClass().equals(Equipment.class) ) {
+                    replaceFragmentContainerFragmentWith(fragmentAsset);
+                    Equipment equipment = (Equipment)adapter.getItem(info.position);
+                    fragmentAsset.populateAssetFragmentWithAssetData(equipment, loggedInUserStatus);
+                    currentlyViewedEquipment = equipment;
+                } else if (adapter.getItem(info.position).getClass().equals(User.class) ) {
+                    replaceFragmentContainerFragmentWith(fragmentUser);
+                    User user = ((User) adapter.getItem(info.position));
+                    fragmentUser.populateUserFragmentWithUserData(user, ActivityMain.this);
+                } else if (adapter.getItem(info.position).getClass().equals(UserLogEntries.class) ) {
+                    replaceFragmentContainerFragmentWith(fragmentUser);
+                    UserLogEntries user = ((UserLogEntries) adapter.getItem(info.position));
+                    fragmentUser.populateUserFragmentWithUserData(user.getUser(), ActivityMain.this);
                 }
                 return true;
             case MENU_CONTEXT_LIST_DELETE:

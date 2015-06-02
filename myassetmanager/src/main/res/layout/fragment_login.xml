@@ -1,111 +1,95 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             tools:context="no.hin.student.myassetmanager.Fragments.FragmentLogin"
-                android:orientation="vertical">
-
-    <!-- TODO: Update blank fragment layout -->
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="no.hin.student.myassetmanager.Fragments.FragmentLogin"
+    android:layout_marginLeft="7dp"
+    android:layout_marginTop="7dp"
+    android:layout_marginRight="7dp"
+    android:layout_marginBottom="7dp"
+    android:orientation="vertical">
 
     <TextView
+        android:id="@+id/textViewLoginLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Innlogging"
-        android:id="@+id/textViewLoginLabel"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
-        android:textSize="40sp"/>
+        android:layout_marginBottom="10dp"
+        android:textSize="20sp"/>
 
-    <TextView
+    <ImageView
+        android:id="@+id/ivUser"
+        android:src="@drawable/user"
+        android:adjustViewBounds="true"
+        android:maxHeight="32dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Brukernavn:"
-        android:id="@+id/textViewUsername"
-        android:layout_marginTop="27dp"
         android:layout_below="@+id/textViewLoginLabel"
-        android:layout_centerHorizontal="true"/>
+        android:textSize="18sp"/>
 
     <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/editTextUsername"
-        android:layout_below="@+id/textViewUsername"
-        android:layout_alignRight="@+id/textViewLoginLabel"
-        android:layout_alignEnd="@+id/textViewLoginLabel"
-        android:layout_alignLeft="@+id/textViewLoginLabel"
-        android:layout_alignStart="@+id/textViewLoginLabel"/>
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewLoginLabel"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@+id/ivUser" />
 
-    <TextView
+
+    <ImageView
+        android:id="@+id/ivPassword"
+        android:src="@drawable/user"
+        android:adjustViewBounds="true"
+        android:maxHeight="32dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_below="@+id/ivUser"
         android:layout_marginTop="10dp"
-        android:text="Passord:"
-        android:id="@+id/textViewPassword"
-        android:layout_below="@+id/editTextUsername"
-        android:layout_alignLeft="@+id/textViewUsername"
-        android:layout_alignStart="@+id/textViewUsername"/>
+        android:textSize="18sp"/>
 
     <EditText
-        android:layout_width="wrap_content"
+        android:id="@+id/editTextPassword"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:inputType="textPassword"
-        android:ems="10"
-        android:id="@+id/editTextPassword"
-        android:layout_below="@+id/textViewPassword"
-        android:layout_alignRight="@+id/editTextUsername"
-        android:layout_alignEnd="@+id/editTextUsername"
+        android:layout_below="@+id/editTextUsername"
+        android:layout_marginTop="10dp"
         android:layout_alignLeft="@+id/editTextUsername"
-        android:layout_alignStart="@+id/editTextUsername"/>
+        android:layout_alignStart="@+id/editTextUsername" />
 
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Admin"
+        android:text="Logg inn som administrator"
         android:id="@+id/checkBoxIsAdmin"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:checked="false"
-        android:layout_below="@+id/editTextPassword"
-        android:layout_alignLeft="@+id/editTextPassword"
-        android:layout_alignStart="@+id/editTextPassword"/>
+        android:textSize="18sp"
+        android:layout_below="@+id/editTextPassword"/>
 
-    <Button
+    <RelativeLayout
+        android:id="@+id/rlActions"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Logg inn"
-        android:onClick="onClickLoginButton"
-        android:id="@+id/buttonLogin"
-        android:layout_below="@+id/checkBoxIsAdmin"
-        android:layout_alignLeft="@+id/checkBoxIsAdmin"
-        android:layout_alignStart="@+id/checkBoxIsAdmin"
-        android:layout_marginTop="20dp"
-        android:layout_alignRight="@+id/editTextPassword"
-        android:layout_alignEnd="@+id/editTextPassword"/>
+        android:layout_below="@+id/checkBoxIsAdmin">
+        <Button
+            android:id="@+id/buttonLogin"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:text="Logg inn"
+            android:onClick="onClickLoginButton"
+            android:layout_marginTop="10dp"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Ikke registrert?"
-        android:id="@+id/textViewRegisterLabel"
-        android:layout_below="@+id/buttonLogin"
-        android:layout_marginTop="50dp"
-        android:layout_centerHorizontal="true"/>
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Registrer deg"
-        android:onClick="onClickRegisterPageButton"
-        android:id="@+id/buttonRegisterUser"
-        android:layout_below="@+id/textViewRegisterLabel"
-        android:layout_alignLeft="@+id/buttonLogin"
-        android:layout_alignStart="@+id/buttonLogin"
-        android:layout_alignRight="@+id/buttonLogin"
-        android:layout_alignEnd="@+id/buttonLogin"
-        android:layout_marginTop="10dp"/>
-
+        <Button
+            android:id="@+id/buttonRegisterUser"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:text="Ny bruker"
+            android:onClick="onClickRegisterPageButton"
+            android:layout_marginTop="10dp"
+            android:layout_toRightOf="@id/buttonLogin"/>
+    </RelativeLayout>
 </RelativeLayout>

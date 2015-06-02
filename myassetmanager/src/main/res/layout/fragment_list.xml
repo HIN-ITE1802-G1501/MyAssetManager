@@ -12,14 +12,14 @@
         <TextView
             android:id="@+id/tvTitle"
             android:text= "Tittel"
-            android:textSize="20dp"
+            android:textSize="20sp"
             android:gravity="center_vertical|left"
             android:layout_width="wrap_content"
             android:layout_height="55dp"
             android:layout_alignParentLeft="true" />
         <Spinner
             android:id="@+id/spFilter"
-            android:textSize="20dp"
+            android:textSize="20sp"
             android:spinnerMode="dropdown"
             android:layout_width="wrap_content"
             android:layout_height="55dp"
