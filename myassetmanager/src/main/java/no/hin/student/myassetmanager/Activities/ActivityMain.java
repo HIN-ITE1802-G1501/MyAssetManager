@@ -143,15 +143,15 @@ public class ActivityMain extends Activity {
         fragmentAddEquipment = new FragmentAddEquipment();
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
+    //@Override
+    //public void onSaveInstanceState(Bundle savedInstanceState) {
         // Save the user's current game state
         //savedInstanceState.putInt(STATE_SCORE, mCurrentScore);
         //savedInstanceState.putInt(STATE_LEVEL, mCurrentLevel);
 
         // Always call the superclass so it can save the view hierarchy state
-        super.onSaveInstanceState(savedInstanceState);
-    }
+        //super.onSaveInstanceState(savedInstanceState);
+    //}
 
     @Override
     public void onStart() {
@@ -161,13 +161,6 @@ public class ActivityMain extends Activity {
     }
 
     private void replaceFragmentContainerFragmentWith(Fragment fragment) {
-        TableLayout topMenu = (TableLayout)this.findViewById(R.id.tableLayoutTopMenu);
-
-        //if (fragment instanceof FragmentLogin || fragment instanceof FragmentRegister)
-        //    topMenu.setVisibility(View.GONE);
-        //else
-        //    topMenu.setVisibility(View.VISIBLE);
-
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container, fragment);
@@ -183,11 +176,11 @@ public class ActivityMain extends Activity {
             WebAPI.logOut(ActivityMain.this);
     }
 
-    // When clicking show view button
+    // Multiusage onClickListener delegate
     final View.OnClickListener mGlobal_OnClickListener = new View.OnClickListener() {
         public void onClick(final View v) {
             switch(v.getId()) {
-                case R.id.btnMenu:
+                case R.id.btnMenu: // Mainmenu
                     PopupMenu popup = new PopupMenu(getApplication(), v);
 
                     if (loggedInUserStatus == IS_ADMIN_USER)
@@ -229,8 +222,6 @@ public class ActivityMain extends Activity {
     final MenuItem.OnMenuItemClickListener mGlobal_OnMenuItemClickListener = new MenuItem.OnMenuItemClickListener() {
         @Override
         public boolean onMenuItemClick(MenuItem menuItem) {
-            replaceFragmentContainerFragmentWith(fragmentList);
-
             switch (menuItem.getItemId()) {
                 case MENU_BUTTON_SHOW_ASSETS:
                     Log.d(TAG, "Showing assets");
@@ -376,6 +367,7 @@ public class ActivityMain extends Activity {
 
     public void addToList(final ArrayList<AssetManagerObjects> objects, Boolean updateSpinner) {
         try {
+            replaceFragmentContainerFragmentWith(fragmentList);
             ListView lvList = (ListView) fragmentList.getView().findViewById(R.id.lvList);
             TextView tvTitle = ((TextView) fragmentList.getView().findViewById(R.id.tvTitle));
             if (objects.size() > 0) {
