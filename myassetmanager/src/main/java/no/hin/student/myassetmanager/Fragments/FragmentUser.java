@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import no.hin.student.myassetmanager.Classes.App;
@@ -39,7 +41,6 @@ public class FragmentUser extends Fragment {
         super.onCreate(savedInstanceState);
         // keep the fragment and all its data across screen rotation
         setRetainInstance(true);
-
     }
 
     @Override
@@ -62,11 +63,13 @@ public class FragmentUser extends Fragment {
         ImageButton btnUserActivate = (ImageButton)getView().findViewById(R.id.btnUserActivate);
 
         ivUserFragment.setImageResource((this.user.isUser_activated()) ? R.drawable.user : R.drawable.user_notactive);
-        btnUserActivate.setImageResource((this.user.isUser_activated()) ? R.drawable.user_activate : R.drawable.user_deactivate);
+        btnUserActivate.setImageResource((this.user.isUser_activated()) ? R.drawable.user_deactivate : R.drawable.user_activate);
 
         textViewFullName.setText(user.getFirstname() + " " + user.getLastname());
         textViewUsername.setText(user.getUserName());
         textViewPhoneNumber.setText(user.getPhone());
+
+
 
 
         WebAPI.doGetOpenLogEntriesForUser(context, WebAPI.Method.GET_LOG_ENTRIES_FOR_USER_FRAGMENT, user.getId());

@@ -17,6 +17,7 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Innlogging"
         android:layout_marginBottom="10dp"
+        android:textStyle="bold"
         android:textSize="20sp"/>
 
     <ImageView

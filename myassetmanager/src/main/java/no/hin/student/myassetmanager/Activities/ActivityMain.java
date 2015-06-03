@@ -21,6 +21,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
@@ -360,10 +361,6 @@ public class ActivityMain extends Activity {
                 }
                 return true;
             case MENU_CONTEXT_LIST_DELETE:
-                if ((adapter != null) &&(adapter.getItem(info.position).getClass().equals(Category.class))) {
-                    Log.d(TAG, "Menu context delete category");
-
-                }
                 if ((adapter != null) &&(adapter.getItem(info.position).getClass().equals(User.class))) {
                     Log.d(TAG, "Menu context delete category");
                     WebAPI.doDeleteUser(ActivityMain.this, ((User) adapter.getItem(info.position)).getId());
@@ -662,8 +659,14 @@ public class ActivityMain extends Activity {
         startActivity(intent);
     }
 
-    public void onClickActivateUser(View buttonView) {
+    public void onClickDeleteUser(View buttonView) {
+        WebAPI.doDeleteUser(ActivityMain.this, fragmentUser.getUser().getId());
+    }
 
+    public void onClickActivateUser(View buttonView) {
+        fragmentUser.getUser().setUser_activated(!fragmentUser.getUser().isUser_activated());
+        ImageButton btnUserActivate = (ImageButton)findViewById(R.id.btnUserActivate);
+        btnUserActivate.setImageResource((fragmentUser.getUser().isUser_activated()) ? R.drawable.user_deactivate : R.drawable.user_activate);
     }
 
     private void attemptLogin(String username, String password, boolean isAdmin) {

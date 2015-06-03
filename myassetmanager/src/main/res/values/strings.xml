@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Min Utstyrs Oversikt</string>
+    <string name="app_name">Min Utstyrsoversikt</string>
 
     <string name="action_assets">Utstyr</string>
     <string name="action_users">Brukere</string>
