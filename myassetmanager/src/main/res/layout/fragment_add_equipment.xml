@@ -1,4 +1,4 @@
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,111 +7,128 @@
     android:layout_marginTop="7dp"
     android:layout_marginRight="7dp"
     android:layout_marginBottom="7dp"
-    tools:context="no.hin.student.myassetmanager.Fragments.FragmentAddEquipment"
-    android:orientation="vertical">
-
-    <TextView
-        android:id="@+id/tvAddEquipmentHeader"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Legg til utstyr"
-        android:layout_alignParentTop="true"
-        android:layout_marginBottom="10dp"
-        android:textSize="20sp"/>
-
+    tools:context="no.hin.student.myassetmanager.Fragments.FragmentAddEquipment">
     <LinearLayout
+        android:id="@+id/llTop"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tvAddEquipmentHeaderLabel">
-
+        android:orientation="vertical">
         <TextView
-            android:id="@+id/tvAddEquipmentCategory"
-            android:layout_width="110dp"
-            android:layout_height="fill_parent"
-            android:gravity="bottom|left"
-        android:textSize="20sp"
-            android:text="Merke:"/>
-
-        <EditText
-            android:id="@+id/etAddEquipmentCategory"
-            android:layout_width="fill_parent"
+            android:id="@+id/tvAddEquipmentHeader"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
+            android:text="Legg til utstyr"
+            android:layout_alignParentTop="true"
+            android:textStyle="bold"
+            android:layout_marginBottom="10dp"
             android:textSize="20sp"/>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tvAddEquipmentHeaderLabel">
 
-        <TextView
-            android:id="@+id/tvAddEquipmentModel"
-            android:layout_width="110dp"
-            android:layout_height="fill_parent"
-            android:gravity="bottom|left"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tvAddEquipmentBrand"
+                android:layout_width="110dp"
+                android:layout_height="fill_parent"
+                android:gravity="bottom|left"
             android:textSize="20sp"
-            android:text="Modell:"/>
+                android:text="Merke:"/>
 
-        <EditText
-            android:id="@+id/etAddEquipmentModel"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:textSize="20sp"/>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tvAddEquipmentHeaderLabel">
+            <EditText
+                android:id="@+id/etAddEquipmentBrand"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:textSize="20sp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/tvAddEquipmentItNumber"
-            android:layout_width="110dp"
-            android:layout_height="fill_parent"
-            android:gravity="bottom|left"
-            android:textSize="20sp"
-            android:text="IT-nummer:"/>
+            <TextView
+                android:id="@+id/tvAddEquipmentModel"
+                android:layout_width="110dp"
+                android:layout_height="fill_parent"
+                android:gravity="bottom|left"
+                android:textSize="20sp"
+                android:text="Modell:"/>
 
-        <EditText
-            android:id="@+id/etAddEquipmentItNumber"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:textSize="20sp"/>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tvAddEquipmentHeaderLabel">
+            <EditText
+                android:id="@+id/etAddEquipmentModel"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:textSize="20sp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/tvAddEquipmentDescription"
-            android:layout_width="110dp"
-            android:layout_height="fill_parent"
-            android:gravity="bottom|left"
-            android:textSize="20sp"
-            android:text="Beskrivelse:"/>
+            <TextView
+                android:id="@+id/tvAddEquipmentItNumber"
+                android:layout_width="110dp"
+                android:layout_height="fill_parent"
+                android:gravity="bottom|left"
+                android:textSize="20sp"
+                android:text="IT-nummer:"/>
 
-        <EditText
-            android:id="@+id/etAddEquipmentDescription"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:textSize="20sp"/>
+            <EditText
+                android:id="@+id/etAddEquipmentItNumber"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:textSize="20sp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tvAddEquipmentDescription"
+                android:layout_width="110dp"
+                android:layout_height="fill_parent"
+                android:gravity="bottom|left"
+                android:textSize="20sp"
+                android:text="Beskrivelse:"/>
+
+            <EditText
+                android:id="@+id/etAddEquipmentDescription"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:textSize="20sp"/>
+        </LinearLayout>
     </LinearLayout>
     <ListView
         android:id="@+id/lwAddEquipmentCategory"
         android:layout_width="fill_parent"
-        android:layout_height="200dp"
+        android:layout_height="fill_parent"
         android:choiceMode="singleChoice"
-        android:listSelector="@android:color/darker_gray"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
+        android:listSelector="@android:color/holo_blue_dark"
+        android:layout_below="@+id/llTop"
+        android:layout_above="@+id/rlActions"
         android:layout_marginTop="10dp"/>
-    <Button
-        android:id="@+id/btnAddEquipmentAdd"
-        android:layout_width="140dp"
+    <LinearLayout
+        android:id="@+id/rlActions"
+        android:gravity="center"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Legg til utstyr"
-        android:layout_marginTop="10dp"/>
-</LinearLayout>
+        android:layout_alignParentBottom="true">
+        <ImageButton
+            android:id="@+id/btnEquipmentSave"
+            android:src="@drawable/btn_save"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"/>
+
+        <ImageButton
+            android:id="@+id/btnEquipmentCamera"
+            android:src="@drawable/btn_camera"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"/>
+    </LinearLayout>
+</RelativeLayout>

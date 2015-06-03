@@ -172,4 +172,8 @@ public class User extends AssetManagerObjects implements MyInterface {
     }
 
 
+    public static void postDeleteUser() {
+        WebAPI.doGetUsers(App.getContext(), WebAPI.Method.GET_USERS);
+    }
+
 }

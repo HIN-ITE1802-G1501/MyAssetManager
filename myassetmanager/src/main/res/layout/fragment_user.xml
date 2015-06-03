@@ -93,7 +93,6 @@
         android:layout_below="@+id/vwLine1">
         <ImageButton
             android:id="@+id/btnUserCall"
-            android:onClick="onClickCallUserPhone"
             android:src="@drawable/user_call"
             android:layout_width="64dp"
             android:layout_height="64dp"
@@ -102,7 +101,6 @@
 
         <ImageButton
             android:id="@+id/btnUserSMS"
-            android:onClick="onClickSendUserSMS"
             android:src="@drawable/user_sms"
             android:layout_width="64dp"
             android:layout_height="64dp"
@@ -111,7 +109,6 @@
 
         <ImageButton
             android:id="@+id/btnUserEdit"
-            android:onClick="onClickSendUserSMS"
             android:src="@drawable/user_edit"
             android:layout_width="64dp"
             android:layout_height="64dp"
@@ -120,7 +117,6 @@
 
         <ImageButton
             android:id="@+id/btnUserActivate"
-            android:onClick="onClickActivateUser"
             android:src="@drawable/user_activate"
             android:layout_width="64dp"
             android:layout_height="64dp"
@@ -129,7 +125,6 @@
 
         <ImageButton
             android:id="@+id/btnUserDelete"
-            android:onClick="onClickDeleteUser"
             android:src="@drawable/user_delete"
             android:layout_width="64dp"
             android:layout_height="64dp"

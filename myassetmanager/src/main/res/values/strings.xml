@@ -12,9 +12,30 @@
     <string name="action_delete">Slett</string>
 
     <string name="fragment_user_tvUserInfo">Brukerinformasjon</string>
+    <string name="fragment_Equipment_tvEquipmentBrand">Merke</string>
+    <string name="fragment_Equipment_tvEquipmentModel">Model</string>
+    <string name="fragment_Equipment_tvEquipmentITNumber">IT-nummer</string>
+    <string name="fragment_Equipment_tvEquipmentAquired">Anskaffet</string>
+    <string name="fragment_Equipment_tvEquipmentDescription">Beskrivelse</string>
+    <string name="fragment_Equipment_tvEquipmentStatus">Status</string>
+    <string name="fragment_Equipment_tvEquipmentStatusIn">På lager</string>
+    <string name="fragment_Equipment_tvEquipmentStatusOut">Utlånt</string>
+
+
+    <string name="fragment_Equipment_tvEquipmentInfo">Utstyrsinformasjon</string>
     <string name="fragment_user_tvUserFullName">Fornavn Etternavn</string>
     <string name="fragment_user_tvUserUsername">Brukernavn</string>
     <string name="fragment_user_tvUserPhonenumber">+47 999 99 999</string>
+    <string name="fragment_user_tvUserSMSMessage">Melding fra Min utstyrsoversikt: </string>
+
+    <string name="dialog_yes">Ja</string>
+    <string name="dialog_no">Nei</string>
+
+    <string name="dialog_loan_Title">Registrer innlevering</string>
+    <string name="dialog_loan_Message_out">Registrer innlevering for utstyr </string>
+
+    <string name="dialog_deleteequipment_Title">Slette utstyr</string>
+    <string name="dialog_deleteequipment_Message_out">Er du sikker på at du vil slette</string>
 
     <string name="MENU_CONTEXT_LIST_SHOW">Vis</string>
     <string name="MENU_CONTEXT_LIST_EDIT">Rediger</string>

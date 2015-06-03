@@ -22,6 +22,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
@@ -108,15 +109,15 @@ public class ActivityMain extends Activity {
 
     private static final String TAG = "MyAssetManger-log";
 
-    private FragmentList fragmentList;
-    private FragmentUser fragmentUser;
-    private FragmentAsset fragmentAsset;
-    private FragmentLogin fragmentLogin;
-    private FragmentRegister fragmentRegister;
-    private FragmentAccountSettings fragmentAccountSettings;
-    private FragmentLoan fragmentLoan;
-    private FragmentAddEquipment fragmentAddEquipment;
-    private AssetManagerAdapter adapter;
+    public FragmentList fragmentList;
+    public FragmentUser fragmentUser;
+    public FragmentAsset fragmentAsset;
+    public FragmentLogin fragmentLogin;
+    public FragmentRegister fragmentRegister;
+    public FragmentAccountSettings fragmentAccountSettings;
+    public FragmentLoan fragmentLoan;
+    public FragmentAddEquipment fragmentAddEquipment;
+    public AssetManagerAdapter adapter;
 
     private int loggedInUserStatus = IS_LOGGED_OUT;
     private User user;
@@ -142,6 +143,7 @@ public class ActivityMain extends Activity {
         fragmentAsset = new FragmentAsset();
         fragmentLogin = new FragmentLogin();
         fragmentRegister = new FragmentRegister();
+        fragmentLoan = new FragmentLoan();
         fragmentAddEquipment = new FragmentAddEquipment();
     }
 
@@ -162,7 +164,7 @@ public class ActivityMain extends Activity {
         WebAPI.doGetEquipmentWithoutLogin(this);
     }
 
-    private void replaceFragmentContainerFragmentWith(Fragment fragment) {
+    public void replaceFragmentContainerFragmentWith(Fragment fragment) {
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container, fragment);
@@ -170,6 +172,7 @@ public class ActivityMain extends Activity {
         fragmentTransaction.commit();
         fragmentManager.executePendingTransactions();
     }
+
 
     @Override
     public void onStop() {
@@ -394,10 +397,6 @@ public class ActivityMain extends Activity {
         WebAPI.doGetEquipmentWithoutLogin(ActivityMain.this);
     }
 
-    public void deleteUser() {
-        WebAPI.doGetUsers(ActivityMain.this, WebAPI.Method.GET_USERS);
-    }
-
     public void addToList(final ArrayList<AssetManagerObjects> objects) {
         addToList(objects, true);
     }
@@ -554,30 +553,11 @@ public class ActivityMain extends Activity {
                 fragmentLoan.populateLoanFragmentWithData(currentlyViewedEquipment, this);
         }
         else {
-            AlertDialog.Builder alertDialog = new AlertDialog.Builder(ActivityMain.this);
-            alertDialog.setTitle("Registrer innlevering");
-            alertDialog.setMessage("Registrer innlevering for utstyr " + currentlyViewedEquipment.getModel() + "?");
 
-            alertDialog.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    WebAPI.doGetOpenLogEntries(ActivityMain.this, WebAPI.Method.GET_OPEN_LOG_ENTRIES_FOR_REGISTER_RESERVATION_IN, user.getU_id());
-                    replaceFragmentContainerFragmentWith(fragmentList);
-                    addToList(Category.getCategories());
-                }
-            });
-
-            alertDialog.setNegativeButton("Nei", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-
-                }
-            });
-
-            alertDialog.show();
         }
     }
 
+    // Bruker
     public void populateLoanListViewWithUsers(ArrayList<User> users) {
         ListView listViewLoan = (ListView)fragmentLoan.getView().findViewById(R.id.listViewLoanUsers);
         adapter = new AssetManagerAdapter(this, users);
@@ -646,29 +626,6 @@ public class ActivityMain extends Activity {
         attemptLogin(username, password, isAdmin);
     }
 
-    public void onClickSendUserSMS(View buttonView) {
-        Intent smsIntent = new Intent(Intent.ACTION_VIEW);
-        smsIntent.setType("vnd.android-dir/mms-sms");
-        smsIntent.putExtra("address", fragmentUser.getUser().getPhone());
-        smsIntent.putExtra("sms_body","Dette er en test");
-        startActivity(smsIntent);
-    }
-
-    public void onClickCallUserPhone(View buttonView) {
-        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + fragmentUser.getUser().getPhone()));
-        startActivity(intent);
-    }
-
-    public void onClickDeleteUser(View buttonView) {
-        WebAPI.doDeleteUser(ActivityMain.this, fragmentUser.getUser().getId());
-    }
-
-    public void onClickActivateUser(View buttonView) {
-        fragmentUser.getUser().setUser_activated(!fragmentUser.getUser().isUser_activated());
-        ImageButton btnUserActivate = (ImageButton)findViewById(R.id.btnUserActivate);
-        btnUserActivate.setImageResource((fragmentUser.getUser().isUser_activated()) ? R.drawable.user_deactivate : R.drawable.user_activate);
-    }
-
     private void attemptLogin(String username, String password, boolean isAdmin) {
         if (isAdmin)
             WebAPI.doLoginAdmin(this, username, password);
@@ -681,7 +638,7 @@ public class ActivityMain extends Activity {
     }
 
     public Equipment getCurrentlyViewedEquipment() {
-        return currentlyViewedEquipment;
+        return this.currentlyViewedEquipment;
     }
 
     public int getCurrentUserStatus() {

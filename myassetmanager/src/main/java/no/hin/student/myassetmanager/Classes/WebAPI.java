@@ -70,9 +70,12 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
         ADD_USER_WITHOUT_LOGIN(3002, "addUserWithoutLogin"),
 
         UPDATE_USER(4001, "updateUser"),
-        CHANGE_USER_PASSWORD(4002, "changeUserPassword"),
+        UPDATE_EQUIPMENT(4002, "updateEquipment"),
+        CHANGE_USER_PASSWORD(4003, "changeUserPassword"),
+
 
         DELETE_USER(5001, "deleteUser"),
+        DELETE_EQUIPMENT(5002, "deleteEquipment"),
 
         REGISTER_RESERVATION_OUT(6001, "registerReservationOut"),
         REGISTER_RESERVATION_IN(6002, "registerReservationIn"),
@@ -268,7 +271,14 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
                         break;
 
                     case DELETE_USER:
-                        ((ActivityMain) context).deleteUser();
+                        User.postDeleteUser();
+                        break;
+                    case UPDATE_EQUIPMENT:
+                        if (response.getResult() == true)
+                            Toast.makeText(context, "Oppdatering fullført", Toast.LENGTH_LONG).show();
+                        break;
+                    case DELETE_EQUIPMENT:
+                        ((ActivityMain) context).addToList(Category.getCategories());
                         break;
 
                     case REGISTER_RESERVATION_OUT:
@@ -442,6 +452,18 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
         }
     }
 
+    public static void doDeleteEquipment(Context context, int equipmentId) {
+        if (httpClient != null) {
+            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+            nameValuePairs.add(new BasicNameValuePair("equipmentId", Integer.toString(equipmentId)));
+            Log.d(TAG, Integer.toString(equipmentId));
+            new WebAPI(URL, Method.DELETE_EQUIPMENT, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
+        } else {
+            Log.d(TAG, "Logg inn først!");
+        }
+    }
+
+
     public static void doAddEquipment(Context context, Equipment equipment) {
         if (httpClient != null) {
             List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
@@ -505,6 +527,17 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
         nameValuePairs.add(new BasicNameValuePair("userId", String.valueOf(userId)));
         nameValuePairs.add(new BasicNameValuePair("newPassword", newPassword));
         new WebAPI(URL, Method.CHANGE_USER_PASSWORD, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
+    }
+
+    public static void doUpdateEquipment(Context context, Equipment equipment) {
+        if (httpClient == null)
+            httpClient = new DefaultHttpClient();
+
+        List<NameValuePair> nameValuePairs = null;
+        nameValuePairs = new ArrayList<NameValuePair>(2);
+        nameValuePairs.add(new BasicNameValuePair("equipmentId", String.valueOf(equipment.getE_id())));
+        nameValuePairs.add(new BasicNameValuePair("equipment", equipment.toJSONString()));
+        new WebAPI(URL, Method.UPDATE_EQUIPMENT, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
     }
 
     public static void doRegisterReservationOut(Context context, int userId, int equipmentId, String comment) {

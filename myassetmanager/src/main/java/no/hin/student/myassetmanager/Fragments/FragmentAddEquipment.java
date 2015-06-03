@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,9 +29,11 @@ public class FragmentAddEquipment extends Fragment {
     private static final String TAG = "MyAssetManger-log";
     private Context context;
     private Category selectedCategory = null;
+    private Equipment equipment;
+    private Boolean addNewEquipment = true;
 
     public FragmentAddEquipment() {
-        // Required empty public constructor
+
     }
 
     @Override
@@ -48,13 +51,13 @@ public class FragmentAddEquipment extends Fragment {
     }
 
     private void addButtonClickListener() {
-        Button addEquipmentButton = (Button)getView().findViewById(R.id.btnAddEquipmentAdd);
+        ImageButton addEquipmentButton = (ImageButton)getView().findViewById(R.id.btnEquipmentSave);
 
         addEquipmentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
-                    String brand = ((TextView) getView().findViewById(R.id.etAddEquipmentCategory)).getText().toString();
+                    String brand = ((TextView) getView().findViewById(R.id.etAddEquipmentBrand)).getText().toString();
                     String model = ((TextView) getView().findViewById(R.id.etAddEquipmentModel)).getText().toString();
                     String it_no = ((TextView) getView().findViewById(R.id.etAddEquipmentItNumber)).getText().toString();
                     String description = ((TextView) getView().findViewById(R.id.etAddEquipmentDescription)).getText().toString();
@@ -66,8 +69,16 @@ public class FragmentAddEquipment extends Fragment {
                     if (brand.equals("") || model.equals("") || it_no.equals("") || category.equals("")) {
                         Toast.makeText(v.getContext(), "Vennligst fyll ut alle felter og velg en kategori.", Toast.LENGTH_LONG).show();
                     } else {
-                        Equipment equipment = new Equipment(category, brand, model, description, it_no, date, null);
-                        WebAPI.doAddEquipment(context, equipment);
+                        if (addNewEquipment) {
+                            equipment = new Equipment(category, brand, model, description, it_no, date, null);
+                            WebAPI.doAddEquipment(context, equipment);
+                        } else {
+                            equipment.setBrand(((TextView) getView().findViewById(R.id.etAddEquipmentBrand)).getText().toString());
+                            equipment.setModel(((TextView) getView().findViewById(R.id.etAddEquipmentModel)).getText().toString());
+                            equipment.setIt_no(((TextView) getView().findViewById(R.id.etAddEquipmentItNumber)).getText().toString());
+                            equipment.setDescription(((TextView) getView().findViewById(R.id.etAddEquipmentDescription)).getText().toString());
+                            WebAPI.doUpdateEquipment(v.getContext(), equipment);
+                        }
                     }
                 } catch (Exception e) {
                     Log.e(TAG, e.toString());
@@ -75,6 +86,29 @@ public class FragmentAddEquipment extends Fragment {
             }
         });
     }
+
+    public void editEquipment(Equipment equipment) {
+        this.addNewEquipment = false;
+        this.equipment = equipment;
+
+        ((TextView) getView().findViewById(R.id.etAddEquipmentBrand)).setText(this.equipment.getBrand());
+        ((TextView) getView().findViewById(R.id.etAddEquipmentModel)).setText(this.equipment.getModel());
+        ((TextView) getView().findViewById(R.id.etAddEquipmentItNumber)).setText(this.equipment.getIt_no());
+        ((TextView) getView().findViewById(R.id.etAddEquipmentDescription)).setText(this.equipment.getDescription());
+        populateListViewWithCategories(getView().getContext());
+    }
+
+    public void newEquipment() {
+        this.addNewEquipment = true;
+        this.equipment = null;
+
+        ((TextView) getView().findViewById(R.id.etAddEquipmentBrand)).setText("");
+        ((TextView) getView().findViewById(R.id.etAddEquipmentModel)).setText("");
+        ((TextView) getView().findViewById(R.id.etAddEquipmentItNumber)).setText("");
+        ((TextView) getView().findViewById(R.id.etAddEquipmentDescription)).setText("");
+        populateListViewWithCategories(getView().getContext());
+    }
+
 
     public void populateListViewWithCategories(Context context) {
         this.context = context;

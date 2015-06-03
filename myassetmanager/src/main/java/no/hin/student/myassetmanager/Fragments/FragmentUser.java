@@ -3,6 +3,7 @@ package no.hin.student.myassetmanager.Fragments;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,7 +26,7 @@ import no.hin.student.myassetmanager.R;
 
 
 
-public class FragmentUser extends Fragment {
+public class FragmentUser extends Fragment implements View.OnClickListener {
     private User user;
 
     public FragmentUser() {
@@ -69,9 +70,48 @@ public class FragmentUser extends Fragment {
         textViewUsername.setText(user.getUserName());
         textViewPhoneNumber.setText(user.getPhone());
 
-
-
-
         WebAPI.doGetOpenLogEntriesForUser(context, WebAPI.Method.GET_LOG_ENTRIES_FOR_USER_FRAGMENT, user.getId());
+
+        btnUserCall.setOnClickListener(this);
+        btnUserSMS.setOnClickListener(this);
+        btnUserEdit.setOnClickListener(this);
+        btnUserActivate.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        try {
+            switch(v.getId()) {
+                case R.id.btnUserCall:
+                    Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + this.user.getPhone()));
+                    startActivity(intent);
+                    break;
+                case R.id.btnUserSMS:
+                    Intent smsIntent = new Intent(Intent.ACTION_VIEW);
+                    smsIntent.setType("vnd.android-dir/mms-sms");
+                    smsIntent.putExtra("address", this.user.getPhone());
+                    smsIntent.putExtra("sms_body",getString(R.string.fragment_user_tvUserSMSMessage));
+                    startActivity(smsIntent);
+                    break;
+                case R.id.btnUserActivate:
+                        this.user.setUser_activated(!user.isUser_activated());
+                        ImageButton btnUserActivate = (ImageButton)v.findViewById(R.id.btnUserActivate);
+                        btnUserActivate.setImageResource((this.user.isUser_activated()) ? R.drawable.user_deactivate : R.drawable.user_activate);
+
+                        ImageView ivUserFragment = (ImageView)getView().findViewById(R.id.ivUserFragment);
+                        ivUserFragment.setImageResource((this.user.isUser_activated()) ? R.drawable.user : R.drawable.user_notactive);
+
+                        WebAPI.doUpdateUser(v.getContext(),this.user);
+                    break;
+                case R.id.btnUserEdit:
+
+                    break;
+                case R.id.btnUserDelete:
+                    WebAPI.doDeleteUser(v.getContext(), this.user.getId());
+                    break;
+            }
+        } catch (Exception e) {
+            Log.d("-log", e.toString());
+        }
     }
 }

@@ -138,9 +138,8 @@ public class Equipment extends AssetManagerObjects
     }
 
 
-    public static void deleteEquipment(ArrayAdapter<Equipment> adapterInstance, Equipment equipment) {
-        Log.d(adapterInstance.getContext().getString(R.string.LOGTAG), "Delete equipment from list and database");
-        adapterInstance.remove(equipment);
+    public static void postDeleteEquipment() {
+        WebAPI.doGetUsers(App.getContext(), WebAPI.Method.GET_USERS);
     }
 
     @Override
