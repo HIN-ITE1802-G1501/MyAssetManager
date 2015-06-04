@@ -28,6 +28,8 @@
     <string name="fragment_user_tvUserPhonenumber">+47 999 99 999</string>
     <string name="fragment_user_tvUserSMSMessage">Melding fra Min utstyrsoversikt: </string>
 
+    <string name="fragment_user_ActivateSMS">Din bruker er nå aktiver i appen Min utstyrsoversikt.</string>
+
     <string name="fragment_Register_tvAddRegisterHeader_New">Ny bruker</string>
     <string name="fragment_Register_tvAddRegisterHeader_Edit">Rediger bruker</string>
 
@@ -89,6 +91,15 @@
     <string name="WEBAPI_CODE_516">Generell Exception. Mer info i message.</string>
     <string name="WEBAPI_CODE_517">Duplikat pålogging av admin. En annen admin er allerede logget inn.</string>
     <string name="WEBAPI_CODE_518">Denne operasjonen krever admin-rettigheter.</string>
+
+    <string name="DEVICEAPI_SMS_SENT_RESULT_OK">Meldingen er sendt til bruker</string>
+    <string name="DEVICEAPI_SMS_SENT_RESULT_ERROR_GENERIC_FAILURE">Melding ikke sendt på grunn av generisk feil.</string>
+    <string name="DEVICEAPI_SMS_SENT_RESULT_ERROR_NO_SERVICE">Melding ikke sendt på grunn av at telefonen har ingen tjeneste.</string>
+    <string name="DEVICEAPI_SMS_SENT_RESULT_ERROR_NULL_PDU">Null PDU</string>
+    <string name="DEVICEAPI_SMS_SENT_RESULT_ERROR_RADIO_OFF">Melding ikke sendt på grunn av at telefonen ikke har slått på GSM.</string>
+    <string name="DEVICEAPI_SMS_DELIVERED_RESULT_OK">Meldingen er levert.</string>
+    <string name="DEVICEAPI_SMS_DELIVERED_RESULT_CANCELED">Meldingen er ikke levert.</string>
+
 
     <string name="WEBAPI_CODE_ERROR">Noe gikk galt.</string>
 </resources>

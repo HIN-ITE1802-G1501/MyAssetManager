@@ -1,30 +1,20 @@
 package no.hin.student.myassetmanager.Classes;
 
 
-import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
-
 import com.google.gson.Gson;
 
-import no.hin.student.myassetmanager.R;
 
-/**
- * Created by wfa on 07.04.2015.
- *
- * Objekter av denne typen representerer utstyr (nettbrett, smartklokker osv).
- *
- */
 public class Equipment extends AssetManagerObjects
 {
-    private int e_id;           //PrimÃ¦rnÃ¸kkelfelt, autogenereres i databasen.
-    private String type;        //Type/gruppe utstyr, f.eks. "Nettbrett". Settes til en av verdiene fra: http://kark.hin.no:8088/d3330log_backend/utstyrstyper.txt
-    private String brand;       //F.eks. "Samsung"
-    private String model;       //F.eks. "Galaxy Tab S 10.5"
-    private String description; //En kort beskrivelse av utstyret (ved behov)
-    private String it_no;       //Klistrelappene som vi setter pÃ¥ alt utstyr, f.eks. "IT-4111".
-    private String aquired;     //NÃ¥r ble utstyret kjÃ¸pt, dvs. en dato pÃ¥ format "dd.mm.Ã¥Ã¥Ã¥Ã¥"
-    private byte[] image;       //Bilde (nedskalert) av utstyret.
+    private int e_id;           // Primary key for equipment
+    private String type;        // Equipment group from http://kark.hin.no:8088/d3330log_backend/utstyrstyper.txt
+    private String brand;       // Equipment branding, example "Microsoft"
+    private String model;       // Equipment model "Surface 3 Pro"
+    private String description; // Equipment description
+    private String it_no;       // Equipment number "IT-4111".
+    private String aquired;     // Equipment aquired date "dd.mm.YYYY"
+    private byte[] image;       // Equipment picture max 150px width or height
 
     public Equipment() {
         this.type = "";

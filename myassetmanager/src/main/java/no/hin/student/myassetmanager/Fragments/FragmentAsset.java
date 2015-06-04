@@ -1,17 +1,10 @@
 package no.hin.student.myassetmanager.Fragments;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import no.hin.student.myassetmanager.Activities.ActivityMain;
 import no.hin.student.myassetmanager.Classes.App;
@@ -43,64 +35,7 @@ public class FragmentAsset extends Fragment implements View.OnClickListener {
          return inflater.inflate(R.layout.fragment_asset, container, false);
      }
 
-    private void sendSMS(String phoneNumber, String message)
-         {
-             String SENT = "SMS_SENT";
-             String DELIVERED = "SMS_DELIVERED";
 
-             PendingIntent sentPI = PendingIntent.getBroadcast(App.getContext(), 0, new Intent(SENT), 0);
-
-             PendingIntent deliveredPI = PendingIntent.getBroadcast(App.getContext(), 0, new Intent(DELIVERED), 0);
-
-             //---when the SMS has been sent---
-             App.getContext().registerReceiver(new BroadcastReceiver() {
-                 @Override
-                 public void onReceive(Context arg0, Intent arg1) {
-                     switch (getResultCode()) {
-                         case Activity.RESULT_OK:
-                             Toast.makeText(App.getContext(), "SMS sent",
-                                     Toast.LENGTH_SHORT).show();
-                             break;
-                         case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
-                             Toast.makeText(App.getContext(), "Generic failure",
-                                     Toast.LENGTH_SHORT).show();
-                             break;
-                         case SmsManager.RESULT_ERROR_NO_SERVICE:
-                             Toast.makeText(App.getContext(), "No service",
-                                     Toast.LENGTH_SHORT).show();
-                             break;
-                         case SmsManager.RESULT_ERROR_NULL_PDU:
-                             Toast.makeText(App.getContext(), "Null PDU",
-                                     Toast.LENGTH_SHORT).show();
-                             break;
-                         case SmsManager.RESULT_ERROR_RADIO_OFF:
-                             Toast.makeText(App.getContext(), "Radio off",
-                                     Toast.LENGTH_SHORT).show();
-                             break;
-                     }
-                 }
-             }, new IntentFilter(SENT));
-
-             //---when the SMS has been delivered---
-             App.getContext().registerReceiver(new BroadcastReceiver() {
-                 @Override
-                 public void onReceive(Context arg0, Intent arg1) {
-                     switch (getResultCode()) {
-                         case Activity.RESULT_OK:
-                             Toast.makeText(App.getContext(), "SMS delivered",
-                                     Toast.LENGTH_SHORT).show();
-                             break;
-                         case Activity.RESULT_CANCELED:
-                             Toast.makeText(App.getContext(), "SMS not delivered",
-                                     Toast.LENGTH_SHORT).show();
-                             break;
-                     }
-                 }
-             }, new IntentFilter(DELIVERED));
-
-             SmsManager sms = SmsManager.getDefault();
-             sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);
-         }
 
      public void populateAssetFragmentWithAssetData(Equipment equipment, Login.UserRole userStatus) {
          try {
@@ -198,7 +133,7 @@ public class FragmentAsset extends Fragment implements View.OnClickListener {
                      }
                      break;
                  case R.id.btnEquipmentPicture:
-                     sendSMS("91755967", "test");
+
                      break;
                  case R.id.btnEquipmentEdit:
                      activityMain.replaceFragmentContainerFragmentWith(((ActivityMain) getActivity()).fragmentAddEquipment);
