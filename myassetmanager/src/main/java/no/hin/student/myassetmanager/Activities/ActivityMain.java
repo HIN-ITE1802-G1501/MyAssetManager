@@ -11,6 +11,7 @@ import android.content.pm.FeatureInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.BoringLayout;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -53,6 +54,8 @@ import no.hin.student.myassetmanager.Fragments.FragmentRegister;
 import no.hin.student.myassetmanager.Fragments.FragmentUser;
 import no.hin.student.myassetmanager.R;
 
+import static no.hin.student.myassetmanager.Activities.ActivityMain.FragmentId.FRAGMENT_LIST;
+
 
 public class ActivityMain extends Activity {
 
@@ -88,6 +91,33 @@ public class ActivityMain extends Activity {
         }
     }
 
+
+    public enum FragmentId {
+        FRAGMENT_LIST(1001),
+        FRAGMENT_USER(1002),
+        FRAGMENT_ASSET(1003),
+        FRAGMENT_LOGIN(1004),
+        FRAGMENT_REGISTER(1005),
+        FRAGMENT_ACCOUNTSETTINGS(1006),
+        FRAGMENT_LOAN(1007),
+        FRAGMENT_ADDEQUIPMENT(1008);
+
+        private int fragmentId;
+
+        private FragmentId(int id) {
+            fragmentId = id;
+        }
+
+        public int getId() {
+            return fragmentId;
+        }
+
+        @Override
+        public String toString() {
+            return App.getContext().getString(fragmentId);
+        }
+    }
+
     public static final int IS_ADMIN_USER = 1;
     public static final int IS_REGULAR_USER = 2;
     public static final int IS_LOGGED_OUT = 0;
@@ -117,15 +147,34 @@ public class ActivityMain extends Activity {
     public FragmentAccountSettings fragmentAccountSettings;
     public FragmentLoan fragmentLoan;
     public FragmentAddEquipment fragmentAddEquipment;
+    public Fragment fragmentCurrent = null;
     public AssetManagerAdapter adapter;
 
     private int loggedInUserStatus = IS_LOGGED_OUT;
     private User user;
     private Equipment currentlyViewedEquipment;
+    private FragmentId currentlyViewedFragment;
+
+    private String username = "";
+    private String password = "";
+    private Boolean isAdmin = false;
+
+    static final String STATE_CURRENTFRAGMENT = "fragment";
+    static final String STATE_LEVEL = "playerLevel";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "On create");
+        if (savedInstanceState != null) {
+            // Restore value of members from saved state
+            Log.d(TAG, "From restore" + savedInstanceState.getInt(STATE_LEVEL));
+        } else {
+            // Probably initialize members with default values for a new instance
+            Log.d(TAG, "Nothing");
+        }
+
         setContentView(R.layout.activity_main);
         findViewById(R.id.btnMenu).setOnClickListener(mGlobal_OnClickListener);
 
@@ -147,21 +196,37 @@ public class ActivityMain extends Activity {
         fragmentAddEquipment = new FragmentAddEquipment();
     }
 
-    //@Override
-    //public void onSaveInstanceState(Bundle savedInstanceState) {
-        // Save the user's current game state
-        //savedInstanceState.putInt(STATE_SCORE, mCurrentScore);
-        //savedInstanceState.putInt(STATE_LEVEL, mCurrentLevel);
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        // Always call the superclass so it can restore the view hierarchy
+        super.onRestoreInstanceState(savedInstanceState);
+
+        Log.d(TAG, "From restore" + savedInstanceState.getInt(STATE_LEVEL));
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putInt(STATE_CURRENTFRAGMENT, 2);
+        savedInstanceState.putInt(STATE_LEVEL, 2);
 
         // Always call the superclass so it can save the view hierarchy state
-        //super.onSaveInstanceState(savedInstanceState);
-    //}
+        super.onSaveInstanceState(savedInstanceState);
+    }
 
     @Override
     public void onStart() {
         super.onStart();
-        replaceFragmentContainerFragmentWith(fragmentList);
-        WebAPI.doGetEquipmentWithoutLogin(this);
+        try {
+            if ( (fragmentCurrent == null) || (this.username.equals("")) || (this.password.equals("")) ) {
+                replaceFragmentContainerFragmentWith(fragmentList);
+                WebAPI.doGetEquipmentWithoutLogin(this);
+            } else {
+                attemptLogin(this.username, this.password, this.isAdmin);
+                replaceFragmentContainerFragmentWith(fragmentCurrent);
+            }
+        } catch (Exception e) {
+            Log.d(TAG, e.toString());
+        }
     }
 
     public void replaceFragmentContainerFragmentWith(Fragment fragment) {
@@ -171,12 +236,38 @@ public class ActivityMain extends Activity {
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
         fragmentManager.executePendingTransactions();
+        fragmentCurrent = fragment;
+        if (fragment instanceof FragmentList) {
+            currentlyViewedFragment = FRAGMENT_LIST;
+        } else  if (fragment instanceof FragmentUser) {
+            currentlyViewedFragment = FragmentId.FRAGMENT_USER;
+        } else  if (fragment instanceof FragmentAsset) {
+            currentlyViewedFragment = FragmentId.FRAGMENT_ASSET;
+        } else  if (fragment instanceof FragmentLogin) {
+            currentlyViewedFragment = FragmentId.FRAGMENT_LOGIN;
+        } else  if (fragment instanceof FragmentRegister) {
+            currentlyViewedFragment = FragmentId.FRAGMENT_REGISTER;
+        } else  if (fragment instanceof FragmentLoan) {
+            currentlyViewedFragment = FragmentId.FRAGMENT_LOAN;
+        } else  if (fragment instanceof FragmentAddEquipment) {
+            currentlyViewedFragment = FragmentId.FRAGMENT_ADDEQUIPMENT;
+        }
     }
 
+    public Fragment getCurrentlyViewedFragment() {
+        switch (currentlyViewedFragment) {
+            case FRAGMENT_LIST:
+                return fragmentList;
+            case FRAGMENT_USER:
+                return fragmentUser;
+        }
+        return fragmentList;
+    }
 
     @Override
     public void onStop() {
         super.onStop();
+        Log.d(TAG, "onStop");
         if (loggedInUserStatus != IS_LOGGED_OUT)
             WebAPI.logOut(ActivityMain.this);
     }
@@ -254,7 +345,7 @@ public class ActivityMain extends Activity {
                     return true;
                 case MENU_BUTTON_ADD_EQUIPMENT:
                     replaceFragmentContainerFragmentWith(fragmentAddEquipment);
-                    fragmentAddEquipment.populateListViewWithCategories(ActivityMain.this);
+                    fragmentAddEquipment.newEquipment();
                     return true;
                 case MENU_BUTTON_NEW_USER:
                     replaceFragmentContainerFragmentWith(fragmentRegister);
@@ -382,9 +473,12 @@ public class ActivityMain extends Activity {
             Log.d(TAG, "User logged in: " + user.getFirstname() + " " + user.getLastname());
             loggedInUserStatus = userStatus;
             this.user = user;
-            replaceFragmentContainerFragmentWith(fragmentList);
-            addToList(Category.getCategories());
-            EquipmentStatus.getUpdateFromDatabase(this);
+
+            if (fragmentCurrent instanceof FragmentLogin) {
+                replaceFragmentContainerFragmentWith(fragmentList);
+                addToList(Category.getCategories());
+                EquipmentStatus.getUpdateFromDatabase(this);
+            }
         }
         else {
             Toast.makeText(getApplicationContext(), "Feil brukernavn og/eller passord", Toast.LENGTH_LONG).show();
@@ -619,9 +713,9 @@ public class ActivityMain extends Activity {
 
     public void onClickLoginButton(View buttonView)
     {
-        String username = ((EditText)fragmentLogin.getView().findViewById(R.id.editTextUsername)).getText().toString();
-        String password = ((EditText)fragmentLogin.getView().findViewById(R.id.editTextPassword)).getText().toString();
-        boolean isAdmin = ((CheckBox)fragmentLogin.getView().findViewById(R.id.checkBoxIsAdmin)).isChecked();
+        username = ((EditText)fragmentLogin.getView().findViewById(R.id.editTextUsername)).getText().toString();
+        password = ((EditText)fragmentLogin.getView().findViewById(R.id.editTextPassword)).getText().toString();
+        isAdmin = ((CheckBox)fragmentLogin.getView().findViewById(R.id.checkBoxIsAdmin)).isChecked();
 
         attemptLogin(username, password, isAdmin);
     }
