@@ -77,20 +77,18 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/checkBoxIsAdmin">
         <Button
-            android:id="@+id/buttonLogin"
+            android:id="@+id/btnLogin"
             android:layout_width="140dp"
             android:layout_height="wrap_content"
             android:text="Logg inn"
-            android:onClick="onClickLoginButton"
             android:layout_marginTop="10dp"/>
 
         <Button
-            android:id="@+id/buttonRegisterUser"
+            android:id="@+id/btnRegister"
             android:layout_width="140dp"
             android:layout_height="wrap_content"
             android:text="Ny bruker"
-            android:onClick="onClickRegisterPageButton"
             android:layout_marginTop="10dp"
-            android:layout_toRightOf="@id/buttonLogin"/>
+            android:layout_toRightOf="@id/btnLogin"/>
     </RelativeLayout>
 </RelativeLayout>

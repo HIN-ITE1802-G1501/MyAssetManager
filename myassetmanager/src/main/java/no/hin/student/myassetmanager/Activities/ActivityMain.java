@@ -15,8 +15,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.PopupMenu;
@@ -34,6 +32,7 @@ import no.hin.student.myassetmanager.Classes.Category;
 import no.hin.student.myassetmanager.Classes.Equipment;
 import no.hin.student.myassetmanager.Classes.EquipmentStatus;
 import no.hin.student.myassetmanager.Classes.LogEntry;
+import no.hin.student.myassetmanager.Classes.Login;
 import no.hin.student.myassetmanager.Classes.User;
 import no.hin.student.myassetmanager.Classes.UserLogEntries;
 import no.hin.student.myassetmanager.Classes.WebAPI;
@@ -46,8 +45,6 @@ import no.hin.student.myassetmanager.Fragments.FragmentLogin;
 import no.hin.student.myassetmanager.Fragments.FragmentRegister;
 import no.hin.student.myassetmanager.Fragments.FragmentUser;
 import no.hin.student.myassetmanager.R;
-
-import static no.hin.student.myassetmanager.Activities.ActivityMain.FragmentId.FRAGMENT_LIST;
 
 
 public class ActivityMain extends Activity {
@@ -85,35 +82,7 @@ public class ActivityMain extends Activity {
     }
 
 
-    public enum FragmentId {
-        FRAGMENT_LIST(1001),
-        FRAGMENT_USER(1002),
-        FRAGMENT_ASSET(1003),
-        FRAGMENT_LOGIN(1004),
-        FRAGMENT_REGISTER(1005),
-        FRAGMENT_ACCOUNTSETTINGS(1006),
-        FRAGMENT_LOAN(1007),
-        FRAGMENT_ADDEQUIPMENT(1008);
 
-        private int fragmentId;
-
-        private FragmentId(int id) {
-            fragmentId = id;
-        }
-
-        public int getId() {
-            return fragmentId;
-        }
-
-        @Override
-        public String toString() {
-            return App.getContext().getString(fragmentId);
-        }
-    }
-
-    public static final int IS_ADMIN_USER = 1;
-    public static final int IS_REGULAR_USER = 2;
-    public static final int IS_LOGGED_OUT = 0;
 
     private static final int MENU_CONTEXT_LIST_SHOW = 10101;
     private static final int MENU_CONTEXT_LIST_EDIT = 10102;
@@ -130,7 +99,6 @@ public class ActivityMain extends Activity {
     private static final int MENU_BUTTON_ADD_EQUIPMENT = 10401;
     private static final int MENU_BUTTON_NEW_USER = 10402;
 
-    private static final String TAG = "MyAssetManger-log";
 
     public FragmentList fragmentList;
     public FragmentUser fragmentUser;
@@ -143,14 +111,10 @@ public class ActivityMain extends Activity {
     public Fragment fragmentCurrent = null;
     public AssetManagerAdapter adapter;
 
-    private int loggedInUserStatus = IS_LOGGED_OUT;
-    private User user;
-    private Equipment currentlyViewedEquipment;
-    private FragmentId currentlyViewedFragment;
 
-    private String username = "";
-    private String password = "";
-    private Boolean isAdmin = false;
+
+    private Equipment currentlyViewedEquipment;
+
 
     static final String STATE_CURRENTFRAGMENT = "fragment";
     static final String STATE_LEVEL = "playerLevel";
@@ -159,13 +123,13 @@ public class ActivityMain extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "On create");
+        Log.d(App.TAG, "On create");
         if (savedInstanceState != null) {
             // Restore value of members from saved state
-            Log.d(TAG, "From restore" + savedInstanceState.getInt(STATE_LEVEL));
+            Log.d(App.TAG, "From restore" + savedInstanceState.getInt(STATE_LEVEL));
         } else {
             // Probably initialize members with default values for a new instance
-            Log.d(TAG, "Nothing");
+            Log.d(App.TAG, "Nothing");
         }
 
         setContentView(R.layout.activity_main);
@@ -194,7 +158,7 @@ public class ActivityMain extends Activity {
         // Always call the superclass so it can restore the view hierarchy
         super.onRestoreInstanceState(savedInstanceState);
 
-       // Log.d(TAG, "From restore" + savedInstanceState.getInt(STATE_LEVEL));
+       // Log.d(App.TAG, "From restore" + savedInstanceState.getInt(STATE_LEVEL));
     }
 
     @Override
@@ -210,16 +174,16 @@ public class ActivityMain extends Activity {
     public void onStart() {
         super.onStart();
         try {
-            if ( (fragmentCurrent == null) || (this.username.equals("")) || (this.password.equals("")) ) {
-                Log.d(TAG, "Not resuming, getting equipment as ano");
+            if ( (fragmentCurrent == null) || (Login.getUsername().equals("")) || (Login.getPassword().equals("")) ) {
+                Log.d(App.TAG, "Not resuming, getting equipment as ano");
                 replaceFragmentContainerFragmentWith(fragmentList);
                 WebAPI.doGetEquipmentWithoutLogin(this);
                } else {
-              attemptLogin(this.username, this.password, this.isAdmin);
+              attemptLogin(Login.getUsername(), Login.getPassword(), Login.getAdmin());
               replaceFragmentContainerFragmentWith(fragmentCurrent);
             }
              } catch (Exception e) {
-              Log.d(TAG, e.toString());
+              Log.d(App.TAG, e.toString());
              }
     }
 
@@ -231,38 +195,15 @@ public class ActivityMain extends Activity {
         fragmentTransaction.commit();
         fragmentManager.executePendingTransactions();
         fragmentCurrent = fragment;
-        if (fragment instanceof FragmentList) {
-            currentlyViewedFragment = FRAGMENT_LIST;
-        } else  if (fragment instanceof FragmentUser) {
-            currentlyViewedFragment = FragmentId.FRAGMENT_USER;
-        } else  if (fragment instanceof FragmentAsset) {
-            currentlyViewedFragment = FragmentId.FRAGMENT_ASSET;
-        } else  if (fragment instanceof FragmentLogin) {
-            currentlyViewedFragment = FragmentId.FRAGMENT_LOGIN;
-        } else  if (fragment instanceof FragmentRegister) {
-            currentlyViewedFragment = FragmentId.FRAGMENT_REGISTER;
-        } else  if (fragment instanceof FragmentLoan) {
-            currentlyViewedFragment = FragmentId.FRAGMENT_LOAN;
-        } else  if (fragment instanceof FragmentAddEquipment) {
-            currentlyViewedFragment = FragmentId.FRAGMENT_ADDEQUIPMENT;
-        }
     }
 
-    public Fragment getCurrentlyViewedFragment() {
-        switch (currentlyViewedFragment) {
-            case FRAGMENT_LIST:
-                return fragmentList;
-            case FRAGMENT_USER:
-                return fragmentUser;
-        }
-        return fragmentList;
-    }
+
 
     @Override
     public void onStop() {
         super.onStop();
-        Log.d(TAG, "onStop");
-        if (loggedInUserStatus != IS_LOGGED_OUT)
+        Log.d(App.TAG, "onStop");
+        if (!Login.isLoggedOut())
             WebAPI.logOut(ActivityMain.this);
     }
 
@@ -273,40 +214,31 @@ public class ActivityMain extends Activity {
                 case R.id.btnMenu: // Mainmenu
                     PopupMenu popup = new PopupMenu(getApplication(), v);
 
-                    if (loggedInUserStatus == IS_ADMIN_USER)
-                        showAdminMenu(popup);
-                    else if (loggedInUserStatus == IS_REGULAR_USER)
-                        showRegularUserMenu(popup);
-                    else if (loggedInUserStatus == IS_LOGGED_OUT)
-                        showAnonymousUserMenu(popup);
+                    if (Login.isLoggedInAsAdminUser()) {
+                        popup.getMenu().add(Menu.NONE, MENU_BUTTON_SHOW_ASSETS, Menu.NONE, R.string.MENU_BUTTON_SHOW_ASSETS).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
+                        popup.getMenu().add(Menu.NONE, MENU_BUTTON_SHOW_USERS, Menu.NONE, R.string.MENU_BUTTON_SHOW_USERS).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
+                        popup.getMenu().add(Menu.NONE, MENU_BUTTON_SHOW_HISTORY, Menu.NONE, R.string.MENU_BUTTON_SHOW_HISTORY).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
+                        popup.getMenu().add(Menu.NONE, MENU_BUTTON_SHOW_MY_PAGE, Menu.NONE, R.string.MENU_BUTTON_SHOW_MY_PAGE).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
+                        popup.getMenu().add(Menu.NONE, MENU_BUTTON_ADD_EQUIPMENT, Menu.NONE, R.string.MENU_BUTTON_ADD_EQUIPMENT).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
+                        popup.getMenu().add(Menu.NONE, MENU_BUTTON_NEW_USER, Menu.NONE, R.string.MENU_BUTTON_NEW_USER).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
+                        popup.getMenu().add(Menu.NONE, MENU_BUTTON_LOGOUT, Menu.NONE, R.string.MENU_BUTTON_LOGOUT).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
+                        popup.show();
+                    } else if (Login.isLoggedInAsRegularUser()) {
+                        popup.getMenu().add(Menu.NONE, MENU_BUTTON_SHOW_ASSETS, Menu.NONE, R.string.MENU_BUTTON_SHOW_ASSETS).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
+                        popup.getMenu().add(Menu.NONE, MENU_BUTTON_SHOW_MY_PAGE, Menu.NONE, R.string.MENU_BUTTON_SHOW_MY_PAGE).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
+                        popup.getMenu().add(Menu.NONE, MENU_BUTTON_LOGOUT, Menu.NONE, R.string.MENU_BUTTON_LOGOUT).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
+                        popup.show();
+                    } else if (Login.isLoggedOut()) {
+                        popup.getMenu().add(Menu.NONE, MENU_BUTTON_SHOW_ASSETS, Menu.NONE, R.string.MENU_BUTTON_SHOW_ASSETS).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
+                        popup.getMenu().add(Menu.NONE, MENU_BUTTON_LOGIN, Menu.NONE, R.string.MENU_BUTTON_LOGIN).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
+                        popup.show();
+                    }
                     break;
             }
         }
     };
 
-    private void showAdminMenu(PopupMenu popup) {
-        popup.getMenu().add(Menu.NONE, MENU_BUTTON_SHOW_ASSETS, Menu.NONE, R.string.MENU_BUTTON_SHOW_ASSETS).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
-        popup.getMenu().add(Menu.NONE, MENU_BUTTON_SHOW_USERS, Menu.NONE, R.string.MENU_BUTTON_SHOW_USERS).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
-        popup.getMenu().add(Menu.NONE, MENU_BUTTON_SHOW_HISTORY, Menu.NONE, R.string.MENU_BUTTON_SHOW_HISTORY).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
-        popup.getMenu().add(Menu.NONE, MENU_BUTTON_SHOW_MY_PAGE, Menu.NONE, R.string.MENU_BUTTON_SHOW_MY_PAGE).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
-        popup.getMenu().add(Menu.NONE, MENU_BUTTON_ADD_EQUIPMENT, Menu.NONE, R.string.MENU_BUTTON_ADD_EQUIPMENT).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
-        popup.getMenu().add(Menu.NONE, MENU_BUTTON_NEW_USER, Menu.NONE, R.string.MENU_BUTTON_NEW_USER).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
-        popup.getMenu().add(Menu.NONE, MENU_BUTTON_LOGOUT, Menu.NONE, R.string.MENU_BUTTON_LOGOUT).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
-        popup.show();
-    }
 
-    private void showRegularUserMenu(PopupMenu popup) {
-        popup.getMenu().add(Menu.NONE, MENU_BUTTON_SHOW_ASSETS, Menu.NONE, R.string.MENU_BUTTON_SHOW_ASSETS).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
-        popup.getMenu().add(Menu.NONE, MENU_BUTTON_SHOW_MY_PAGE, Menu.NONE, R.string.MENU_BUTTON_SHOW_MY_PAGE).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
-        popup.getMenu().add(Menu.NONE, MENU_BUTTON_LOGOUT, Menu.NONE, R.string.MENU_BUTTON_LOGOUT).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
-        popup.show();
-    }
-
-    private void showAnonymousUserMenu(PopupMenu popup) {
-        popup.getMenu().add(Menu.NONE, MENU_BUTTON_SHOW_ASSETS, Menu.NONE, R.string.MENU_BUTTON_SHOW_ASSETS).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
-        popup.getMenu().add(Menu.NONE, MENU_BUTTON_LOGIN, Menu.NONE, R.string.MENU_BUTTON_LOGIN).setOnMenuItemClickListener(mGlobal_OnMenuItemClickListener);
-        popup.show();
-    }
 
 
     // Clicking on hamburger button
@@ -315,13 +247,13 @@ public class ActivityMain extends Activity {
         public boolean onMenuItemClick(MenuItem menuItem) {
             switch (menuItem.getItemId()) {
                 case MENU_BUTTON_SHOW_ASSETS:
-                    Log.d(TAG, "Showing assets");
-                    if (loggedInUserStatus == IS_LOGGED_OUT)
+                    Log.d(App.TAG, "Showing assets");
+                    if (Login.isLoggedOut())
                         WebAPI.doGetEquipmentWithoutLogin(ActivityMain.this);
                     else addToList(Category.getCategories());
                     return true;
                 case MENU_BUTTON_SHOW_USERS:
-                    Log.d(TAG, "Showing users");
+                    Log.d(App.TAG, "Showing users");
                     WebAPI.doGetUsers(ActivityMain.this, WebAPI.Method.GET_USERS);
                     return true;
                 case MENU_BUTTON_SHOW_HISTORY:
@@ -358,7 +290,7 @@ public class ActivityMain extends Activity {
     // When clicking on a listview item
     final AdapterView.OnItemClickListener mGlobal_OnItemClickListener = new AdapterView.OnItemClickListener() {
         public void onItemClick(AdapterView<?> adapterView, View row, int position, long index) {
-            Log.d(TAG, "Clicking on equipment " + adapter.getItem(position).toString());
+            Log.d(App.TAG, "Clicking on equipment " + adapter.getItem(position).toString());
 
             boolean clickedCategory = adapter.getItem(position).getClass().equals(Category.class);
             boolean clickedEquipment = adapter.getItem(position).getClass().equals(Equipment.class);
@@ -366,13 +298,13 @@ public class ActivityMain extends Activity {
             boolean clickedUserLogEntries = adapter.getItem(position).getClass().equals(UserLogEntries.class);
 
             if (clickedCategory) {
-                Log.d(TAG, ((Category) adapter.getItem(position)).getListItemTitle());
+                Log.d(App.TAG, ((Category) adapter.getItem(position)).getListItemTitle());
                 WebAPI.doGetEquipmentType(ActivityMain.this, ((Category) adapter.getItem(position)).getListItemTitle());
             }
             else if (clickedEquipment) {
                 replaceFragmentContainerFragmentWith(fragmentAsset);
                 Equipment equipment = (Equipment)adapter.getItem(position);
-                fragmentAsset.populateAssetFragmentWithAssetData(equipment, loggedInUserStatus);
+                fragmentAsset.populateAssetFragmentWithAssetData(equipment, Login.getUserRole());
                 currentlyViewedEquipment = equipment;
             }
             else if (clickedUser) {
@@ -400,7 +332,7 @@ public class ActivityMain extends Activity {
 
                     menu.setHeaderTitle(title);
                     menu.add(Menu.NONE, MENU_CONTEXT_LIST_SHOW, Menu.NONE, R.string.MENU_CONTEXT_LIST_SHOW);
-                    if (loggedInUserStatus == IS_ADMIN_USER) {
+                    if (Login.isLoggedInAsAdminUser()) {
                         menu.add(Menu.NONE, MENU_CONTEXT_LIST_EDIT, Menu.NONE, R.string.MENU_CONTEXT_LIST_EDIT);
                         menu.add(Menu.NONE, MENU_CONTEXT_LIST_DELETE, Menu.NONE, R.string.MENU_CONTEXT_LIST_DELETE);
                     }
@@ -409,7 +341,7 @@ public class ActivityMain extends Activity {
 
                     menu.setHeaderTitle(title);
                     menu.add(Menu.NONE, MENU_CONTEXT_LIST_SHOW, Menu.NONE, R.string.MENU_CONTEXT_LIST_SHOW);
-                    if (loggedInUserStatus == IS_ADMIN_USER) {
+                    if (Login.isLoggedInAsAdminUser()) {
                         menu.add(Menu.NONE, MENU_CONTEXT_LIST_EDIT, Menu.NONE, R.string.MENU_CONTEXT_LIST_EDIT);
                         menu.add(Menu.NONE, MENU_CONTEXT_LIST_DELETE, Menu.NONE, R.string.MENU_CONTEXT_LIST_DELETE);
                     }
@@ -427,47 +359,45 @@ public class ActivityMain extends Activity {
     }
 
     @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+         public boolean onContextItemSelected(MenuItem item) {
+             AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
 
-        switch (item.getItemId()) {
-            case MENU_CONTEXT_LIST_SHOW:
-                if (adapter.getItem(info.position).getClass().equals(Category.class) ) {
-                    WebAPI.doGetEquipmentType(ActivityMain.this, ((Category) adapter.getItem(info.position)).getListItemTitle());
-                } else if (adapter.getItem(info.position).getClass().equals(Equipment.class) ) {
-                    replaceFragmentContainerFragmentWith(fragmentAsset);
-                    Equipment equipment = (Equipment)adapter.getItem(info.position);
-                    fragmentAsset.populateAssetFragmentWithAssetData(equipment, loggedInUserStatus);
-                    currentlyViewedEquipment = equipment;
-                } else if (adapter.getItem(info.position).getClass().equals(User.class) ) {
-                    replaceFragmentContainerFragmentWith(fragmentUser);
-                    User user = ((User) adapter.getItem(info.position));
-                    fragmentUser.populateUserFragmentWithUserData(user, ActivityMain.this);
-                } else if (adapter.getItem(info.position).getClass().equals(UserLogEntries.class) ) {
-                    replaceFragmentContainerFragmentWith(fragmentUser);
-                    UserLogEntries user = ((UserLogEntries) adapter.getItem(info.position));
-                    fragmentUser.populateUserFragmentWithUserData(user.getUser(), ActivityMain.this);
-                }
-                return true;
-            case MENU_CONTEXT_LIST_DELETE:
-                if ((adapter != null) &&(adapter.getItem(info.position).getClass().equals(User.class))) {
-                    Log.d(TAG, "Menu context delete category");
-                    WebAPI.doDeleteUser(ActivityMain.this, ((User) adapter.getItem(info.position)).getId());
-                }
-
-
-                return true;
-            default:
-                return super.onContextItemSelected(item);
-        }
-    }
+             switch (item.getItemId()) {
+                 case MENU_CONTEXT_LIST_SHOW:
+                     if (adapter.getItem(info.position).getClass().equals(Category.class) ) {
+                         WebAPI.doGetEquipmentType(ActivityMain.this, ((Category) adapter.getItem(info.position)).getListItemTitle());
+                     } else if (adapter.getItem(info.position).getClass().equals(Equipment.class) ) {
+                         replaceFragmentContainerFragmentWith(fragmentAsset);
+                         Equipment equipment = (Equipment)adapter.getItem(info.position);
+                         fragmentAsset.populateAssetFragmentWithAssetData(equipment, Login.getUserRole());
+                         currentlyViewedEquipment = equipment;
+                     } else if (adapter.getItem(info.position).getClass().equals(User.class) ) {
+                         replaceFragmentContainerFragmentWith(fragmentUser);
+                         User user = ((User) adapter.getItem(info.position));
+                         fragmentUser.populateUserFragmentWithUserData(user, ActivityMain.this);
+                     } else if (adapter.getItem(info.position).getClass().equals(UserLogEntries.class) ) {
+                         replaceFragmentContainerFragmentWith(fragmentUser);
+                         UserLogEntries user = ((UserLogEntries) adapter.getItem(info.position));
+                         fragmentUser.populateUserFragmentWithUserData(user.getUser(), ActivityMain.this);
+                     }
+                     return true;
+                 case MENU_CONTEXT_LIST_DELETE:
+                     if ((adapter != null) &&(adapter.getItem(info.position).getClass().equals(User.class))) {
+                         Log.d(App.TAG, "Menu context delete category");
+                         WebAPI.doDeleteUser(ActivityMain.this, ((User) adapter.getItem(info.position)).getId());
+                     }
+                     return true;
+                 default:
+                     return super.onContextItemSelected(item);
+             }
+         }
 
 
-    public void logIn(User user, boolean success, int userStatus) {
+    public void logIn(User user, boolean success, Login.UserRole userStatus) {
         if (success) {
-            Log.d(TAG, "User logged in: " + user.getFirstname() + " " + user.getLastname());
-            loggedInUserStatus = userStatus;
-            this.user = user;
+            Log.d(App.TAG, "User logged in: " + user.getFirstname() + " " + user.getLastname());
+            Login.setUserRole(userStatus);
+            Login.setLoggedInUser(user);
 
             if (fragmentCurrent instanceof FragmentLogin) {
                 replaceFragmentContainerFragmentWith(fragmentList);
@@ -480,10 +410,6 @@ public class ActivityMain extends Activity {
         }
     }
 
-    public void logOut() {
-        loggedInUserStatus = IS_LOGGED_OUT;
-        replaceFragmentContainerFragmentWith(fragmentLogin);
-    }
 
     public void addToList(final ArrayList<AssetManagerObjects> objects) {
         addToList(objects, true);
@@ -499,12 +425,12 @@ public class ActivityMain extends Activity {
                 ArrayList<Filter> spinnerArray = new ArrayList<Filter>();
 
                 int spPos = 0;
-                Log.d(TAG, "Before counting");
+                Log.d(App.TAG, "Before counting");
                 if (lvList.getCount() > 0) {
-                    Log.d(TAG, "Before checking objects");
+                    Log.d(App.TAG, "Before checking objects");
                     if (objects.get(0).getClass().equals(lvList.getItemAtPosition(0).getClass()) ) {
                         spPos = spFilter.getSelectedItemPosition();
-                        Log.d(TAG, "Settings spos" + Integer.toString(spPos));
+                        Log.d(App.TAG, "Settings spos" + Integer.toString(spPos));
                     }
                 }
 
@@ -514,7 +440,7 @@ public class ActivityMain extends Activity {
                     spinnerArray.add(Filter.FILTER_EQUIPMENT_INUSE);
                     tvTitle.setText("Utstyr");
                 } else if (objects.get(0) instanceof Equipment) {
-                    if (loggedInUserStatus == IS_LOGGED_OUT) {
+                    if (Login.isLoggedOut()) {
                         spinnerArray.add(Filter.FILTER_EQUIPMENT_ALL);
                         tvTitle.setText("Utstyr");
                     } else {
@@ -545,7 +471,7 @@ public class ActivityMain extends Activity {
                 spFilter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                         Spinner spFilter = (Spinner)findViewById(R.id.spFilter);
-                        Log.d(TAG, "Position " + Integer.toString(position));
+                        Log.d(App.TAG, "Position " + Integer.toString(position));
 
 
                         if ((Integer)spFilter.getTag(R.id.pos) != position) {
@@ -585,14 +511,11 @@ public class ActivityMain extends Activity {
             lvList.setOnItemClickListener(mGlobal_OnItemClickListener);
             registerForContextMenu(lvList);
         } catch (Exception e) {
-            Log.d(TAG, e.toString());
+            Log.d(App.TAG, e.toString());
         }
     }
 
-    public void onClickRegisterPageButton(View buttonView) {
-        replaceFragmentContainerFragmentWith(fragmentRegister);
-        fragmentRegister.populateNew();
-    }
+
 
 
     public void onClickUpdateUserInfoButton(View buttonView) {
@@ -601,12 +524,12 @@ public class ActivityMain extends Activity {
         String phoneNumber = ((EditText)fragmentAccountSettings.getView().findViewById(R.id.editTextSettingsPhonenumber)).getText().toString();
         String username = ((EditText)fragmentAccountSettings.getView().findViewById(R.id.editTextSettingsUsername)).getText().toString();
 
-        user.setFirstname(firstname);
-        user.setLastname(lastname);
-        user.setPhone(phoneNumber);
-        user.setUserName(username);
+        Login.getLoggedInUser().setFirstname(firstname);
+        Login.getLoggedInUser().setLastname(lastname);
+        Login.getLoggedInUser().setPhone(phoneNumber);
+        Login.getLoggedInUser().setUserName(username);
 
-        WebAPI.doUpdateUser(this, user);
+        WebAPI.doUpdateUser(this, Login.getLoggedInUser());
     }
 
     public void onClickUpdateUserPasswordButton(View buttonView) {
@@ -616,24 +539,9 @@ public class ActivityMain extends Activity {
         if (!password.equals(repeatedPassword))
             Toast.makeText(this, "Passord matchet ikke hverandre. Prøv på nytt", Toast.LENGTH_LONG).show();
         else
-            WebAPI.doChangeUserPassword(this, user.getU_id(), password);
+            WebAPI.doChangeUserPassword(this, Login.getLoggedInUser().getU_id(), password);
     }
 
-    public void onClickLoanButton(View buttonView) {
-        Button buttonLoan = (Button)buttonView;
-        String buttonText = buttonLoan.getText().toString();
-
-        if (buttonText.equals("Registrer utlån")) {
-            fragmentLoan = new FragmentLoan();
-            replaceFragmentContainerFragmentWith(fragmentLoan);
-
-            if (currentlyViewedEquipment != null)
-                fragmentLoan.populateLoanFragmentWithData(currentlyViewedEquipment, this);
-        }
-        else {
-
-        }
-    }
 
     // Bruker
     public void populateLoanListViewWithUsers(ArrayList<User> users) {
@@ -677,7 +585,7 @@ public class ActivityMain extends Activity {
     }
 
     public void populateUserListViewWithUsers(ArrayList<LogEntry> logEntries) {
-        Log.d(TAG, "Populating listview with userlogentries");
+        Log.d(App.TAG, "Populating listview with userlogentries");
         ListView lvUserHistory = (ListView)fragmentUser.getView().findViewById(R.id.lvUserHistory);
         adapter = new AssetManagerAdapter(this, logEntries);
         lvUserHistory.setAdapter(adapter);
@@ -689,42 +597,23 @@ public class ActivityMain extends Activity {
                 replaceFragmentContainerFragmentWith(fragmentAsset);
                 LogEntry logEntry = (LogEntry)adapter.getItemAtPosition(position);
                 Equipment equipment = EquipmentStatus.getEquipmentById(logEntry.getE_id());
-                fragmentAsset.populateAssetFragmentWithAssetData(equipment, loggedInUserStatus);
+                fragmentAsset.populateAssetFragmentWithAssetData(equipment, Login.getUserRole());
                 currentlyViewedEquipment = equipment;
             }
         });
     }
 
-    public void onClickLoginButton(View buttonView)
-    {
-        username = ((EditText)fragmentLogin.getView().findViewById(R.id.editTextUsername)).getText().toString();
-        password = ((EditText)fragmentLogin.getView().findViewById(R.id.editTextPassword)).getText().toString();
-        isAdmin = ((CheckBox)fragmentLogin.getView().findViewById(R.id.checkBoxIsAdmin)).isChecked();
+    public void attemptLogin(String username, String password, boolean isAdmin) {
+             if (isAdmin)
+                 WebAPI.doLoginAdmin(this, username, password);
+             else
+                 WebAPI.doLogin(this, username, password);
+         }
 
-        attemptLogin(username, password, isAdmin);
-    }
 
-    private void attemptLogin(String username, String password, boolean isAdmin) {
-        if (isAdmin)
-            WebAPI.doLoginAdmin(this, username, password);
-        else
-            WebAPI.doLogin(this, username, password);
-    }
-
-    public User getCurrentUser() {
-        return user;
-    }
 
     public Equipment getCurrentlyViewedEquipment() {
         return this.currentlyViewedEquipment;
     }
 
-    public int getCurrentUserStatus() {
-        return loggedInUserStatus;
-    }
-
-    public void sendToFragmentList() {
-        replaceFragmentContainerFragmentWith(fragmentList);
-        addToList(Category.getCategories());
-    }
 }

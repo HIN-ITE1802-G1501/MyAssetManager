@@ -142,41 +142,39 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
             Log.e("RESPONSE_MESSAGE", response.getMessage());
 
             if (response.getMessage().contains("500")) {
-                notifyUser(R.string.WEBAPI_CODE_500);
+                App.notifyUser(R.string.WEBAPI_CODE_500);
             } else if (response.getMessage().contains("518")) {
-                notifyUser(R.string.WEBAPI_CODE_518);
+                App.notifyUser(R.string.WEBAPI_CODE_518);
             } else if (response.getMessage().contains("512")) {
-                notifyUser(R.string.WEBAPI_CODE_512);
-                ((ActivityMain) context).logIn(null, false, ActivityMain.IS_LOGGED_OUT);
+                App.notifyUser(R.string.WEBAPI_CODE_512);
+                ((ActivityMain) context).logIn(null, false, Login.UserRole.LOGGED_OUT);
                 closeSession();
             }
             else  {
                 switch (method) {
                     case LOG_IN:
                         if (response.getMessage().contains("512")) {
-                            ((ActivityMain) context).logIn(null, false, ActivityMain.IS_LOGGED_OUT);
+                            ((ActivityMain) context).logIn(null, false, Login.UserRole.LOGGED_OUT);
                             closeSession();
                         } else {
                             User log_in = gson.fromJson(response.getJsonResponse(), User.class);
-                            ((ActivityMain) context).logIn(log_in, true, ActivityMain.IS_REGULAR_USER);
+                            ((ActivityMain) context).logIn(log_in, true, Login.UserRole.REGULAR_USER);
                         }
                         break;
                     case LOG_IN_ADMIN:
                         if (response.getMessage().contains("517")) {
-                            notifyUser(R.string.WEBAPI_CODE_517);
+                            App.notifyUser(R.string.WEBAPI_CODE_517);
                             closeSession();
                         } else {
                             User log_in_admin = gson.fromJson(response.getJsonResponse(), User.class);
-                            ((ActivityMain) context).logIn(log_in_admin, true, ActivityMain.IS_ADMIN_USER);
+                            ((ActivityMain) context).logIn(log_in_admin, true, Login.UserRole.ADMIN_USER);
                         }
                         break;
                     case LOG_OUT:
-                        Log.d(TAG, "Running logout from onPostExecute");
                         closeSession();
-                        ((ActivityMain) context).logOut();
+                        Login.setUserRole(Login.UserRole.LOGGED_OUT);
+                        ((ActivityMain) context).replaceFragmentContainerFragmentWith(((ActivityMain) context).fragmentLogin);
                         break;
-
-
                     case GET_EQUIPMENT_ALL:
                         Type get_equipment = new TypeToken<List<Equipment>>() { }.getType();
                         ArrayList<AssetManagerObjects> equipment = (ArrayList<AssetManagerObjects>) gson.fromJson(response.getJsonResponse(), get_equipment);
@@ -240,65 +238,47 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
                                 break;
                             }
                         break;
-                    case  GET_LOG_ENTRIES_FOR_USER_FRAGMENT:
+                    case GET_LOG_ENTRIES_FOR_USER_FRAGMENT:
                         Type get_log_entries_for_user_fragment = new TypeToken<List<LogEntry>>() {}.getType();
                         ArrayList<LogEntry> logEntriesForUserFragment = (ArrayList<LogEntry>) gson.fromJson(response.getJsonResponse(), get_log_entries_for_user_fragment);
                         ((ActivityMain) context).populateUserListViewWithUsers(logEntriesForUserFragment);
                         break;
                     case ADD_EQUIPMENT:
-                        if (response.getResult() == true) {
-                            notifyUser(R.string.WEB_API_ADD_EQUIPMENT_SUCCESS);
-                            EquipmentStatus.getUpdateFromDatabase(context);
-                            ((ActivityMain)context).sendToFragmentList();
-                        } else if (response.getMessage().contains("515")) {
-                            notifyUser(R.string.WEBAPI_CODE_515);
-                        } else notifyUser(R.string.WEBAPI_CODE_ERROR);
+                        App.notifyUser(R.string.WEB_API_ADD_EQUIPMENT_SUCCESS);
+                        EquipmentStatus.getUpdateFromDatabase(context);
+                        ((ActivityMain) context).replaceFragmentContainerFragmentWith(((ActivityMain) context).fragmentList);
+                        ((ActivityMain) context).addToList(Category.getCategories());
                         break;
                     case ADD_USER_WITHOUT_LOGIN:
-                        if (response.getResult() == true) {
-                             WebAPI.doGetUsers(context, WebAPI.Method.GET_USERS);
-                        } else notifyUser(R.string.WEBAPI_CODE_ERROR);
+                         WebAPI.doGetUsers(context, WebAPI.Method.GET_USERS);
                         closeSession();
                         break;
                     case ADD_USER:
-                        notifyUser(R.string.WEBAPI_CODE_ERROR);
-                        if (response.getResult() == true) {
-                             WebAPI.doGetUsers(context, WebAPI.Method.GET_USERS);
-                        } if (response.getMessage().contains("515")) {
-                            notifyUser(R.string.WEBAPI_CODE_515);
-                        } else notifyUser(R.string.WEBAPI_CODE_ERROR);
+                         WebAPI.doGetUsers(context, WebAPI.Method.GET_USERS);
                         break;
                     case UPDATE_USER:
-                        if (response.getResult() == true)
-                            Toast.makeText(context, "Oppdatering fullført", Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, "Oppdatering fullført", Toast.LENGTH_LONG).show();
                         break;
                     case CHANGE_USER_PASSWORD:
-                        if (response.getResult() == true)
-                            Toast.makeText(context, "Oppdatering fullført", Toast.LENGTH_LONG).show();
+                         Toast.makeText(context, "Oppdatering fullført", Toast.LENGTH_LONG).show();
                         break;
 
                     case DELETE_USER:
                         WebAPI.doGetUsers(context, WebAPI.Method.GET_USERS);
                         break;
                     case UPDATE_EQUIPMENT:
-                        if (response.getResult() == true)
-                            Toast.makeText(context, "Oppdatering fullført", Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, "Oppdatering fullført", Toast.LENGTH_LONG).show();
                         break;
                     case DELETE_EQUIPMENT:
                         ((ActivityMain) context).addToList(Category.getCategories());
                         break;
-
                     case REGISTER_RESERVATION_OUT:
-                        if (response.getResult() == true) {
-                            Toast.makeText(context, "Lån registrert", Toast.LENGTH_LONG).show();
-                            EquipmentStatus.getUpdateFromDatabase(context);
-                        }
+                        Toast.makeText(context, "Lån registrert", Toast.LENGTH_LONG).show();
+                        EquipmentStatus.getUpdateFromDatabase(context);
                         break;
                     case REGISTER_RESERVATION_IN:
-                        if (response.getResult() == true) {
-                            Toast.makeText(context, "Innlevering registrert", Toast.LENGTH_LONG).show();
-                            EquipmentStatus.getUpdateFromDatabase(context);
-                        }
+                        Toast.makeText(context, "Innlevering registrert", Toast.LENGTH_LONG).show();
+                        EquipmentStatus.getUpdateFromDatabase(context);
                         break;
                     case GET_EQUIPMENT_WITHOUT_LOGIN:
                         Type get_equipment_without_login = new TypeToken<List<Equipment>>() { }.getType();
@@ -313,9 +293,7 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
         }
     }
 
-    private void notifyUser(int resourceId) {
-        Toast.makeText(context, App.getContext().getString(resourceId), Toast.LENGTH_LONG).show();
-    }
+
 
     private void closeSession() {
         httpClient.getConnectionManager().closeExpiredConnections();

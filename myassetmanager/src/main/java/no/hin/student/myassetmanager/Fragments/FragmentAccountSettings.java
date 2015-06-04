@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import no.hin.student.myassetmanager.Activities.ActivityMain;
+import no.hin.student.myassetmanager.Classes.Login;
 import no.hin.student.myassetmanager.Classes.User;
 import no.hin.student.myassetmanager.R;
 
@@ -36,7 +37,7 @@ public class FragmentAccountSettings extends Fragment
     {
         super.onAttach(activity);
         parentActivity = (ActivityMain)activity;
-        user = parentActivity.getCurrentUser();
+        user = Login.getLoggedInUser();
     }
 
     @Override

@@ -15,6 +15,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import no.hin.student.myassetmanager.Activities.ActivityMain;
+import no.hin.student.myassetmanager.Classes.App;
+import no.hin.student.myassetmanager.Classes.Login;
 import no.hin.student.myassetmanager.Classes.User;
 import no.hin.student.myassetmanager.Classes.WebAPI;
 import no.hin.student.myassetmanager.R;
@@ -43,7 +45,7 @@ public class FragmentRegister extends Fragment implements View.OnClickListener {
                  ((EditText)getView().findViewById(R.id.etAddRegisterPhone)).setText("");
                  ((EditText)getView().findViewById(R.id.etAddRegisterUsername)).setText("");
                  ((CheckBox)getView().findViewById(R.id.cbAddRegisterUpdatePassword)).setVisibility(View.INVISIBLE);
-                 ((EditText)getView().findViewById(R.id.etAddRegisterPassword)).setEnabled(false);
+                 ((EditText)getView().findViewById(R.id.etAddRegisterPassword)).setEnabled(true);
                  ((EditText)getView().findViewById(R.id.etAddRegisterPassword)).setText("");
 
                  ImageButton btnRegisterCreate = (ImageButton) getView().findViewById(R.id.btnRegisterCreate);
@@ -52,7 +54,7 @@ public class FragmentRegister extends Fragment implements View.OnClickListener {
                  btnRegisterCreate.setOnClickListener(this);
                  btnRegisterCancel.setOnClickListener(this);
              } catch (Exception e) {
-                 Log.d("-log", e.toString());
+                 Log.d(App.TAG, e.toString());
              }
          }
 
@@ -95,11 +97,11 @@ public class FragmentRegister extends Fragment implements View.OnClickListener {
                   String username = ((EditText)getView().findViewById(R.id.etAddRegisterUsername)).getText().toString();
                   String password = ((EditText)getView().findViewById(R.id.etAddRegisterPassword)).getText().toString();
 
-                  if (activityMain.getCurrentUserStatus() == ActivityMain.IS_LOGGED_OUT) {
-                      User user = new User(username, password, firstname, lastname, phoneNumber, false);
-                      WebAPI.doAddUserWithoutLogin(v.getContext(), user);
-                      activityMain.replaceFragmentContainerFragmentWith(activityMain.fragmentLogin);
-                  } else if (activityMain.getCurrentUserStatus() == ActivityMain.IS_ADMIN_USER) {
+                  if (Login.isLoggedOut()) {
+                                         User user = new User(username, password, firstname, lastname, phoneNumber, false);
+                                         WebAPI.doAddUserWithoutLogin(v.getContext(), user);
+                                         activityMain.replaceFragmentContainerFragmentWith(activityMain.fragmentLogin);
+                                     } else if (Login.isLoggedInAsAdminUser()) {
                       if (update) {
                           Boolean checked =  ((CheckBox)getView().findViewById(R.id.cbAddRegisterUpdatePassword)).isChecked();
                           this.user.setFirstname(firstname);

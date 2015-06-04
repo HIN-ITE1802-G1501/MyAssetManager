@@ -136,7 +136,7 @@ public class FragmentUser extends Fragment implements View.OnClickListener {
                     break;
             }
         } catch (Exception e) {
-            Log.d("-log", e.toString());
+            Log.d(App.TAG, e.toString());
         }
     }
 }

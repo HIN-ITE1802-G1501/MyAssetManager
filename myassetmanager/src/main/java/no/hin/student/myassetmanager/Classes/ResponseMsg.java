@@ -2,12 +2,6 @@ package no.hin.student.myassetmanager.Classes;
 
 import com.google.gson.Gson;
 
-/**
- * Created by wfa on 07.04.2015.
- *
- * Sendes fra server (som JSON) som svar pÃ¥ alle forespÃ¸rsler klienten gjÃ¸r mot serveren.
- *
- */
 public class ResponseMsg {
     private Boolean result = false;     //Indikerer om forespÃ¸rselen gikk bra eller ikke.
     private String message ="";         //Melding eller feilmelding fra server.
