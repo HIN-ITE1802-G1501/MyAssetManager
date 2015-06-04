@@ -68,6 +68,7 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
 
         ADD_EQUIPMENT(3001, "addEquipment"),
         ADD_USER_WITHOUT_LOGIN(3002, "addUserWithoutLogin"),
+        ADD_USER(3003, "addUser"),
 
         UPDATE_USER(4001, "updateUser"),
         UPDATE_EQUIPMENT(4002, "updateEquipment"),
@@ -155,8 +156,7 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
                         if (response.getMessage().contains("512")) {
                             ((ActivityMain) context).logIn(null, false, ActivityMain.IS_LOGGED_OUT);
                             closeSession();
-                        }
-                        else {
+                        } else {
                             User log_in = gson.fromJson(response.getJsonResponse(), User.class);
                             ((ActivityMain) context).logIn(log_in, true, ActivityMain.IS_REGULAR_USER);
                         }
@@ -165,12 +165,10 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
                         if (response.getMessage().contains("517")) {
                             notifyUser(R.string.WEBAPI_CODE_517);
                             closeSession();
-                        }
-                        else {
+                        } else {
                             User log_in_admin = gson.fromJson(response.getJsonResponse(), User.class);
                             ((ActivityMain) context).logIn(log_in_admin, true, ActivityMain.IS_ADMIN_USER);
                         }
-
                         break;
                     case LOG_OUT:
                         Log.d(TAG, "Running logout from onPostExecute");
@@ -257,10 +255,19 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
                         } else notifyUser(R.string.WEBAPI_CODE_ERROR);
                         break;
                     case ADD_USER_WITHOUT_LOGIN:
-                        Toast.makeText(context, response.getMessage().toString(), Toast.LENGTH_LONG).show();
+                        if (response.getResult() == true) {
+                             WebAPI.doGetUsers(context, WebAPI.Method.GET_USERS);
+                        } else notifyUser(R.string.WEBAPI_CODE_ERROR);
                         closeSession();
                         break;
-
+                    case ADD_USER:
+                        notifyUser(R.string.WEBAPI_CODE_ERROR);
+                        if (response.getResult() == true) {
+                             WebAPI.doGetUsers(context, WebAPI.Method.GET_USERS);
+                        } if (response.getMessage().contains("515")) {
+                            notifyUser(R.string.WEBAPI_CODE_515);
+                        } else notifyUser(R.string.WEBAPI_CODE_ERROR);
+                        break;
                     case UPDATE_USER:
                         if (response.getResult() == true)
                             Toast.makeText(context, "Oppdatering fullført", Toast.LENGTH_LONG).show();
@@ -271,7 +278,7 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
                         break;
 
                     case DELETE_USER:
-                        User.postDeleteUser();
+                        WebAPI.doGetUsers(context, WebAPI.Method.GET_USERS);
                         break;
                     case UPDATE_EQUIPMENT:
                         if (response.getResult() == true)
@@ -507,6 +514,15 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
         new WebAPI(URL, Method.ADD_USER_WITHOUT_LOGIN, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
     }
 
+    public static void doAddUser(Context context, User user) {
+        if (httpClient == null) httpClient = new DefaultHttpClient();
+
+        List<NameValuePair> nameValuePairs = null;
+        nameValuePairs = new ArrayList<NameValuePair>(1);
+        nameValuePairs.add(new BasicNameValuePair("user", user.toJSONString()));
+        new WebAPI(URL, Method.ADD_USER, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
+    }
+
     public static void doUpdateUser(Context context, User user) {
         if (httpClient == null)
             httpClient = new DefaultHttpClient();
@@ -574,6 +590,7 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
             nameValuePairs.add(new BasicNameValuePair("db_uid", databaseUsername));
             nameValuePairs.add(new BasicNameValuePair("db_pwd", databasePassword));
             new WebAPI(URL, Method.GET_EQUIPMENT_WITHOUT_LOGIN, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
+            Log.d(TAG, "Getting equipment");
         } else {
             Log.d(TAG, "Du er allerede logget inn!");
         }

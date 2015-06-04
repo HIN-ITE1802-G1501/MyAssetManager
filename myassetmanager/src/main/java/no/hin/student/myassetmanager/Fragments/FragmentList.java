@@ -2,6 +2,7 @@ package no.hin.student.myassetmanager.Fragments;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -40,8 +41,6 @@ public class FragmentList extends Fragment {
 
         return adapter;
     }
-
-
 
 
 }

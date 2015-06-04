@@ -28,14 +28,20 @@
     <string name="fragment_user_tvUserPhonenumber">+47 999 99 999</string>
     <string name="fragment_user_tvUserSMSMessage">Melding fra Min utstyrsoversikt: </string>
 
+    <string name="fragment_Register_tvAddRegisterHeader_New">Ny bruker</string>
+    <string name="fragment_Register_tvAddRegisterHeader_Edit">Rediger bruker</string>
+
     <string name="dialog_yes">Ja</string>
     <string name="dialog_no">Nei</string>
 
     <string name="dialog_loan_Title">Registrer innlevering</string>
     <string name="dialog_loan_Message_out">Registrer innlevering for utstyr </string>
 
+    <string name="dialog_deleteuser_Title">Slette bruker</string>
+    <string name="dialog_deleteuser_Message_out">Er du sikker på at du vil slette brukeren</string>
+
     <string name="dialog_deleteequipment_Title">Slette utstyr</string>
-    <string name="dialog_deleteequipment_Message_out">Er du sikker på at du vil slette</string>
+    <string name="dialog_deleteequipment_Message_out">Er du sikker på at du vil slette utstyret</string>
 
     <string name="MENU_CONTEXT_LIST_SHOW">Vis</string>
     <string name="MENU_CONTEXT_LIST_EDIT">Rediger</string>

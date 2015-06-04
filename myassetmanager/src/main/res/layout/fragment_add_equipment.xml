@@ -14,14 +14,14 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
         <TextView
-            android:id="@+id/tvAddEquipmentHeader"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Legg til utstyr"
-            android:layout_alignParentTop="true"
-            android:textStyle="bold"
-            android:layout_marginBottom="10dp"
-            android:textSize="20sp"/>
+                     android:id="@+id/tvAddEquipmentHeader"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:text="Legg til utstyr"
+                     android:layout_alignParentTop="true"
+                     android:textStyle="bold"
+                     android:layout_marginBottom="10dp"
+                     android:textSize="20sp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -70,6 +70,7 @@
                 android:layout_width="110dp"
                 android:layout_height="fill_parent"
                 android:gravity="bottom|left"
+                android:inputType="number"
                 android:textSize="20sp"
                 android:text="IT-nummer:"/>
 
@@ -98,6 +99,27 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
                 android:textSize="20sp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tvAddEquipmentPicture"
+                android:layout_width="110dp"
+                android:layout_height="fill_parent"
+                android:gravity="bottom|left"
+                android:textSize="20sp"
+                android:text="Bilde:"/>
+
+            <ImageView
+                android:id="@+id/ivAddEquipmentPicture"
+                android:src="@drawable/equipment_picture"
+                android:adjustViewBounds="true"
+                android:maxHeight="80dp"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"/>
         </LinearLayout>
     </LinearLayout>
     <ListView

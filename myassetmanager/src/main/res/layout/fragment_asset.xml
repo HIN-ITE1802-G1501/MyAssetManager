@@ -156,10 +156,17 @@
             android:scaleType="fitCenter"/>
     </LinearLayout>
 
-
     <View
         android:layout_height="1dp"
         android:layout_width="match_parent"
         android:background="#728C93"
         android:layout_marginTop="5dp"/>
+
+    <ImageView
+        android:id="@+id/ivAssetImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/equipment_image"/>
 </LinearLayout>

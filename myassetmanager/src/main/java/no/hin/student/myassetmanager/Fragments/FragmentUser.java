@@ -1,7 +1,9 @@
 package no.hin.student.myassetmanager.Fragments;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,6 +20,7 @@ import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
+import no.hin.student.myassetmanager.Activities.ActivityMain;
 import no.hin.student.myassetmanager.Classes.App;
 import no.hin.student.myassetmanager.Classes.Equipment;
 import no.hin.student.myassetmanager.Classes.User;
@@ -62,6 +65,7 @@ public class FragmentUser extends Fragment implements View.OnClickListener {
         ImageButton btnUserSMS = (ImageButton)getView().findViewById(R.id.btnUserSMS);
         ImageButton btnUserEdit = (ImageButton)getView().findViewById(R.id.btnUserEdit);
         ImageButton btnUserActivate = (ImageButton)getView().findViewById(R.id.btnUserActivate);
+        ImageButton btnUserDelete = (ImageButton)getView().findViewById(R.id.btnUserDelete);
 
         ivUserFragment.setImageResource((this.user.isUser_activated()) ? R.drawable.user : R.drawable.user_notactive);
         btnUserActivate.setImageResource((this.user.isUser_activated()) ? R.drawable.user_deactivate : R.drawable.user_activate);
@@ -76,11 +80,13 @@ public class FragmentUser extends Fragment implements View.OnClickListener {
         btnUserSMS.setOnClickListener(this);
         btnUserEdit.setOnClickListener(this);
         btnUserActivate.setOnClickListener(this);
+        btnUserDelete.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
         try {
+            ActivityMain activityMain = ((ActivityMain)getActivity());
             switch(v.getId()) {
                 case R.id.btnUserCall:
                     Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + this.user.getPhone()));
@@ -94,20 +100,39 @@ public class FragmentUser extends Fragment implements View.OnClickListener {
                     startActivity(smsIntent);
                     break;
                 case R.id.btnUserActivate:
-                        this.user.setUser_activated(!user.isUser_activated());
-                        ImageButton btnUserActivate = (ImageButton)v.findViewById(R.id.btnUserActivate);
-                        btnUserActivate.setImageResource((this.user.isUser_activated()) ? R.drawable.user_deactivate : R.drawable.user_activate);
+                    this.user.setUser_activated(!user.isUser_activated());
+                    ImageButton btnUserActivate = (ImageButton)v.findViewById(R.id.btnUserActivate);
+                    btnUserActivate.setImageResource((this.user.isUser_activated()) ? R.drawable.user_deactivate : R.drawable.user_activate);
 
-                        ImageView ivUserFragment = (ImageView)getView().findViewById(R.id.ivUserFragment);
-                        ivUserFragment.setImageResource((this.user.isUser_activated()) ? R.drawable.user : R.drawable.user_notactive);
+                    ImageView ivUserFragment = (ImageView)getView().findViewById(R.id.ivUserFragment);
+                    ivUserFragment.setImageResource((this.user.isUser_activated()) ? R.drawable.user : R.drawable.user_notactive);
 
-                        WebAPI.doUpdateUser(v.getContext(),this.user);
+                    WebAPI.doUpdateUser(v.getContext(),this.user);
                     break;
                 case R.id.btnUserEdit:
-
+                    activityMain.replaceFragmentContainerFragmentWith(activityMain.fragmentRegister);
+                    activityMain.fragmentRegister.populatEdit(this.user);
                     break;
                 case R.id.btnUserDelete:
-                    WebAPI.doDeleteUser(v.getContext(), this.user.getId());
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(v.getContext());
+                    alertDialog.setTitle(getString(R.string.dialog_deleteuser_Title));
+                    alertDialog.setMessage(getString(R.string.dialog_deleteuser_Message_out) + " " + this.user.getFirstname() + " " + this.user.getLastname() + "?");
+
+                    alertDialog.setPositiveButton(getString(R.string.dialog_yes), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            ActivityMain activityMain = ((ActivityMain)getActivity());
+                            WebAPI.doDeleteUser(activityMain, user.getId());
+                        }
+                    });
+
+                    alertDialog.setNegativeButton(getString(R.string.dialog_no), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    });
+                    alertDialog.show();
                     break;
             }
         } catch (Exception e) {

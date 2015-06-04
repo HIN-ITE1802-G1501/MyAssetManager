@@ -6,12 +6,8 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.pm.FeatureInfo;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.text.BoringLayout;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -22,12 +18,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
-import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -201,7 +194,7 @@ public class ActivityMain extends Activity {
         // Always call the superclass so it can restore the view hierarchy
         super.onRestoreInstanceState(savedInstanceState);
 
-        Log.d(TAG, "From restore" + savedInstanceState.getInt(STATE_LEVEL));
+       // Log.d(TAG, "From restore" + savedInstanceState.getInt(STATE_LEVEL));
     }
 
     @Override
@@ -218,15 +211,16 @@ public class ActivityMain extends Activity {
         super.onStart();
         try {
             if ( (fragmentCurrent == null) || (this.username.equals("")) || (this.password.equals("")) ) {
+                Log.d(TAG, "Not resuming, getting equipment as ano");
                 replaceFragmentContainerFragmentWith(fragmentList);
                 WebAPI.doGetEquipmentWithoutLogin(this);
-            } else {
-                attemptLogin(this.username, this.password, this.isAdmin);
-                replaceFragmentContainerFragmentWith(fragmentCurrent);
+               } else {
+              attemptLogin(this.username, this.password, this.isAdmin);
+              replaceFragmentContainerFragmentWith(fragmentCurrent);
             }
-        } catch (Exception e) {
-            Log.d(TAG, e.toString());
-        }
+             } catch (Exception e) {
+              Log.d(TAG, e.toString());
+             }
     }
 
     public void replaceFragmentContainerFragmentWith(Fragment fragment) {
@@ -349,6 +343,7 @@ public class ActivityMain extends Activity {
                     return true;
                 case MENU_BUTTON_NEW_USER:
                     replaceFragmentContainerFragmentWith(fragmentRegister);
+                    fragmentRegister.populateNew();
                     return true;
                 default:
                     return true;
@@ -487,8 +482,7 @@ public class ActivityMain extends Activity {
 
     public void logOut() {
         loggedInUserStatus = IS_LOGGED_OUT;
-        replaceFragmentContainerFragmentWith(fragmentList);
-        WebAPI.doGetEquipmentWithoutLogin(ActivityMain.this);
+        replaceFragmentContainerFragmentWith(fragmentLogin);
     }
 
     public void addToList(final ArrayList<AssetManagerObjects> objects) {
@@ -597,19 +591,9 @@ public class ActivityMain extends Activity {
 
     public void onClickRegisterPageButton(View buttonView) {
         replaceFragmentContainerFragmentWith(fragmentRegister);
+        fragmentRegister.populateNew();
     }
 
-    public void onClickSendRegistrationButton(View buttonView) {
-        String firstname = ((EditText)fragmentRegister.getView().findViewById(R.id.editTextRegisterFirstname)).getText().toString();
-        String lastname = ((EditText)fragmentRegister.getView().findViewById(R.id.editTextRegisterLastname)).getText().toString();
-        String phoneNumber = ((EditText)fragmentRegister.getView().findViewById(R.id.editTextRegisterPhonenumber)).getText().toString();
-        String username = ((EditText)fragmentRegister.getView().findViewById(R.id.editTextRegisterUsername)).getText().toString();
-        String password = ((EditText)fragmentRegister.getView().findViewById(R.id.editTextRegisterPassword)).getText().toString();
-
-        User user = new User(username, password, firstname, lastname, phoneNumber, false);
-        WebAPI.doAddUserWithoutLogin(this, user);
-        replaceFragmentContainerFragmentWith(fragmentLogin);
-    }
 
     public void onClickUpdateUserInfoButton(View buttonView) {
         String firstname = ((EditText)fragmentAccountSettings.getView().findViewById(R.id.editTextSettingsFirstname)).getText().toString();
