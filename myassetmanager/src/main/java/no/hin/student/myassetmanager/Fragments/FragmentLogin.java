@@ -31,11 +31,17 @@ public class FragmentLogin extends Fragment  implements View.OnClickListener
     public void onStart() {
         super.onStart();
 
+        ActivityMain activityMain = ((ActivityMain)getActivity());
+
         Button btnLogin = (Button)getView().findViewById(R.id.btnLogin);
         btnLogin.setOnClickListener(this);
 
         Button btnRegister = (Button)getView().findViewById(R.id.btnRegister);
         btnRegister.setOnClickListener(this);
+
+        ((EditText)activityMain.fragmentLogin.getView().findViewById(R.id.editTextUsername)).setText(Login.getUsername());
+        ((EditText)activityMain.fragmentLogin.getView().findViewById(R.id.editTextPassword)).setText(Login.getPassword());
+        ((CheckBox)activityMain.fragmentLogin.getView().findViewById(R.id.checkBoxIsAdmin)).setChecked(Login.getAdmin());
     }
 
     @Override

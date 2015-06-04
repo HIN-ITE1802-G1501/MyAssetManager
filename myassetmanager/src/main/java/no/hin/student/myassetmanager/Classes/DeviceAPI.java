@@ -12,10 +12,9 @@ import android.telephony.SmsManager;
 import no.hin.student.myassetmanager.R;
 
 public class DeviceAPI {
-     public static void sendSMS(String phoneNumber, String message)
-     {
-         String SENT = "SMS_SENT";
-         String DELIVERED = "SMS_DELIVERED";
+     public static void sendSMS(String phoneNumber, String message) {
+         final String SENT = "SMS_SENT";
+         final String DELIVERED = "SMS_DELIVERED";
 
          PendingIntent sentPI = PendingIntent.getBroadcast(App.getContext(), 0, new Intent(SENT), 0);
 

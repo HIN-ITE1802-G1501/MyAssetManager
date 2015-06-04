@@ -136,7 +136,7 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
     @Override
     protected void onPostExecute(String result) {
         try {
-            Log.d(TAG, result);
+            Log.d(App.TAG, "Jada" + result);
             Gson gson = new Gson();
             ResponseMsg response = gson.fromJson(result, ResponseMsg.class);
             Log.e("RESPONSE_MESSAGE", response.getMessage());
@@ -157,8 +157,10 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
                             ((ActivityMain) context).logIn(null, false, Login.UserRole.LOGGED_OUT);
                             closeSession();
                         } else {
+                            EquipmentStatus.getUpdateFromDatabase(context);
                             User log_in = gson.fromJson(response.getJsonResponse(), User.class);
                             ((ActivityMain) context).logIn(log_in, true, Login.UserRole.REGULAR_USER);
+                            Login.saveUserLoginToApp();
                         }
                         break;
                     case LOG_IN_ADMIN:
@@ -166,14 +168,17 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
                             App.notifyUser(R.string.WEBAPI_CODE_517);
                             closeSession();
                         } else {
+                            EquipmentStatus.getUpdateFromDatabase(context);
                             User log_in_admin = gson.fromJson(response.getJsonResponse(), User.class);
                             ((ActivityMain) context).logIn(log_in_admin, true, Login.UserRole.ADMIN_USER);
+                            Login.saveUserLoginToApp();
                         }
                         break;
                     case LOG_OUT:
                         closeSession();
                         Login.setUserRole(Login.UserRole.LOGGED_OUT);
                         ((ActivityMain) context).replaceFragmentContainerFragmentWith(((ActivityMain) context).fragmentLogin);
+                        Login.deleteUserLoginToApp();
                         break;
                     case GET_EQUIPMENT_ALL:
                         Type get_equipment = new TypeToken<List<Equipment>>() { }.getType();
