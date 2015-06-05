@@ -156,18 +156,14 @@ public class ActivityMain extends Activity {
 
      @Override
      public void onRestoreInstanceState(Bundle savedInstanceState) {
-         // Always call the superclass so it can restore the view hierarchy
          super.onRestoreInstanceState(savedInstanceState);
-
-         // Log.d(App.TAG, "From restore" + savedInstanceState.getInt(STATE_LEVEL));
      }
 
      @Override
      public void onSaveInstanceState(Bundle savedInstanceState) {
-         savedInstanceState.putInt(STATE_CURRENT_EQUIPMENT, 2);
-
-         // Always call the superclass so it can save the view hierarchy state
          super.onSaveInstanceState(savedInstanceState);
+
+         savedInstanceState.putInt(STATE_CURRENT_EQUIPMENT, 2);
      }
 
      @Override
@@ -196,16 +192,19 @@ public class ActivityMain extends Activity {
      @Override
      public void onStop() {
          super.onStop();
+
          Log.d(App.TAG, "onStop");
+
          if (!Login.isLoggedOut())
              WebAPI.logOut(ActivityMain.this);
      }
 
 
      @Override
+     // Create ContextMenu for app
      public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
          switch (v.getId()) {
-             case R.id.lvList: // When right clicking in list
+             case R.id.lvList: // Create menu for right-click in ListView
 
                  super.onCreateContextMenu(menu, v, menuInfo);
                  AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
@@ -241,6 +240,7 @@ public class ActivityMain extends Activity {
      }
 
      @Override
+     // When clicking on an item in ListView
      public boolean onContextItemSelected(MenuItem item) {
          AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
 
@@ -621,15 +621,13 @@ public class ActivityMain extends Activity {
              }
          });
      }
-
+    public void attemptLogin(String username, String password, boolean isAdmin) {
+        if (isAdmin)
+            WebAPI.doLoginAdmin(this, username, password); //TODO: testing context
+        else
+            WebAPI.doLogin(this, username, password);
+    }
      public Equipment getCurrentlyViewedEquipment() {
          return this.currentlyViewedEquipment;
-     }
-
-     public void attemptLogin(String username, String password, boolean isAdmin) {
-         if (isAdmin)
-             WebAPI.doLoginAdmin(this, username, password);
-         else
-             WebAPI.doLogin(this, username, password);
      }
  }

@@ -1,12 +1,11 @@
 package no.hin.student.myassetmanager.Classes;
 
 
-import android.app.Application;
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.Preference;
-import android.preference.PreferenceManager;
 import android.util.Log;
+
+import no.hin.student.myassetmanager.Activities.ActivityMain;
+import no.hin.student.myassetmanager.Fragments.FragmentLogin;
 
 public class Login {
      public enum UserRole {
@@ -109,5 +108,21 @@ public class Login {
          Log.d(App.TAG, "Loading user " + getUsername());
      }
 
+    public static void logIn(User user, boolean success, Login.UserRole userStatus) {
+        ActivityMain activityMain = ((ActivityMain) App.getContext());
+        if (success) {
+            Log.d(App.TAG, "User logged in: " + user.getFirstname() + " " + user.getLastname());
+            Login.setUserRole(userStatus);
+            Login.setLoggedInUser(user);
 
+            if (activityMain.fragmentCurrent instanceof FragmentLogin) {
+                activityMain.replaceFragmentContainerFragmentWith(activityMain.fragmentList);
+                activityMain.addToList(Category.getCategories());
+                EquipmentStatus.getUpdateFromDatabase(activityMain);
+            }
+        }
+        else {
+            //Toast.makeText(getApplicationContext(), "Feil brukernavn og/eller passord", Toast.LENGTH_LONG).show();
+        }
+    }
  }

@@ -136,7 +136,7 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
     @Override
     protected void onPostExecute(String result) {
         try {
-            Log.d(App.TAG, "Jada" + result);
+            Log.d(App.TAG, result);
             Gson gson = new Gson();
             ResponseMsg response = gson.fromJson(result, ResponseMsg.class);
             Log.e("RESPONSE_MESSAGE", response.getMessage());
