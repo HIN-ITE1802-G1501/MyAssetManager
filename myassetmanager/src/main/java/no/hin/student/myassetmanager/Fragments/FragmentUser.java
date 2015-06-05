@@ -6,7 +6,6 @@ import android.app.AlertDialog;
  import android.content.Context;
  import android.content.DialogInterface;
  import android.content.Intent;
- import android.content.res.Configuration;
  import android.net.Uri;
  import android.os.Bundle;
  import android.util.Log;
@@ -47,22 +46,6 @@ public class FragmentUser extends Fragment implements View.OnClickListener {
      public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
          View view = inflater.inflate(R.layout.fragment_user, container, false);
          return view;
-     }
-
-     public void onConfigurationChanged(Configuration newConfig) {
-         super.onConfigurationChanged(newConfig);
-
-         // Get a layout inflater (inflater from getActivity() or getSupportActivity() works as well)
-         LayoutInflater inflater = (LayoutInflater) App.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-         View newView = inflater.inflate(R.layout.fragment_user, null);
-         // This just inflates the view but doesn't add it to any thing.
-         // You need to add it to the root view of the fragment
-         ViewGroup rootView = (ViewGroup) getView();
-         // Remove all the existing views from the root view.
-         // This is also a good place to recycle any resources you won't need anymore
-         rootView.removeAllViews();
-         rootView.addView(newView);
-         // Viola, you have the new view setup
      }
 
      public void populateUserFragmentWithUserData(User user, Context context) {

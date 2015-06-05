@@ -1,11 +1,17 @@
+/**
+* This is the ResponeMsg class the handles response message from the backend server API
+* @author Kurt-Erik Karlsen and Aleksander V. Grunnvoll
+* @version 1.1
+*/
+
 package no.hin.student.myassetmanager.Classes;
 
 import com.google.gson.Gson;
 
 public class ResponseMsg {
-    private Boolean result = false;     //Indikerer om forespÃ¸rselen gikk bra eller ikke.
-    private String message ="";         //Melding eller feilmelding fra server.
-    private String jsonResponse="";     //Dersom serveren returnerer data, f.eks. en liste med Equipment-objekter, ligger dette her som JSON.
+    private Boolean result = false;     // Indication for the request
+    private String message = "";        // Message from server
+    private String jsonResponse="";     // If server returns JSon data (Example: list with Equipment objects)
 
     public Boolean isResult() {
         return result;

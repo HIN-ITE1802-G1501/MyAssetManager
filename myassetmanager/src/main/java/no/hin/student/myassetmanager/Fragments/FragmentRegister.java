@@ -80,7 +80,7 @@ public class FragmentRegister extends Fragment implements View.OnClickListener {
             btnRegisterCancel.setOnClickListener(this);
             cbAddRegisterUpdatePassword.setOnClickListener(this);
         } catch (Exception e) {
-            Log.d("-log", e.toString());
+            Log.d(App.TAG, e.toString());
         }
     }
 
@@ -117,7 +117,7 @@ public class FragmentRegister extends Fragment implements View.OnClickListener {
                           WebAPI.doAddUser(v.getContext(), user);
                       }
                   } else {
-                      Log.d("-log", "Could not add user");
+                      Log.d(App.TAG, "Could not add user");
                   }
                   break;
               case R.id.btnRegisterCancel:

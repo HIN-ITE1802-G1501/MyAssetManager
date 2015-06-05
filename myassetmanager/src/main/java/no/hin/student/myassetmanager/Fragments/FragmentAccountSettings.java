@@ -1,3 +1,9 @@
+/**
+* This is the AccountSettings fragment that displayes the user's account
+* @author Kurt-Erik Karlsen and Aleksander V. Grunnvoll
+* @version 1.1
+*/
+
 package no.hin.student.myassetmanager.Fragments;
 
 
@@ -16,19 +22,15 @@ import no.hin.student.myassetmanager.R;
 
 public class FragmentAccountSettings extends Fragment
 {
-    private ActivityMain parentActivity;
-    private User user;
+    private ActivityMain parentActivity;    // Variable for parentActivity context
+    private User user;                      // Variable for user
 
-    public FragmentAccountSettings()
-    {
-        // Required empty public constructor
+    public FragmentAccountSettings() {
+
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState)
-    {
-        // Inflate the layout for this fragment
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_account_settings, container, false);
     }
 
@@ -41,8 +43,7 @@ public class FragmentAccountSettings extends Fragment
     }
 
     @Override
-    public void onStart()
-    {
+    public void onStart() {
         super.onStart();
         ((EditText)getView().findViewById(R.id.editTextSettingsFirstname)).setText(user.getFirstname());
         ((EditText)getView().findViewById(R.id.editTextSettingsLastname)).setText(user.getLastname());

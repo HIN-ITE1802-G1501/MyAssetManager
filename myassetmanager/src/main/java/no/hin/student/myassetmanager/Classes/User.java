@@ -1,54 +1,52 @@
+/**
+ * This is the User class that represents a user object
+ * @author Kurt-Erik Karlsen and Aleksander V. Grunnvoll
+ * @version 1.1
+ */
+
+
 package no.hin.student.myassetmanager.Classes;
 
-import android.util.Log;
 import android.view.View;
 
 import com.google.gson.Gson;
-import org.apache.http.client.HttpClient;
-import no.hin.student.myassetmanager.Interfaces.MyInterface;
+import no.hin.student.myassetmanager.Interfaces.AssetManagerInterface;
 import no.hin.student.myassetmanager.R;
 
 
-public class User extends AssetManagerObjects implements MyInterface {
-    public enum LoginState {
-        NOT_LOGGED_IN(1),
-        LOGGED_IN_ADMIN(2),
-        LOGGED_IN_USER(3);
+public class User extends AssetManagerObjects implements AssetManagerInterface {
 
-        private int logInState;
-
-        private LoginState(int id) {
-            logInState = id;
-        }
-
-        public int getLoginState() {
-            return logInState;
-        }
-    }
-
-    private int u_id;
-    private String userName;
-    private String password;
-    private String firstname;
-    private String lastname;
-    private String phone;
-    private boolean user_activated;
-    private LoginState loginState = LoginState.NOT_LOGGED_IN;
+    private int u_id;                   // User ID
+    private String userName;            // Username for the user
+    private String password;            // Password for the user
+    private String firstname;           // User's firstname
+    private String lastname;            // User's lastname
+    private String phone;               // User's phonenumber
+    private boolean user_activated;     // Variable true if user is activated and false if not
 
 
-    private static HttpClient httpClient = null;
-
-    private static final String TAG = "MyAssetManger-log";
-
+    /**
+     * Default constructor for User
+     */
     public User() {
-        this.userName = "";
-        this.password = "";
-        this.firstname = "";
-        this.lastname = "";
-        this.phone = "";
-        this.user_activated = false;
-    }
+             this.userName = "";
+             this.password = "";
+             this.firstname = "";
+             this.lastname = "";
+             this.phone = "";
+             this.user_activated = false;
+         }
 
+    /**
+     * Constructor for User with all parameters
+     *
+     * @param u_id represents the User ID for the logentry
+     * @param userName represents the user's username
+     * @param password represents the user's password
+     * @param firstname represents the user's firstname
+     * @param phone represents the user's phonenumber
+     * @param user_activated if the user should be activated or deactivated
+     */
     public User(int u_id, String userName, String password, String firstname, String lastname, String phone, boolean user_activated) {
         this.u_id = u_id;
         this.userName = userName;
@@ -59,8 +57,16 @@ public class User extends AssetManagerObjects implements MyInterface {
         this.user_activated = user_activated;
     }
 
+    /**
+     * Constructor for User without u_id
+     *
+     * @param userName represents the user's username
+     * @param password represents the user's password
+     * @param firstname represents the user's firstname
+     * @param phone represents the user's phonenumber
+     * @param user_activated if the user should be activated or deactivated
+     */
     public User(String userName, String password, String firstname, String lastname, String phone, boolean user_activated) {
-        this.u_id = u_id;
         this.userName = userName;
         this.password = password;
         this.firstname = firstname;
@@ -125,24 +131,12 @@ public class User extends AssetManagerObjects implements MyInterface {
         this.user_activated = user_activated;
     }
 
-    public LoginState getLoginState() {
-        return this.loginState;
-    }
-
-    public void setLoginState(LoginState loginState) {
-        this.loginState = loginState;
-    }
 
     public String toJSONString() {
         Gson gson = new Gson();
-        String json = gson.toJson(this);
-        return json;
+        return gson.toJson(this);
     }
 
-    public static void deleteUser(AssetManagerAdapter adapterInstance, User user) {
-        Log.d(TAG, "Delete user from list and database");
-        adapterInstance.remove(user);
-    }
 
     @Override
     public String toString() {
@@ -161,13 +155,11 @@ public class User extends AssetManagerObjects implements MyInterface {
 
     @Override
     public String getListItemSubTitle(View view) {
-        return (isUser_activated() ? "Aktivert" : "Ikke aktivert");
+        return (isUser_activated() ? App.getContext().getString(R.string.CLASS_USER_STATUS_ACTIVATE) : App.getContext().getString(R.string.CLASS_USER_STATUS_DEACTIVATED));
     }
-
 
     @Override
     public int getListItemImage() {
-
         return (user_activated) ? R.drawable.user : R.drawable.user_notactive;
     }
 

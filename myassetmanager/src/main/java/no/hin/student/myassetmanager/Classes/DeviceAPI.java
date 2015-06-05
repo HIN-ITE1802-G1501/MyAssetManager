@@ -1,3 +1,9 @@
+/**
+* This is the DeviceAPI class that contains methods for sending SMS, handling camera, storage etc..
+* @author Kurt-Erik Karlsen and Aleksander V. Grunnvoll
+* @version 1.1
+*/
+
 package no.hin.student.myassetmanager.Classes;
 
 
@@ -12,6 +18,13 @@ import android.telephony.SmsManager;
 import no.hin.student.myassetmanager.R;
 
 public class DeviceAPI {
+
+    /**
+    * Method for sending SMS
+    *
+    * @param phoneNumber is the phonenumber we will send the SMS to.
+    * @param message is the message that we will send in the SMS.
+    */
      public static void sendSMS(String phoneNumber, String message) {
          final String SENT = "SMS_SENT";
          final String DELIVERED = "SMS_DELIVERED";

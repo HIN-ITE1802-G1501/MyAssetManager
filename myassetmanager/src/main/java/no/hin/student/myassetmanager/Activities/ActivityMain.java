@@ -28,7 +28,8 @@ import android.app.Activity;
  import android.widget.TextView;
  import android.widget.Toast;
 
- import java.io.File;
+import java.awt.font.TextAttribute;
+import java.io.File;
  import java.util.ArrayList;
 
  import no.hin.student.myassetmanager.Classes.App;
@@ -122,6 +123,7 @@ public class ActivityMain extends Activity {
 
 
      @Override
+     // TODO: BUG - Fix problem when no Internet connectin or connecin to WebAPI
      protected void onCreate(Bundle savedInstanceState) {
          super.onCreate(savedInstanceState);
          Log.d(App.TAG, "On create");
@@ -137,6 +139,7 @@ public class ActivityMain extends Activity {
          setContentView(R.layout.activity_main);
          findViewById(R.id.btnMenu).setOnClickListener(mGlobal_OnClickListener);
 
+         // TODO: FEATURE - Update categories list even if file exist
          File file = new File(Environment.getExternalStorageDirectory() + "/Download/products.txt");
          if (!(file.exists())) // If file doesn't exist, downloadCategoriesFile it
              Category.downloadCategoriesFile();
@@ -155,11 +158,13 @@ public class ActivityMain extends Activity {
      }
 
      @Override
+     // TODO: FEATURE - Implement Restore InstanceState for activity and fragments
      public void onRestoreInstanceState(Bundle savedInstanceState) {
          super.onRestoreInstanceState(savedInstanceState);
      }
 
      @Override
+     // TODO: FEATURE - Implement SaveInstanceState for activity and fragments
      public void onSaveInstanceState(Bundle savedInstanceState) {
          super.onSaveInstanceState(savedInstanceState);
 
@@ -252,6 +257,7 @@ public class ActivityMain extends Activity {
                  } else if (adapter.getItem(info.position).getClass().equals(Equipment.class) ) {
                      replaceFragmentContainerFragmentWith(fragmentAsset);
                      Equipment equipment = (Equipment)adapter.getItem(info.position);
+                     Log.d(App.TAG, "Viewing " + equipment.getModel());
                      fragmentAsset.populateAssetFragmentWithAssetData(equipment, Login.getUserRole());
                      currentlyViewedEquipment = equipment;
                  } else if (adapter.getItem(info.position).getClass().equals(User.class) ) {
@@ -621,9 +627,11 @@ public class ActivityMain extends Activity {
              }
          });
      }
+
+    //TODO: IMPROVEMENT - Planning to move this method to Login class, problem with getting ActivityMain context
     public void attemptLogin(String username, String password, boolean isAdmin) {
         if (isAdmin)
-            WebAPI.doLoginAdmin(this, username, password); //TODO: testing context
+            WebAPI.doLoginAdmin(this, username, password);
         else
             WebAPI.doLogin(this, username, password);
     }

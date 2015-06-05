@@ -1,3 +1,9 @@
+/**
+* This is the LogEntry class that represents a logentry for an asset.
+* @author Kurt-Erik Karlsen and Aleksander V. Grunnvoll
+* @version 1.3
+*/
+
 package no.hin.student.myassetmanager.Classes;
 
 
@@ -10,13 +16,16 @@ import no.hin.student.myassetmanager.R;
 
 
 public class LogEntry extends AssetManagerObjects {
-    private int le_id;
-    private int u_id;
-    private int e_id;
-    private String out;
-    private String in;
-    private String comment;
+    private int le_id;          // LogEntry ID
+    private int u_id;           // User ID
+    private int e_id;           // Equipment ID
+    private String out;         // Date for equipment loan
+    private String in;          // Date for equipment return
+    private String comment;     // Comment for
 
+    /**
+     * Default constructor for LogEntry
+     */
     public LogEntry() {
         this.le_id = 0;
         this.u_id = 0;
@@ -26,6 +35,16 @@ public class LogEntry extends AssetManagerObjects {
         this.comment = "";
     }
 
+    /**
+     * Constructor for LogEntry with all parameters
+     *
+     * @param le_id represents the LogEntry ID
+     * @param u_id represents the User ID for the logentry
+     * @param e_id represents the equipment ID for the logentry
+     * @param out represents the loan date for the logentry
+     * @param in represents the return date for the logentry
+     * @param comment represents a comment for the logentry
+     */
     public LogEntry(int le_id, int u_id, int e_id, String out, String in, String comment) {
         this.le_id = le_id;
         this.u_id = u_id;
@@ -35,6 +54,15 @@ public class LogEntry extends AssetManagerObjects {
         this.comment = comment;
     }
 
+    /**
+     * Constructor for LogEntry without LogEntry ID
+     *
+     * @param u_id represents the User ID for the logentry
+     * @param e_id represents the equipment ID for the logentry
+     * @param out represents the loan date for the logentry
+     * @param in represents the return date for the logentry
+     * @param comment represents a comment for the logentry
+     */
     public LogEntry(int u_id, int e_id, String out, String in, String comment) {
         this.u_id = u_id;
         this.e_id = e_id;

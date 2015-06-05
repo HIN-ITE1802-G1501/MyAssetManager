@@ -6,7 +6,6 @@ import android.app.Fragment;
  import android.content.Intent;
  import android.graphics.Bitmap;
  import android.graphics.BitmapFactory;
- import android.media.Image;
  import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -17,7 +16,6 @@ import android.os.Bundle;
  import android.view.View;
  import android.view.ViewGroup;
  import android.widget.AdapterView;
- import android.widget.Button;
  import android.widget.ImageButton;
  import android.widget.ImageView;
  import android.widget.ListView;
@@ -31,7 +29,8 @@ import java.text.SimpleDateFormat;
  import java.util.Date;
 
  import no.hin.student.myassetmanager.Activities.ActivityMain;
- import no.hin.student.myassetmanager.Classes.AssetManagerAdapter;
+import no.hin.student.myassetmanager.Classes.App;
+import no.hin.student.myassetmanager.Classes.AssetManagerAdapter;
  import no.hin.student.myassetmanager.Classes.Category;
  import no.hin.student.myassetmanager.Classes.Equipment;
  import no.hin.student.myassetmanager.Classes.WebAPI;
@@ -39,7 +38,6 @@ import java.text.SimpleDateFormat;
 
 
 public class FragmentAddEquipment extends Fragment implements View.OnClickListener {
-     private static final String TAG = "MyAssetManger-log";
      private Context context;
      private Category selectedCategory = null;
      private Equipment equipment;
@@ -52,9 +50,7 @@ public class FragmentAddEquipment extends Fragment implements View.OnClickListen
      }
 
      @Override
-     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                              Bundle savedInstanceState) {
-         // Inflate the layout for this fragment
+     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
          return inflater.inflate(R.layout.fragment_add_equipment, container, false);
      }
 
@@ -74,15 +70,16 @@ public class FragmentAddEquipment extends Fragment implements View.OnClickListen
          ActivityMain activityMain = ((ActivityMain)getActivity());
 
          if (requestCode ==  REQUEST_TAKE_PHOTO) {
-             Log.d(TAG, "Picture taken");
+             Log.d(App.TAG, "Picture taken");
              if (!mCurrentPhotoPath.equals("")) {
                  ScalePictureAsyncTask task = new ScalePictureAsyncTask(mCurrentPhotoPath);
                  task.execute();
              }
-             Log.d(TAG, "Image file" + mCurrentPhotoPath);
+             Log.d(App.TAG, "Image file" + mCurrentPhotoPath);
       } else
-         Log.d(TAG,"Picture not taken");
+         Log.d(App.TAG,"Picture not taken");
       }
+
 
     class ScalePictureAsyncTask extends AsyncTask<Integer, Void, Bitmap> {
                  private Bitmap bitmap = null;
@@ -94,6 +91,7 @@ public class FragmentAddEquipment extends Fragment implements View.OnClickListen
 
 
                   @Override
+                  // TODO: BUG -  Image doesn't rotate when in portrait
                   protected Bitmap doInBackground(Integer... params) {
                       bitmap = BitmapFactory.decodeFile(imageFile);
 
@@ -129,7 +127,7 @@ public class FragmentAddEquipment extends Fragment implements View.OnClickListen
                          mCurrentPhotoPath = image.getAbsolutePath();
                          return image;
                      } catch (Exception e) {
-                         Log.d(TAG, e.toString());
+                         Log.d(App.TAG, e.toString());
                      }
                      return null;
                  }
@@ -210,24 +208,25 @@ public class FragmentAddEquipment extends Fragment implements View.OnClickListen
                                          }
                                      }
                                  } catch (Exception e) {
-                                     Log.e(TAG, e.toString());
+                                     Log.e(App.TAG, e.toString());
                                  }
                                  break;
                              case R.id.btnEquipmentCamera:
+                                 //TODO: BUG - when cancel camera intent crashes app
                                   Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                                   if (takePictureIntent.resolveActivity(activityMain.getPackageManager()) != null) {
                                       File photoFile = null;
                                       try {
                                           photoFile = createImageFile();
                                       } catch (Exception e) {
-                                        Log.d(TAG, e.toString());
+                                        Log.d(App.TAG, e.toString());
                                       }
                                       if (photoFile != null) {
                                          try {
                                           takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
                                           startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
                                          } catch (Exception e) {
-                                             Log.d(TAG, e.toString());
+                                             Log.d(App.TAG, e.toString());
                                          }
                                       }
                                   }

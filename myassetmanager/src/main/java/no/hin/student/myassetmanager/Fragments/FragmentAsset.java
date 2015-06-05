@@ -40,6 +40,7 @@ public class FragmentAsset extends Fragment implements View.OnClickListener {
      public void populateAssetFragmentWithAssetData(Equipment equipment, Login.UserRole userStatus) {
          try {
              this.equipment = equipment;
+             Log.d(App.TAG, "Adding equipment " + this.equipment.getModel());
 
              ImageView ivEquipmentFragment = (ImageView) getView().findViewById(R.id.ivEquipmentFragment);
 
@@ -136,8 +137,10 @@ public class FragmentAsset extends Fragment implements View.OnClickListener {
 
                      break;
                  case R.id.btnEquipmentEdit:
-                     activityMain.replaceFragmentContainerFragmentWith(((ActivityMain) getActivity()).fragmentAddEquipment);
-                     ((ActivityMain) getActivity()).fragmentAddEquipment.editEquipment(this.equipment);
+                     Log.d(App.TAG, "Edit equipment" + this.equipment.getModel());
+                     activityMain.replaceFragmentContainerFragmentWith(activityMain.fragmentAddEquipment);
+                     activityMain.fragmentAddEquipment.editEquipment(this.equipment);
+
                      break;
                  case R.id.btnEquipmentDelete:
                      AlertDialog.Builder alertDialog = new AlertDialog.Builder(v.getContext());

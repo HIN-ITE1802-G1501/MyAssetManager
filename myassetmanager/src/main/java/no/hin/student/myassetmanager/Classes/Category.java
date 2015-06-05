@@ -1,3 +1,9 @@
+/**
+* This is the Category class that represents an asset category.
+* @author Kurt-Erik Karlsen and Aleksander V. Grunnvoll
+* @version 1.1
+*/
+
 package no.hin.student.myassetmanager.Classes;
 
 import android.os.Environment;
@@ -19,16 +25,19 @@ import java.util.Collections;
 import no.hin.student.myassetmanager.R;
 
 
-public class Category extends AssetManagerObjects
-{
-    private int id;
-    private String name;
+public class Category extends AssetManagerObjects {
+    private int id;                 // Category ID
+    private String name;            // Category Name
     public static String url = "http://kark.hin.no:8088/d3330log_backend/utstyrstyper.txt";
-    public static String folder;
-
-    private static final String TAG = "MyAssetManger-log";
+    public static String folder;    // Category storage folder
 
 
+    /**
+     * Default constructor for Category
+     *
+     * @param id represents Category ID
+     * @param name represents Category name
+     */
     public Category(int id, String name) {
         this.id = id;
         this.name = name;
@@ -50,9 +59,13 @@ public class Category extends AssetManagerObjects
 
     @Override
     public String getListItemSubTitle(View view) {
-        return "Lager: " + Integer.toString(EquipmentStatus.countEquipmentAvailable(this.getName())) + ", Lånt: " + Integer.toString(EquipmentStatus.countEquipmentInUse(this.getName()));
+        return App.getContext().getString(R.string.CLASS_CATEGORY_STATUS_IN) + ": " + Integer.toString(EquipmentStatus.countEquipmentAvailable(this.getName())) +
+                ", " + App.getContext().getString(R.string.CLASS_CATEGORY_STATUS_OUT) + ": " + Integer.toString(EquipmentStatus.countEquipmentInUse(this.getName()));
     }
 
+    /**
+    * Enum fo defining category icons
+    */
     private enum Icons {
         Annet, Dataskjerm, Dockingstasjon, HDMIsvitsj, Hub, Laptop, Legosett, Nettbrett, Oculus, PC, Ruter, Smartklokker, Svitsj, TVskjerm;
     }
@@ -64,6 +77,11 @@ public class Category extends AssetManagerObjects
     }
 
 
+    /**
+     * Method for getting category image
+     *
+     * @param categoryName string value for category name (example: "Router")
+     */
     public static int getCategoryImage(String categoryName) {
         try {
             Icons icons = Icons.valueOf(categoryName.replace("-",""));
@@ -116,6 +134,10 @@ public class Category extends AssetManagerObjects
         return categories;
     }
 
+
+    /**
+     * Method for downloading the categoey file to storage
+     */
     public static void downloadCategoriesFile() {
         folder = Environment.getExternalStorageDirectory() + "/Download";
 
@@ -129,9 +151,11 @@ public class Category extends AssetManagerObjects
                     URL url = new URL(Category.url);
                     URLConnection connection = url.openConnection();
                     connection.connect();
+
                     int lengthOfFile = connection.getContentLength();
                     inputStream = url.openStream();
                     File testDirectory = new File(folder);
+
                     if (!testDirectory.exists()) {
                         testDirectory.mkdir();
                     }
@@ -146,7 +170,7 @@ public class Category extends AssetManagerObjects
                     }
                 }
                 catch (Exception e) {
-                    Log.e(TAG, "Unable to downloadCategoriesFile" + e.getMessage());
+                    Log.e(App.TAG, "Unable to downloadCategoriesFile" + e.getMessage());
                 }
                 finally {
                     try {
@@ -163,6 +187,11 @@ public class Category extends AssetManagerObjects
     }
 
 
+    /**
+     * Method for reading categories from file to an array
+     *
+     * @param fileName is the file that contains categories
+     */
     public static ArrayList readCategoriesFromFile(String fileName) {
        String line = "";
        ArrayList data = new ArrayList();
@@ -174,7 +203,7 @@ public class Category extends AssetManagerObjects
            try {
                while((line = br.readLine()) != null) {
                    data.add(line);
-                   Log.d(TAG, "Reading line " + line);
+                   Log.d(App.TAG, "Reading line " + line);
                }
            }
            finally {
@@ -191,7 +220,5 @@ public class Category extends AssetManagerObjects
 
        return data;
      }
-
-
 
 }

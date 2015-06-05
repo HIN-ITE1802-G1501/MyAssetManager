@@ -1,3 +1,9 @@
+/**
+* This is the UserLogEntries class that represents a list of all users that includes all LogEntries
+* @author Kurt-Erik Karlsen and Aleksander V. Grunnvoll
+* @version 1.1
+*/
+
 package no.hin.student.myassetmanager.Classes;
 
 import android.util.Log;
@@ -7,16 +13,17 @@ import com.google.gson.Gson;
 
 import java.util.List;
 
-import no.hin.student.myassetmanager.Activities.ActivityMain;
 import no.hin.student.myassetmanager.R;
 
-/**
- * Created by wfa on 07.04.2015.
- */
-public class UserLogEntries extends AssetManagerObjects {
-    private  User user;                     //Aktuell bruker
-    private List<LogEntry> logEntries;     //En liste med utlÃ¥n for aktuell bruker.
 
+public class UserLogEntries extends AssetManagerObjects {
+    private User user;                     // Current user
+    private List<LogEntry> logEntries;     // List of loans for the current user
+
+
+    /**
+     * Default constructor fot the UserLogEntries object
+     */
     public UserLogEntries() {
     }
 
@@ -56,15 +63,20 @@ public class UserLogEntries extends AssetManagerObjects {
     public String getListItemSubTitle(View view) {
         String result = "";
         try {
+            // Loop for finding which equipment is in or out
             List<LogEntry> logEntries = getLogEntries();
             for (LogEntry logEntry : logEntries) {
+                String equipmentText = App.getContext().getString(R.string.CLASS_USERLOGENTRIES_EQUIPMENT);
+                String outText = App.getContext().getString(R.string.CLASS_USERLOGENTRIES_OUT);
+                String inText = App.getContext().getString(R.string.CLASS_USERLOGENTRIES_OUT);
 
                 if (!result.equals(""))
                     result = result + "\n";
-                result = result + "Utstyr: " + EquipmentStatus.getEquipmentById(logEntry.getE_id()).getType() + "\nUtlån: " + logEntry.getOut() + (logEntry.getIn().equals("") ? "" : "\nLevert: " + logEntry.getIn()) + "\n";
+
+                result = result + equipmentText + ": " + EquipmentStatus.getEquipmentById(logEntry.getE_id()).getType() + "\n" + outText + ": " + logEntry.getOut() + (logEntry.getIn().equals("") ? "" : "\n" + inText + ": " + logEntry.getIn()) + "\n";
             }
         } catch (Exception e) {
-            Log.d("-log", e.toString());
+            Log.d(App.TAG, e.toString());
         }
         return result;
     }

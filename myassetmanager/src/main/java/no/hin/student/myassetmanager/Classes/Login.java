@@ -1,6 +1,13 @@
+/**
+* This is the Login class contains method for Application login.
+* @author Kurt-Erik Karlsen and Aleksander V. Grunnvoll
+* @version 1.2
+*/
+
 package no.hin.student.myassetmanager.Classes;
 
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
@@ -8,6 +15,10 @@ import no.hin.student.myassetmanager.Activities.ActivityMain;
 import no.hin.student.myassetmanager.Fragments.FragmentLogin;
 
 public class Login {
+
+    /**
+     * Enum that represents the user's role, if it's an admin user or regular user.
+     */
      public enum UserRole {
          ADMIN_USER(1),
          REGULAR_USER(2),
@@ -20,13 +31,13 @@ public class Login {
          }
      }
 
-     private static User loginUser;
+     private static User loginUser;                                 // Variable for currently logged in user
 
-     private static String loginUsername = "";
-     private static String loginPassword = "";
-     private static Boolean loginAdmin = false;
+     private static String loginUsername = "";                      // Variable for currently logged in user's username
+     private static String loginPassword = "";                      // Variable for currently logged in user's password
+     private static Boolean loginAdmin = false;                     // Variable that represents if user tried to log in as admin
 
-     private static UserRole loginUserRole = UserRole.LOGGED_OUT;
+     private static UserRole loginUserRole = UserRole.LOGGED_OUT;   // Variable for currently user's role
 
      public static void setUsername(String username) {
          loginUsername = username;
@@ -80,6 +91,10 @@ public class Login {
          loginUser = user;
      }
 
+
+    /**
+     * Method for saving user's credentials to SharedPreferences
+     */
      public static void saveUserLoginToApp() {
          SharedPreferences userLoginInformation = App.getContext().getSharedPreferences("MyAssetManager", App.getContext().MODE_PRIVATE);
          SharedPreferences.Editor edit = userLoginInformation.edit();
@@ -90,6 +105,9 @@ public class Login {
          Log.d(App.TAG, "Saving user " + getUsername());
      }
 
+    /**
+     * Method for deleting user's credentials in SharedPreferences
+     */
     public static void deleteUserLoginToApp() {
         SharedPreferences userLoginInformation = App.getContext().getSharedPreferences("MyAssetManager", App.getContext().MODE_PRIVATE);
         SharedPreferences.Editor edit = userLoginInformation.edit();
@@ -100,6 +118,9 @@ public class Login {
         Log.d(App.TAG, "Deleting password for user " + getUsername());
     }
 
+    /**
+     * Method for getting user's credentials from SharedPreferences
+     */
      public static void loadUserLoginToApp() {
          SharedPreferences userLoginInformation = App.getContext().getSharedPreferences("MyAssetManager", App.getContext().MODE_PRIVATE);
          setUsername(userLoginInformation.getString("username", ""));
@@ -108,8 +129,17 @@ public class Login {
          Log.d(App.TAG, "Loading user " + getUsername());
      }
 
-    public static void logIn(User user, boolean success, Login.UserRole userStatus) {
-        ActivityMain activityMain = ((ActivityMain) App.getContext());
+
+    /**
+     * Method for loging in user
+     *
+     * @param context ActivityMain context
+     * @param user represents the user that we should log in
+     * @param success if login is success
+     * @param userStatus user status of the login
+     */
+    public static void logIn(Context context, User user, boolean success, Login.UserRole userStatus) {
+        ActivityMain activityMain = ((ActivityMain) context);
         if (success) {
             Log.d(App.TAG, "User logged in: " + user.getFirstname() + " " + user.getLastname());
             Login.setUserRole(userStatus);
@@ -120,9 +150,6 @@ public class Login {
                 activityMain.addToList(Category.getCategories());
                 EquipmentStatus.getUpdateFromDatabase(activityMain);
             }
-        }
-        else {
-            //Toast.makeText(getApplicationContext(), "Feil brukernavn og/eller passord", Toast.LENGTH_LONG).show();
         }
     }
  }

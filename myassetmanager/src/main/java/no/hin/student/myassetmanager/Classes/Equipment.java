@@ -1,3 +1,10 @@
+/**
+* This is the Equipment class that represents an asset.
+* @author Kurt-Erik Karlsen and Aleksander V. Grunnvoll
+* @version 1.1
+*/
+
+
 package no.hin.student.myassetmanager.Classes;
 
 
@@ -16,6 +23,10 @@ public class Equipment extends AssetManagerObjects
     private String aquired;     // Equipment aquired date "dd.mm.YYYY"
     private byte[] image;       // Equipment picture max 150px width or height
 
+
+    /**
+     * Default constructor for creating an equipment
+     */
     public Equipment() {
         this.type = "";
         this.brand = "";
@@ -26,6 +37,17 @@ public class Equipment extends AssetManagerObjects
         this.image = null;
     }
 
+    /**
+     * Constructor for creating an equipment without picture
+     *
+     * @param e_id is the equipment ID
+     * @param type is the category of the equipment (Example: PC)
+     * @param brand is the branding of the equipment(Example: Microsoft)
+     * @param model is the model of the equipment (Example: Surface Pro 3)
+     * @param description is the description of the equipment(Example: tablet PC)
+     * @param it_no is the IT-number of the equipment(Example: IT-2041)
+     * @param aquired is the date for the equipment(Example: 24.02.2015)
+     */
     public Equipment(int e_id, String type, String brand, String model, String description, String it_no, String aquired) {
         this.e_id = e_id;
         this.type = type;
@@ -36,6 +58,18 @@ public class Equipment extends AssetManagerObjects
         this.aquired = aquired;
     }
 
+    /**
+     * Constructor for creating an equipment with all parameters
+     *
+     * @param e_id is the equipment ID
+     * @param type is the category of the equipment (Example: PC)
+     * @param brand is the branding of the equipment(Example: Microsoft)
+     * @param model is the model of the equipment (Example: Surface Pro 3)
+     * @param description is the description of the equipment(Example: tablet PC)
+     * @param it_no is the IT-number of the equipment(Example: IT-2041)
+     * @param aquired is the date for the equipment(Example: 24.02.2015)
+     * @param image is the byte representation of a picture
+     */
     public Equipment(int e_id, String type, String brand, String model, String description, String it_no, String aquired, byte[] image) {
         this.e_id = e_id;
         this.type = type;
@@ -47,6 +81,18 @@ public class Equipment extends AssetManagerObjects
         this.image = image;
     }
 
+
+    /**
+     * Constructor for creating an equipment without e_id
+     *
+     * @param type is the category of the equipment (Example: PC)
+     * @param brand is the branding of the equipment(Example: Microsoft)
+     * @param model is the model of the equipment (Example: Surface Pro 3)
+     * @param description is the description of the equipment(Example: tablet PC)
+     * @param it_no is the IT-number of the equipment(Example: IT-2041)
+     * @param aquired is the date for the equipment(Example: 24.02.2015)
+     * @param image is the byte representation of a picture
+     */
     public Equipment(String type, String brand, String model, String description, String it_no, String aquired, byte[] image) {
         this.type = type;
         this.brand = brand;
@@ -128,10 +174,6 @@ public class Equipment extends AssetManagerObjects
     }
 
 
-    public static void postDeleteEquipment() {
-        WebAPI.doGetUsers(App.getContext(), WebAPI.Method.GET_USERS);
-    }
-
     @Override
     public String toString() {
         return "Equipment{" +
@@ -159,7 +201,6 @@ public class Equipment extends AssetManagerObjects
     public String getListItemSubTitle(View view) {
         return this.getBrand() + " " + this.getModel();
     }
-
 
     @Override
     public int getListItemImage() {

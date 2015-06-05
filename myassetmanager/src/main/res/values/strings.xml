@@ -60,8 +60,6 @@
     <string name="MENU_BUTTON_ADD_EQUIPMENT">Legg til utstyr</string>
     <string name="MENU_BUTTON_NEW_USER">Opprett bruker</string>
 
-    <string name="LOGTAG">Test</string>
-
     <string name="FILTER_CATEGORY_ALL">Kategorier</string>
     <string name="FILTER_EQUIPMENT_AVAILABLE">Tilgjengelig</string>
     <string name="FILTER_EQUIPMENT_INUSE">I bruk</string>
@@ -78,7 +76,15 @@
     <string name="FILTER_HISTORY_ALL">All historie</string>
     <string name="FILTER_HISTORY_INUSE">Kun utlån</string>
 
+    <string name="CLASS_CATEGORY_STATUS_IN">Lager</string>
+    <string name="CLASS_CATEGORY_STATUS_OUT">Utlånt</string>
 
+    <string name="CLASS_USER_STATUS_ACTIVATE">Aktivert</string>
+    <string name="CLASS_USER_STATUS_DEACTIVATED">Deaktivert</string>
+
+    <string name="CLASS_USERLOGENTRIES_EQUIPMENT">Utstyr</string>
+    <string name="CLASS_USERLOGENTRIES_OUT">Utlånt</string>
+    <string name="CLASS_USERLOGENTRIES_IN">Levert</string>
 
     <string name="WEB_API_ADD_EQUIPMENT_SUCCESS">Utstyr er lagret i databasen.</string>
 
