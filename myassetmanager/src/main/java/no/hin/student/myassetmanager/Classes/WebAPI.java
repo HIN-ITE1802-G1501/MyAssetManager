@@ -1,3 +1,10 @@
+/**
+* This class contains all the WebAPI methods for sending request to the backend
+ * server.
+* @author Kurt-Erik Karlsen and Aleksander V. Grunnvoll
+* @version 1.4
+*/
+
 package no.hin.student.myassetmanager.Classes;
 
 import android.content.Context;
@@ -30,22 +37,27 @@ import no.hin.student.myassetmanager.R;
 
 
 public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Void, String> {
-    private Context context = null;
-    private String serverURL, methodName;
-    private Method method;
+    private Context context = null;             // ActivityMain contect
+    private String serverURL, methodName;       // Server URL and method name for handling request
+    private Method method;                      // The method we are requesting
 
-    private static HttpClient httpClient = null;
-
-
-    private static final String sql = "kark.hin.no";
-    private static final int sqlport = 3306;
-    private static String databaseUsername;
-    private static String databasePassword;
-    private static final String db = "stud_v15_karlsen";
-    private static final String URL = "http://kark.hin.no:8088/d3330log_backend/";
-    private static final String alreadyLoggedIn = "User is already logged in.";
+    private static HttpClient httpClient = null;    // Http client for session
 
 
+    private static final String sql = "kark.hin.no";                                // The backend server address
+    private static final int sqlport = 3306;                                        // Backend server tcp-port
+    private static String databaseUsername;                                         // Database username for authentication
+    private static String databasePassword;                                         // Database password for authentication
+    private static final String db = "stud_v15_karlsen";                            // Datebase name
+    private static final String URL = "http://kark.hin.no:8088/d3330log_backend/";  // Backend API
+    private static final String alreadyLoggedIn = "User is already logged in.";     // Logged in message
+    private static final String requireLogin =  "Requires login";
+
+
+
+    /**
+     * Enum for identifying which request we are sending to the backend
+     */
     public enum Method {
         LOG_IN(1001, "logIn"),
         LOG_IN_ADMIN(1002, "logInAdmin"),
@@ -101,6 +113,13 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
     };
 
 
+    /**
+     * Default constructor
+     *
+     * @param serverURL server address to backend
+     * @param method request method to backend
+     * @param context ActivityMain context
+     */
     public WebAPI(String serverURL, Method method, Context context) {
         this.method = method;
         this.serverURL = serverURL;
@@ -262,27 +281,27 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
                          WebAPI.doGetUsers(context, WebAPI.Method.GET_USERS);
                         break;
                     case UPDATE_USER:
-                        Toast.makeText(context, "Oppdatering fullført", Toast.LENGTH_LONG).show();
+                        App.notifyUser(R.string.WEB_API_UPDATE_USER_SUCCESS);
                         break;
                     case CHANGE_USER_PASSWORD:
-                         Toast.makeText(context, "Oppdatering fullført", Toast.LENGTH_LONG).show();
+                        App.notifyUser(R.string.WEB_API_UPDATE_USERPASSWORD_SUCCESS);
                         break;
 
                     case DELETE_USER:
                         WebAPI.doGetUsers(context, WebAPI.Method.GET_USERS);
                         break;
                     case UPDATE_EQUIPMENT:
-                        Toast.makeText(context, "Oppdatering fullført", Toast.LENGTH_LONG).show();
+                        App.notifyUser(R.string.WEB_API_UPDATE_EQUIPMENT_SUCCESS);
                         break;
                     case DELETE_EQUIPMENT:
                         ((ActivityMain) context).addToList(Category.getCategories());
                         break;
                     case REGISTER_RESERVATION_OUT:
-                        Toast.makeText(context, "Lån registrert", Toast.LENGTH_LONG).show();
+                        App.notifyUser(R.string.WEB_API_REGISTER_RESERVATION_OUT);
                         EquipmentStatus.getUpdateFromDatabase(context);
                         break;
                     case REGISTER_RESERVATION_IN:
-                        Toast.makeText(context, "Innlevering registrert", Toast.LENGTH_LONG).show();
+                        App.notifyUser(R.string.WEB_API_REGISTER_RESERVATION_IN);
                         EquipmentStatus.getUpdateFromDatabase(context);
                         break;
                     case GET_EQUIPMENT_WITHOUT_LOGIN:

@@ -615,10 +615,10 @@ public class ActivityMain extends Activity {
                  final String comment = ((EditText)fragmentLoan.getView().findViewById(R.id.editTextLoanComment)).getText().toString();
 
                  AlertDialog.Builder alertDialog = new AlertDialog.Builder(ActivityMain.this);
-                 alertDialog.setTitle("Registrer lån");
-                 alertDialog.setMessage("Vil du registrere et lån for bruker " + clickedUser.getFirstname() + " og utstyr " + currentlyViewedEquipment.getModel() + "?");
+                 alertDialog.setTitle(getString(R.string.DIALOG_FRAGMENT_LOAN_OUT_TITLE));
+                 alertDialog.setMessage(String.format(getString(R.string.DIALOG_FRAGMENT_LOAN_OUT_MESSAGE), clickedUser.getFirstname(), currentlyViewedEquipment.getModel()));
 
-                 alertDialog.setPositiveButton("Ja", new DialogInterface.OnClickListener()
+                 alertDialog.setPositiveButton(getString(R.string.dialog_no), new DialogInterface.OnClickListener()
                  {
                      @Override
                      public void onClick(DialogInterface dialog, int which)
@@ -630,7 +630,7 @@ public class ActivityMain extends Activity {
                      }
                  });
 
-                 alertDialog.setNegativeButton("Nei", new DialogInterface.OnClickListener() {
+                 alertDialog.setNegativeButton(getString(R.string.dialog_yes), new DialogInterface.OnClickListener() {
                      @Override
                      public void onClick(DialogInterface dialog, int which)
                      {
@@ -643,6 +643,13 @@ public class ActivityMain extends Activity {
          });
      }
 
+
+    // TODO: IMPROVEMENT - Move method to FragmentUser class
+    /**
+     * Method for populating the user history list
+     *
+     * @param logEntries list of logentries for user
+     */
      public void populateUserListViewWithUsers(ArrayList<LogEntry> logEntries) {
          Log.d(App.TAG, "Populating listview with userlogentries");
          ListView lvUserHistory = (ListView)fragmentUser.getView().findViewById(R.id.lvUserHistory);
@@ -669,6 +676,8 @@ public class ActivityMain extends Activity {
         else
             WebAPI.doLogin(this, username, password);
     }
+
+
      public Equipment getCurrentlyViewedEquipment() {
          return this.currentlyViewedEquipment;
      }
