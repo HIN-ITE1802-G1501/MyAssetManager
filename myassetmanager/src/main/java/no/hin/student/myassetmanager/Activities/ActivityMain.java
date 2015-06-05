@@ -451,11 +451,23 @@ public class ActivityMain extends Activity {
      }
 
 
+    /**
+     * Method for adding objects to Listview
+     *
+     * @param objects to add to listview
+     */
      public void addToList(final ArrayList<AssetManagerObjects> objects) {
          addToList(objects, true);
      }
 
-     public void addToList(final ArrayList<AssetManagerObjects> objects, Boolean updateSpinner) {
+    /**
+     * Method for adding objects to Listview with option to updatespinner
+     *
+     * @param objects to add to listview
+     * @param updateSpinner to add to listview
+     */
+    // TODO: IMPROVEMENT - Move method to FragmentList class
+    public void addToList(final ArrayList<AssetManagerObjects> objects, Boolean updateSpinner) {
          try {
              replaceFragmentContainerFragmentWith(fragmentList);
              ListView lvList = (ListView) fragmentList.getView().findViewById(R.id.lvList);
@@ -464,6 +476,7 @@ public class ActivityMain extends Activity {
                  Spinner spFilter = (Spinner)findViewById(R.id.spFilter);
                  ArrayList<Filter> spinnerArray = new ArrayList<Filter>();
 
+                 // TODO: BUG - Problem when switching between category and available/in use in spinner, the spinner selected item is not always retained correctly
                  int spPos = 0;
                  Log.d(App.TAG, "Before counting");
                  if (lvList.getCount() > 0) {
@@ -478,11 +491,11 @@ public class ActivityMain extends Activity {
                      spinnerArray.add(Filter.FILTER_CATEGORY_ALL);
                      spinnerArray.add(Filter.FILTER_EQUIPMENT_AVAILABLE);
                      spinnerArray.add(Filter.FILTER_EQUIPMENT_INUSE);
-                     tvTitle.setText("Utstyr");
+                     tvTitle.setText(R.string.FRAGMENT_LIST_TITLE_EQUIPMENT);
                  } else if (objects.get(0) instanceof Equipment) {
                      if (Login.isLoggedOut()) {
                          spinnerArray.add(Filter.FILTER_EQUIPMENT_ALL);
-                         tvTitle.setText("Utstyr");
+                         tvTitle.setText(R.string.FRAGMENT_LIST_TITLE_EQUIPMENT);
                      } else {
                          spinnerArray.add(Filter.FILTER_EQUIPMENT_ALL);
                          spinnerArray.add(Filter.FILTER_EQUIPMENT_AVAILABLE_BYCATEGORY);
@@ -493,15 +506,15 @@ public class ActivityMain extends Activity {
                      spinnerArray.add(Filter.FILTER_CATEGORY_ALL);
                      spinnerArray.add(Filter.FILTER_EQUIPMENT_AVAILABLE);
                      spinnerArray.add(Filter.FILTER_EQUIPMENT_INUSE);
-                     tvTitle.setText("Utstyr");
+                     tvTitle.setText(R.string.FRAGMENT_LIST_TITLE_EQUIPMENT);
                  } else if (objects.get(0) instanceof User) {
                      spinnerArray.add(Filter.FILTER_USERS_ALL);
                      spinnerArray.add(Filter.FILTER_USERS_ACTIVE);
                      spinnerArray.add(Filter.FILTER_USERS_NOT_ACTIVE);
-                     tvTitle.setText("Brukere");
+                     tvTitle.setText(R.string.FRAGMENT_LIST_TITLE_USERS);
                  } else if (objects.get(0) instanceof UserLogEntries) {
                      spinnerArray.add(Filter.FILTER_HISTORY_ALL);
-                     tvTitle.setText("Historie");
+                     tvTitle.setText(R.string.FRAGMENT_LIST_TITLE_HISTORY);
                  }
                  ArrayAdapter<Filter> adapterInstance;
                  adapterInstance = new ArrayAdapter<Filter>(this, android.R.layout.simple_list_item_1, spinnerArray);
@@ -544,7 +557,7 @@ public class ActivityMain extends Activity {
                      }
                  });
              } else {
-                 Toast.makeText(this.getApplicationContext(), "Det finnes desverre ikke noe utstyr i denne kategorien.", Toast.LENGTH_SHORT).show();
+                 App.notifyUser(R.string.FRAGMENT_LIST_NOTIFY_NOEQUIPMENT);
              }
              adapter = new AssetManagerAdapter(this, objects);
              lvList.setAdapter(adapter);
@@ -557,7 +570,7 @@ public class ActivityMain extends Activity {
 
 
 
-
+    // TODO: IMPROVEMENT - Move method to FragmentList class
      public void onClickUpdateUserInfoButton(View buttonView) {
          String firstname = ((EditText)fragmentAccountSettings.getView().findViewById(R.id.editTextSettingsFirstname)).getText().toString();
          String lastname = ((EditText)fragmentAccountSettings.getView().findViewById(R.id.editTextSettingsLastname)).getText().toString();
@@ -572,6 +585,7 @@ public class ActivityMain extends Activity {
          WebAPI.doUpdateUser(this, Login.getLoggedInUser());
      }
 
+    // TODO: IMPROVEMENT - Move method to FragmentList class
      public void onClickUpdateUserPasswordButton(View buttonView) {
          String password = ((EditText)fragmentAccountSettings.getView().findViewById(R.id.editTextSettingsNewPassword)).getText().toString();
          String repeatedPassword = ((EditText)fragmentAccountSettings.getView().findViewById(R.id.editTextSettingsRepeatPassword)).getText().toString();
@@ -583,7 +597,12 @@ public class ActivityMain extends Activity {
      }
 
 
-     // Bruker
+     // TODO: IMPROVEMENT - Move method to FragmentLoan class
+    /**
+     * Method for populating the FragmentLoan with date
+     *
+     * @param users list of users we need to populate with
+     */
      public void populateLoanListViewWithUsers(ArrayList<User> users) {
          ListView listViewLoan = (ListView)fragmentLoan.getView().findViewById(R.id.listViewLoanUsers);
          adapter = new AssetManagerAdapter(this, users);

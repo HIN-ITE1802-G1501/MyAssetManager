@@ -86,6 +86,12 @@
     <string name="CLASS_USERLOGENTRIES_OUT">Utlånt</string>
     <string name="CLASS_USERLOGENTRIES_IN">Levert</string>
 
+    <string name="FRAGMENT_LIST_TITLE_EQUIPMENT">Utstyr</string>
+    <string name="FRAGMENT_LIST_TITLE_USERS">Brukere</string>
+    <string name="FRAGMENT_LIST_TITLE_HISTORY">Historie</string>
+    <string name="FRAGMENT_LIST_TITLE_CATEGORY">Kategori</string>
+    <string name="FRAGMENT_LIST_NOTIFY_NOEQUIPMENT">Det finnes desverre ikke noe utstyr i denne kategorien.</string>
+
     <string name="WEB_API_ADD_EQUIPMENT_SUCCESS">Utstyr er lagret i databasen.</string>
 
     <string name="WEBAPI_CODE_200">Forespørsel OK. Ingen feilmelding.</string>
