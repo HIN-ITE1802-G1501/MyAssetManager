@@ -56,6 +56,9 @@ import java.io.File;
 
 public class ActivityMain extends Activity {
 
+    /**
+     * Enum used to represent the filter spinner on top right corner in list fragment
+     */
      public enum Filter {
          FILTER_CATEGORY_ALL(R.string.FILTER_CATEGORY_ALL),
          FILTER_EQUIPMENT_AVAILABLE(R.string.FILTER_EQUIPMENT_AVAILABLE),
@@ -130,10 +133,10 @@ public class ActivityMain extends Activity {
 
          if (savedInstanceState != null) {
              // Restore value of members from saved state
-             Log.d(App.TAG, "From restore" + savedInstanceState.getInt(STATE_CURRENT_EQUIPMENT));
+             Log.d(App.TAG, "From restoreInstanceState" + savedInstanceState.getInt(STATE_CURRENT_EQUIPMENT));
          } else {
              // Probably initialize members with default values for a new instance
-             Log.d(App.TAG, "Nothing");
+             Log.d(App.TAG, "Nothing to restore from savedInstanceState");
          }
 
          setContentView(R.layout.activity_main);
@@ -144,10 +147,13 @@ public class ActivityMain extends Activity {
          if (!(file.exists())) // If file doesn't exist, downloadCategoriesFile it
              Category.downloadCategoriesFile();
 
+         // Setting the database login information
          WebAPI.setDatabaseLoginInformation(getResources().getString(R.string.db_user), getResources().getString(R.string.db_password));
 
+         // Loads user login from SharedPreferences
          Login.loadUserLoginToApp();
 
+         // Creating all of our fragments
          fragmentList = new FragmentList();
          fragmentUser = new FragmentUser();
          fragmentAsset = new FragmentAsset();
@@ -175,6 +181,7 @@ public class ActivityMain extends Activity {
      public void onStart() {
          super.onStart();
          try {
+             // Handling login when AcitvityMain starts/resumes
              if ( ((fragmentCurrent == null) && (Login.getUsername().equals(""))) || (Login.getPassword().equals("")) ) {
                  Log.d(App.TAG, "Not resuming, getting equipment as anonymous");
                  replaceFragmentContainerFragmentWith(fragmentList);
@@ -200,13 +207,14 @@ public class ActivityMain extends Activity {
 
          Log.d(App.TAG, "onStop");
 
+         // Loggin user out if logged in
          if (!Login.isLoggedOut())
              WebAPI.logOut(ActivityMain.this);
      }
 
 
      @Override
-     // Create ContextMenu for app
+     // Create ContextMenu for application
      public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
          switch (v.getId()) {
              case R.id.lvList: // Create menu for right-click in ListView
@@ -258,7 +266,7 @@ public class ActivityMain extends Activity {
                      replaceFragmentContainerFragmentWith(fragmentAsset);
                      Equipment equipment = (Equipment)adapter.getItem(info.position);
                      Log.d(App.TAG, "Viewing " + equipment.getModel());
-                     fragmentAsset.populateAssetFragmentWithAssetData(equipment, Login.getUserRole());
+                     fragmentAsset.populateAssetFragmentWithAssetData(equipment);
                      currentlyViewedEquipment = equipment;
                  } else if (adapter.getItem(info.position).getClass().equals(User.class) ) {
                      replaceFragmentContainerFragmentWith(fragmentUser);
@@ -288,11 +296,16 @@ public class ActivityMain extends Activity {
 
 
 
-
+    /**
+     * Method for notifying user with a Toast
+     *
+     * @param fragment the fragment we should replace with in the container
+     */
      public void replaceFragmentContainerFragmentWith(Fragment fragment) {
          FragmentManager fragmentManager = getFragmentManager();
          FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
          fragmentTransaction.replace(R.id.fragment_container, fragment);
+         // TODO: IMPROVEMENT - Add back button functionality for fragments
          //fragmentTransaction.addToBackStack(null);
          fragmentTransaction.commit();
          fragmentManager.executePendingTransactions();
@@ -306,7 +319,7 @@ public class ActivityMain extends Activity {
      final View.OnClickListener mGlobal_OnClickListener = new View.OnClickListener() {
          public void onClick(final View v) {
              switch(v.getId()) {
-                 case R.id.btnMenu: // Mainmenu
+                 case R.id.btnMenu: // Populate the mainmenu button in the top right corner
                      PopupMenu popup = new PopupMenu(getApplication(), v);
 
                      if (Login.isLoggedInAsAdminUser()) {
@@ -382,7 +395,7 @@ public class ActivityMain extends Activity {
 
 
 
-     // OnItemClickListener for clicking in ListView in fragment List
+     // OnItemClickListener when clicking on item in ListView in fragment List
      final AdapterView.OnItemClickListener mGlobal_OnItemClickListener = new AdapterView.OnItemClickListener() {
          public void onItemClick(AdapterView<?> adapterView, View row, int position, long index) {
              Log.d(App.TAG, "Clicking on equipment " + adapter.getItem(position).toString());
@@ -399,7 +412,7 @@ public class ActivityMain extends Activity {
              else if (clickedEquipment) {
                  replaceFragmentContainerFragmentWith(fragmentAsset);
                  Equipment equipment = (Equipment)adapter.getItem(position);
-                 fragmentAsset.populateAssetFragmentWithAssetData(equipment, Login.getUserRole());
+                 fragmentAsset.populateAssetFragmentWithAssetData(equipment);
                  currentlyViewedEquipment = equipment;
              }
              else if (clickedUser) {
@@ -417,21 +430,23 @@ public class ActivityMain extends Activity {
 
 
 
-
+    //TODO: IMPROVEMENT - Move this to Login class
+    /**
+     * Method for logging in user
+     *
+     * @param user represents the user that we should log in
+     * @param success if login is success
+     * @param userStatus user status of the login
+     */
      public void logIn(User user, boolean success, Login.UserRole userStatus) {
-         if (success) {
-             Log.d(App.TAG, "User logged in: " + user.getFirstname() + " " + user.getLastname());
-             Login.setUserRole(userStatus);
-             Login.setLoggedInUser(user);
+         Log.d(App.TAG, "User logged in: " + user.getFirstname() + " " + user.getLastname());
+         Login.setUserRole(userStatus);
+         Login.setLoggedInUser(user);
 
-             if (fragmentCurrent instanceof FragmentLogin) {
-                 replaceFragmentContainerFragmentWith(fragmentList);
-                 addToList(Category.getCategories());
-                 EquipmentStatus.getUpdateFromDatabase(this);
-             }
-         }
-         else {
-             Toast.makeText(getApplicationContext(), "Feil brukernavn og/eller passord", Toast.LENGTH_LONG).show();
+         if (fragmentCurrent instanceof FragmentLogin) {
+             replaceFragmentContainerFragmentWith(fragmentList);
+             addToList(Category.getCategories());
+             EquipmentStatus.getUpdateFromDatabase(this);
          }
      }
 
@@ -622,7 +637,7 @@ public class ActivityMain extends Activity {
                  replaceFragmentContainerFragmentWith(fragmentAsset);
                  LogEntry logEntry = (LogEntry)adapter.getItemAtPosition(position);
                  Equipment equipment = EquipmentStatus.getEquipmentById(logEntry.getE_id());
-                 fragmentAsset.populateAssetFragmentWithAssetData(equipment, Login.getUserRole());
+                 fragmentAsset.populateAssetFragmentWithAssetData(equipment);
                  currentlyViewedEquipment = equipment;
              }
          });

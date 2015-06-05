@@ -1,3 +1,10 @@
+/**
+* This is the Login fragment that allows the user to login and authenticate with the WebAPI backend
+* @author Kurt-Erik Karlsen and Aleksander V. Grunnvoll
+* @version 1.1
+*/
+
+
 package no.hin.student.myassetmanager.Fragments;
 
 import android.app.Fragment;
@@ -17,13 +24,16 @@ import no.hin.student.myassetmanager.R;
 
 public class FragmentLogin extends Fragment  implements View.OnClickListener
 {
+
+    /**
+     * Default constructor
+     */
     public FragmentLogin() {
-        // Required empty public constructor
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_login, container, false);
     }
 
@@ -49,14 +59,14 @@ public class FragmentLogin extends Fragment  implements View.OnClickListener
         try {
             ActivityMain activityMain = ((ActivityMain)getActivity());
             switch(v.getId()) {
-                case R.id.btnLogin:
+                case R.id.btnLogin: // When the user clicks the login button
                     Login.setUsername( ((EditText)activityMain.fragmentLogin.getView().findViewById(R.id.editTextUsername)).getText().toString() );
                     Login.setPassword( ((EditText) activityMain.fragmentLogin.getView().findViewById(R.id.editTextPassword)).getText().toString() );
                     Login.setAdmin(((CheckBox) activityMain.fragmentLogin.getView().findViewById(R.id.checkBoxIsAdmin)).isChecked());
 
                     activityMain.attemptLogin(Login.getUsername(), Login.getPassword(), Login.getAdmin());
                     break;
-                case R.id.btnRegister:
+                case R.id.btnRegister: // When the user clicks the register button
                     activityMain.replaceFragmentContainerFragmentWith(activityMain.fragmentRegister);
                     activityMain.fragmentRegister.populateNew();
                     break;

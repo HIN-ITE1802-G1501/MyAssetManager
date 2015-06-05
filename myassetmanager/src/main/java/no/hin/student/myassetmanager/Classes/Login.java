@@ -131,7 +131,7 @@ public class Login {
 
 
     /**
-     * Method for loging in user
+     * Method for logging in user
      *
      * @param context ActivityMain context
      * @param user represents the user that we should log in

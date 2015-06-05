@@ -1,3 +1,10 @@
+/**
+* This is the User fragment that displays user account information and lan history for the user
+* @author Kurt-Erik Karlsen and Aleksander V. Grunnvoll
+* @version 1.1
+*/
+
+
 package no.hin.student.myassetmanager.Fragments;
 
 
@@ -25,8 +32,11 @@ import android.app.AlertDialog;
 
 
 public class FragmentUser extends Fragment implements View.OnClickListener {
-     private User user;
+     private User user;         // The user that we are viewing
 
+    /**
+     * Default constructor
+     */
      public FragmentUser() {
 
      }
@@ -38,6 +48,7 @@ public class FragmentUser extends Fragment implements View.OnClickListener {
      @Override
      public void onCreate(Bundle savedInstanceState) {
          super.onCreate(savedInstanceState);
+
          // keep the fragment and all its data across screen rotation
          setRetainInstance(true);
      }
@@ -48,6 +59,13 @@ public class FragmentUser extends Fragment implements View.OnClickListener {
          return view;
      }
 
+
+    /**
+     * Method for populating fragment with data
+     *
+     * @param user the user that we are viewing
+     * @param context the context for AcivityMain
+     */
      public void populateUserFragmentWithUserData(User user, Context context) {
          this.user = user;
 
@@ -71,6 +89,7 @@ public class FragmentUser extends Fragment implements View.OnClickListener {
 
          WebAPI.doGetOpenLogEntriesForUser(context, WebAPI.Method.GET_LOG_ENTRIES_FOR_USER_FRAGMENT, user.getId());
 
+
          btnUserCall.setOnClickListener(this);
          btnUserSMS.setOnClickListener(this);
          btnUserEdit.setOnClickListener(this);
@@ -83,18 +102,20 @@ public class FragmentUser extends Fragment implements View.OnClickListener {
          try {
              ActivityMain activityMain = ((ActivityMain) getActivity());
              switch (v.getId()) {
-                 case R.id.btnUserCall:
+                 case R.id.btnUserCall: // When the user clicks the call button
+                     // TODO: BUG - Crashes if device does not have SIM/CALL capability, add check
                      Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + this.user.getPhone()));
                      startActivity(intent);
                      break;
-                 case R.id.btnUserSMS:
+                 case R.id.btnUserSMS: // When user clicking the send message button
+                     // TODO: BUG - Crashes if device does not have SIM/SMS capability, add check
                      Intent smsIntent = new Intent(Intent.ACTION_VIEW);
                      smsIntent.setType("vnd.android-dir/mms-sms");
                      smsIntent.putExtra("address", this.user.getPhone());
                      smsIntent.putExtra("sms_body", getString(R.string.fragment_user_tvUserSMSMessage));
                      startActivity(smsIntent);
                      break;
-                 case R.id.btnUserActivate:
+                 case R.id.btnUserActivate: // WHen the user clicks activate button
                      this.user.setUser_activated(!user.isUser_activated());
                      ImageButton btnUserActivate = (ImageButton) v.findViewById(R.id.btnUserActivate);
                      btnUserActivate.setImageResource((this.user.isUser_activated()) ? R.drawable.user_deactivate : R.drawable.user_activate);
@@ -106,11 +127,11 @@ public class FragmentUser extends Fragment implements View.OnClickListener {
 
                      DeviceAPI.sendSMS(this.user.getPhone(), getString(R.string.fragment_user_ActivateSMS));
                      break;
-                 case R.id.btnUserEdit:
+                 case R.id.btnUserEdit: // When the user clicks the edit button
                      activityMain.replaceFragmentContainerFragmentWith(activityMain.fragmentRegister);
                      activityMain.fragmentRegister.populatEdit(this.user);
                      break;
-                 case R.id.btnUserDelete:
+                 case R.id.btnUserDelete: // When the user click the delete button
                      AlertDialog.Builder alertDialog = new AlertDialog.Builder(v.getContext());
                      alertDialog.setTitle(getString(R.string.dialog_deleteuser_Title));
                      alertDialog.setMessage(getString(R.string.dialog_deleteuser_Message_out) + " " + this.user.getFirstname() + " " + this.user.getLastname() + "?");

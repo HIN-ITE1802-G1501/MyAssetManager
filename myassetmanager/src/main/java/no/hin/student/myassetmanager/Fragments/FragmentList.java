@@ -1,48 +1,43 @@
 /**
-* This class implements the FragmentList
-* @author Kurt-Erik Karlsen and Aleksander V. Grunnvoll
-* @version 1.1
-*/
+ * This is the List fragment that allows the app to display users, categories, equipment and history
+ * @author Kurt-Erik Karlsen and Aleksander V. Grunnvoll
+ * @version 1.1
+ */
+
 
 package no.hin.student.myassetmanager.Fragments;
 
 import android.app.Fragment;
-import android.app.FragmentManager;
-import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.awt.font.TextAttribute;
 
 import no.hin.student.myassetmanager.Activities.ActivityMain;
 import no.hin.student.myassetmanager.Classes.App;
-import no.hin.student.myassetmanager.Classes.AssetManagerAdapter;
-import no.hin.student.myassetmanager.Classes.Category;
 import no.hin.student.myassetmanager.Classes.WebAPI;
 import no.hin.student.myassetmanager.R;
 
 
 
 public class FragmentList extends Fragment {
-    View view;
-    ViewGroup container;
+    View view;                  // View of this fragment for handling orientation change
+    ViewGroup container;        // ViewGroup for this fragment for handling orientation change
+
+
+    /**
+     * Default constructor
+     */
     public FragmentList() {
 
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         this.container = container;
         this.view = inflater.inflate(R.layout.fragment_list, container, false);
         return view;
@@ -52,8 +47,9 @@ public class FragmentList extends Fragment {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
+        // TODO: IMPROVEMENT - Handle orientation change for this fragment
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            Log.d(App.TAG, "landscare from list fragment");
+            Log.d(App.TAG, "landscape from list fragment");
         } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
             Log.d(App.TAG, "portrait from list fragment");
         }
@@ -62,6 +58,9 @@ public class FragmentList extends Fragment {
         //populateViewForOrientation(inflater, this.container);
     }
 
+    /**
+     * Method recreating view when orientation change.
+     */
     private void populateViewForOrientation(LayoutInflater inflater, ViewGroup viewGroup) {
         ActivityMain activityMain = ((ActivityMain)getActivity());
         viewGroup.removeAllViewsInLayout();

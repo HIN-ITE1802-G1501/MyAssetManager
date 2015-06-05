@@ -146,8 +146,9 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
                 App.notifyUser(R.string.WEBAPI_CODE_518);
             } else if (response.getMessage().contains("512")) {
                 App.notifyUser(R.string.WEBAPI_CODE_512);
-                ((ActivityMain) context).logIn(null, false, Login.UserRole.LOGGED_OUT);
                 closeSession();
+                Login.setUserRole(Login.UserRole.LOGGED_OUT);
+                ((ActivityMain) context).replaceFragmentContainerFragmentWith(((ActivityMain) context).fragmentLogin);
             }
             else  {
                 switch (method) {

@@ -1,8 +1,8 @@
 /**
- * This is the Asset fragment that allows the user to add equipment to database
- * @author Kurt-Erik Karlsen and Aleksander V. Grunnvoll
- * @version 1.1
- */
+  * This is the Asset fragment that allows the user to add equipment to database
+  * @author Kurt-Erik Karlsen and Aleksander V. Grunnvoll
+  * @version 1.1
+  */
 
 
 package no.hin.student.myassetmanager.Fragments;
@@ -33,6 +33,10 @@ import no.hin.student.myassetmanager.R;
 public class FragmentAsset extends Fragment implements View.OnClickListener {
      private Equipment equipment;       // Thw equipment object that is displayed
 
+
+    /**
+     * Default constructor
+     */
      public FragmentAsset() {
 
      }
@@ -43,8 +47,12 @@ public class FragmentAsset extends Fragment implements View.OnClickListener {
      }
 
 
-
-     public void populateAssetFragmentWithAssetData(Equipment equipment, Login.UserRole userStatus) {
+    /**
+     * Method for populating the Asset fragment with data
+     *
+     * @param equipment the equipment object we are displaying
+     */
+     public void populateAssetFragmentWithAssetData(Equipment equipment) {
          try {
              this.equipment = equipment;
              Log.d(App.TAG, "Adding equipment " + this.equipment.getModel());
@@ -79,14 +87,14 @@ public class FragmentAsset extends Fragment implements View.OnClickListener {
              btnEquipmentEdit.setOnClickListener(this);
              btnEquipmentDelete.setOnClickListener(this);
 
-             if (userStatus == Login.UserRole.ADMIN_USER && EquipmentStatus.isEquipmentAvailable(equipment)) {
+             if (Login.isLoggedInAsAdminUser() && EquipmentStatus.isEquipmentAvailable(equipment)) {
                  textViewEquipmentStatus.setVisibility(View.VISIBLE);
                  textViewEquipmentStatus.setText(getString(R.string.fragment_Equipment_tvEquipmentStatusIn));
                  btnEquipmentLoan.setImageResource(R.drawable.equipment_out);
                  btnEquipmentLoan.setEnabled(true);
                  btnEquipmentEdit.setEnabled(true);
                  btnEquipmentDelete.setEnabled(true);
-             } else if (userStatus == Login.UserRole.ADMIN_USER && !EquipmentStatus.isEquipmentAvailable(equipment)) {
+             } else if (Login.isLoggedInAsAdminUser() && !EquipmentStatus.isEquipmentAvailable(equipment)) {
                  textViewEquipmentStatus.setVisibility(View.VISIBLE);
                  textViewEquipmentStatus.setText(getString(R.string.fragment_Equipment_tvEquipmentStatusOut));
                  btnEquipmentLoan.setImageResource(R.drawable.equipment_out);
@@ -109,12 +117,13 @@ public class FragmentAsset extends Fragment implements View.OnClickListener {
          try {
              ActivityMain activityMain = ((ActivityMain) getActivity());
              switch (v.getId()) {
-                 case R.id.btnEquipmentLoan:
+                 case R.id.btnEquipmentLoan: // When clicking the loan/return button
+                     // TODO: Feature - Change in/out image in ImageButton
                      if (EquipmentStatus.isEquipmentAvailable(equipment)) {
                          activityMain.replaceFragmentContainerFragmentWith(activityMain.fragmentLoan);
 
-                         if (activityMain.getCurrentlyViewedEquipment() != null)
-                             activityMain.fragmentLoan.populateLoanFragmentWithData(((ActivityMain) getActivity()).getCurrentlyViewedEquipment(), v.getContext());
+                         if (this.equipment != null)
+                             activityMain.fragmentLoan.populateLoanFragmentWithData(this.equipment, activityMain);
                      } else {
                          AlertDialog.Builder alertDialog = new AlertDialog.Builder(v.getContext());
                          alertDialog.setTitle(getString(R.string.dialog_loan_Title));
@@ -140,16 +149,13 @@ public class FragmentAsset extends Fragment implements View.OnClickListener {
                          alertDialog.show();
                      }
                      break;
-                 case R.id.btnEquipmentPicture:
-
-                     break;
-                 case R.id.btnEquipmentEdit:
+                 case R.id.btnEquipmentEdit: // When clicking the edit equipment button
                      Log.d(App.TAG, "Edit equipment" + this.equipment.getModel());
                      activityMain.replaceFragmentContainerFragmentWith(activityMain.fragmentAddEquipment);
                      activityMain.fragmentAddEquipment.editEquipment(this.equipment);
 
                      break;
-                 case R.id.btnEquipmentDelete:
+                 case R.id.btnEquipmentDelete: // When clicking the delete equipment button
                      AlertDialog.Builder alertDialog = new AlertDialog.Builder(v.getContext());
                      alertDialog.setTitle(getString(R.string.dialog_deleteequipment_Title));
                      alertDialog.setMessage(getString(R.string.dialog_deleteequipment_Message_out) + " " + activityMain.getCurrentlyViewedEquipment().getModel() + "?");
