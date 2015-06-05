@@ -1,3 +1,11 @@
+/**
+* This class is a modified Adapter class that allows us to customize AssetManager
+* object items in our ListView so that we can have title, subtitle, image etc...
+* @author Kurt-Erik Karlsen and Aleksander V. Grunnvoll
+* @version 1.3
+*/
+
+
 package no.hin.student.myassetmanager.Classes;
 
 import android.content.Context;
@@ -9,7 +17,6 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.awt.font.TextAttribute;
 import java.util.ArrayList;
 
 import no.hin.student.myassetmanager.R;
@@ -17,17 +24,16 @@ import no.hin.student.myassetmanager.R;
 public class AssetManagerAdapter extends BaseAdapter {
     private static ArrayList<AssetManagerObjects> arrayList;
 
-    private LayoutInflater mInflater;
+    private LayoutInflater inflater;
 
     public AssetManagerAdapter(Context context, ArrayList results) {
         arrayList = results;
-        mInflater = LayoutInflater.from(context);
+        inflater = LayoutInflater.from(context);
     }
 
     public int getCount() {
         return arrayList.size();
     }
-
 
     public void add(AssetManagerObjects myObject) {
         arrayList.add(myObject);
@@ -49,7 +55,7 @@ public class AssetManagerAdapter extends BaseAdapter {
         try {
             ViewHolder holder;
             if (convertView == null) {
-                convertView = mInflater.inflate(R.layout.listview_layout1, null);
+                convertView = inflater.inflate(R.layout.listview_layout1, null);
                 holder = new ViewHolder();
                 holder.ivListItemImage = (ImageView) convertView.findViewById(R.id.image);
                 holder.ivListItemTitle = (TextView) convertView.findViewById(R.id.title);
@@ -65,7 +71,7 @@ public class AssetManagerAdapter extends BaseAdapter {
             holder.ivListItemSubTitle.setText(arrayList.get(position).getListItemSubTitle(convertView));
 
         } catch (Exception e) {
-            Log.d("", e.toString());
+            Log.d(App.TAG, e.toString());
         }
         return convertView;
     }

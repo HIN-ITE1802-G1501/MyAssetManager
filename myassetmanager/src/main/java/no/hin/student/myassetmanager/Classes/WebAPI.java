@@ -37,14 +37,13 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
     private static HttpClient httpClient = null;
 
 
-    private static final String TAG = "MyAssetManger-log";
     private static final String sql = "kark.hin.no";
     private static final int sqlport = 3306;
     private static String databaseUsername;
     private static String databasePassword;
     private static final String db = "stud_v15_karlsen";
     private static final String URL = "http://kark.hin.no:8088/d3330log_backend/";
-
+    private static final String alreadyLoggedIn = "User is already logged in.";
 
 
     public enum Method {
@@ -294,7 +293,7 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
                 }
             }
         } catch (Exception e) {
-            Log.d(TAG, e.toString());
+            Log.d(App.TAG, e.toString());
         }
     }
 
@@ -325,7 +324,7 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
             nameValuePairs.add(new BasicNameValuePair("db_pwd", databasePassword));
             new WebAPI(URL, Method.LOG_IN, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
         } else {
-            Log.d(TAG, "Du er allerede logget inn!");
+            Log.d(App.TAG, alreadyLoggedIn);
         }
     }
 
@@ -342,18 +341,18 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
             nameValuePairs.add(new BasicNameValuePair("db_pwd", databasePassword));
             new WebAPI(URL, Method.LOG_IN_ADMIN, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
         } else {
-            Log.d(TAG, "Du er allerede logget inn!");
+            Log.d(App.TAG, alreadyLoggedIn);
         }
     }
 
     public static void logOut(Context context) {
-        Log.d(TAG, "Logout method from WebAPI");
+        Log.d(App.TAG, "Logout method from WebAPI");
         if (httpClient != null) {
             List<NameValuePair> nameValuePairs = null;
             nameValuePairs = new ArrayList<NameValuePair>(0);
             new WebAPI(URL, Method.LOG_OUT, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
         } else {
-            Log.d(TAG, "Du er ikke logget på og kan derfor ikke logge ut.");
+            Log.d(App.TAG, "Du er ikke logget på og kan derfor ikke logge ut.");
         }
     }
 
@@ -362,7 +361,7 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
             List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
             new WebAPI(URL, method, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
         } else {
-            Log.d(TAG, "Logg inn først!");
+            Log.d(App.TAG, "Logg inn først!");
         }
     }
 
@@ -373,7 +372,7 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
             new WebAPI(URL, method, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
             nameValuePairs.add(new BasicNameValuePair("userId", Integer.toString(userId)));
         } else {
-            Log.d(TAG, "Logg inn først!");
+            Log.d(App.TAG, "Logg inn først!");
         }
     }
 
@@ -384,7 +383,7 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
             nameValuePairs.add(new BasicNameValuePair("which_equipment", "ALL"));
             new WebAPI(URL, Method.GET_EQUIPMENT_ALL, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
         } else {
-            Log.d(TAG, "Logg inn først!");
+            Log.d(App.TAG, "Logg inn først!");
         }
     }
 
@@ -394,7 +393,7 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
             nameValuePairs.add(new BasicNameValuePair("which_equipment", "ALL"));
             new WebAPI(URL, Method.GET_EQUIPMENT_ALL_FOR_EQUIPMENT_STATUS, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
         } else {
-            Log.d(TAG, "Logg inn først!");
+            Log.d(App.TAG, "Logg inn først!");
         }
     }
 
@@ -405,7 +404,7 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
             nameValuePairs.add(new BasicNameValuePair("which_equipment", "AVAILABLE"));
             new WebAPI(URL, Method.GET_EQUIPMENT_AVAILABLE_FOR_EQUIPMENT_STATUS, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
         } else {
-            Log.d(TAG, "Logg inn først!");
+            Log.d(App.TAG, "Logg inn først!");
         }
     }
 
@@ -416,7 +415,7 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
             nameValuePairs.add(new BasicNameValuePair("which_equipment", "IN_USE"));
             new WebAPI(URL, Method.GET_EQUIPMENT_IN_USE_FOR_EQUIPMENT_STATUS, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
         } else {
-            Log.d(TAG, "Logg inn først!");
+            Log.d(App.TAG, "Logg inn først!");
         }
     }
 
@@ -424,10 +423,10 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
         if (httpClient != null) {
             List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
             nameValuePairs.add(new BasicNameValuePair("type", category));
-            Log.d(TAG, category);
+            Log.d(App.TAG, category);
             new WebAPI(URL, Method.GET_EQUIPMENTTYPE, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
         } else {
-            Log.d(TAG, "Logg inn først!");
+            Log.d(App.TAG, "Logg inn først!");
         }
     }
 
@@ -435,10 +434,10 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
         if (httpClient != null) {
             List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
             nameValuePairs.add(new BasicNameValuePair("userId", Integer.toString(userId)));
-            Log.d(TAG, Integer.toString(userId));
+            Log.d(App.TAG, Integer.toString(userId));
             new WebAPI(URL, Method.DELETE_USER, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
         } else {
-            Log.d(TAG, "Logg inn først!");
+            Log.d(App.TAG, "Logg inn først!");
         }
     }
 
@@ -446,10 +445,10 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
         if (httpClient != null) {
             List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
             nameValuePairs.add(new BasicNameValuePair("equipmentId", Integer.toString(equipmentId)));
-            Log.d(TAG, Integer.toString(equipmentId));
+            Log.d(App.TAG, Integer.toString(equipmentId));
             new WebAPI(URL, Method.DELETE_EQUIPMENT, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
         } else {
-            Log.d(TAG, "Logg inn først!");
+            Log.d(App.TAG, "Logg inn først!");
         }
     }
 
@@ -460,7 +459,7 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
             nameValuePairs.add(new BasicNameValuePair("equipment", equipment.toJSONString()));
             new WebAPI(URL, Method.ADD_EQUIPMENT, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
         } else {
-            Log.d(TAG, "Logg inn først!");
+            Log.d(App.TAG, "Logg inn først!");
         }
     }
 
@@ -469,7 +468,7 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
             List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
             new WebAPI(URL, Method.GET_ALL_LOG_ENTRIES_FOR_ALL_USER, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
         } else {
-            Log.d(TAG, "Logg inn først!");
+            Log.d(App.TAG, "Logg inn først!");
         }
     }
 
@@ -479,7 +478,7 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
             nameValuePairs.add(new BasicNameValuePair("userId", String.valueOf(userId)));
             new WebAPI(URL, method, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
         } else {
-            Log.d(TAG, "Logg inn først!");
+            Log.d(App.TAG, "Logg inn først!");
         }
     }
 
@@ -573,9 +572,9 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
             nameValuePairs.add(new BasicNameValuePair("db_uid", databaseUsername));
             nameValuePairs.add(new BasicNameValuePair("db_pwd", databasePassword));
             new WebAPI(URL, Method.GET_EQUIPMENT_WITHOUT_LOGIN, context).execute(new Pair<List<NameValuePair>, HttpClient>(nameValuePairs, httpClient));
-            Log.d(TAG, "Getting equipment");
+            Log.d(App.TAG, "Getting equipment");
         } else {
-            Log.d(TAG, "Du er allerede logget inn!");
+            Log.d(App.TAG, alreadyLoggedIn);
         }
     }
 }

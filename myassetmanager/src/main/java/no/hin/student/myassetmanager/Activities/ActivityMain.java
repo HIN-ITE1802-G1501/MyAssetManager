@@ -330,7 +330,7 @@ public class ActivityMain extends Activity {
 
 
 
-     // Clicking on hamburger button
+     // OnMenuItemClickListener for top right corner menu in AcitvityMain
      final MenuItem.OnMenuItemClickListener mGlobal_OnMenuItemClickListener = new MenuItem.OnMenuItemClickListener() {
          @Override
          public boolean onMenuItemClick(MenuItem menuItem) {
@@ -376,7 +376,7 @@ public class ActivityMain extends Activity {
 
 
 
-     // When clicking on a listview item
+     // OnItemClickListener for clicking in ListView in fragment List
      final AdapterView.OnItemClickListener mGlobal_OnItemClickListener = new AdapterView.OnItemClickListener() {
          public void onItemClick(AdapterView<?> adapterView, View row, int position, long index) {
              Log.d(App.TAG, "Clicking on equipment " + adapter.getItem(position).toString());

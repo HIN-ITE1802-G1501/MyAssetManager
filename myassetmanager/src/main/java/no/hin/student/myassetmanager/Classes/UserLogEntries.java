@@ -1,14 +1,10 @@
 package no.hin.student.myassetmanager.Classes;
 
-import android.app.Application;
-import android.nfc.Tag;
 import android.util.Log;
 import android.view.View;
-import android.widget.ListView;
 
 import com.google.gson.Gson;
 
-import java.security.spec.ECField;
 import java.util.List;
 
 import no.hin.student.myassetmanager.Activities.ActivityMain;
