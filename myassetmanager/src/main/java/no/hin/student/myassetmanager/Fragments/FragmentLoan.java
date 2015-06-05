@@ -7,17 +7,15 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import no.hin.student.myassetmanager.Classes.App;
 import no.hin.student.myassetmanager.Classes.Equipment;
 import no.hin.student.myassetmanager.Classes.WebAPI;
 import no.hin.student.myassetmanager.R;
 
-public class FragmentLoan extends Fragment
-{
+public class FragmentLoan extends Fragment {
 
+    // TODO: IMPROVEMENT - Update GUI to be consistent with other fragments
     public FragmentLoan()
     {
         // Required empty public constructor

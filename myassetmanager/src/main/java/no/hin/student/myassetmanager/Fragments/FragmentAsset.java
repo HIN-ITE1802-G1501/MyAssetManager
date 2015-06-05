@@ -1,3 +1,10 @@
+/**
+ * This is the Asset fragment that allows the user to add equipment to database
+ * @author Kurt-Erik Karlsen and Aleksander V. Grunnvoll
+ * @version 1.1
+ */
+
+
 package no.hin.student.myassetmanager.Fragments;
 
 import android.app.AlertDialog;
@@ -24,7 +31,7 @@ import no.hin.student.myassetmanager.R;
 
 
 public class FragmentAsset extends Fragment implements View.OnClickListener {
-     private Equipment equipment;
+     private Equipment equipment;       // Thw equipment object that is displayed
 
      public FragmentAsset() {
 

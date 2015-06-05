@@ -25,6 +25,9 @@ public class FragmentAccountSettings extends Fragment
     private ActivityMain parentActivity;    // Variable for parentActivity context
     private User user;                      // Variable for user
 
+    /**
+     * Default constructor
+     */
     public FragmentAccountSettings() {
 
     }

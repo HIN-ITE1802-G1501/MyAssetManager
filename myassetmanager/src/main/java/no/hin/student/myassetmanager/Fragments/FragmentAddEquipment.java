@@ -1,3 +1,9 @@
+/**
+* This is the AddEquipment fragment that allows the user to add equipment to database
+* @author Kurt-Erik Karlsen and Aleksander V. Grunnvoll
+* @version 1.1
+*/
+
 package no.hin.student.myassetmanager.Fragments;
 
 
@@ -7,8 +13,8 @@ import android.app.Fragment;
  import android.graphics.Bitmap;
  import android.graphics.BitmapFactory;
  import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Bundle;
+ import android.os.AsyncTask;
+ import android.os.Bundle;
  import android.os.Environment;
  import android.provider.MediaStore;
  import android.util.Log;
@@ -22,15 +28,15 @@ import android.os.Bundle;
  import android.widget.TextView;
  import android.widget.Toast;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
+ import java.io.ByteArrayOutputStream;
+ import java.io.File;
  import java.io.IOException;
-import java.text.SimpleDateFormat;
+ import java.text.SimpleDateFormat;
  import java.util.Date;
 
  import no.hin.student.myassetmanager.Activities.ActivityMain;
-import no.hin.student.myassetmanager.Classes.App;
-import no.hin.student.myassetmanager.Classes.AssetManagerAdapter;
+ import no.hin.student.myassetmanager.Classes.App;
+ import no.hin.student.myassetmanager.Classes.AssetManagerAdapter;
  import no.hin.student.myassetmanager.Classes.Category;
  import no.hin.student.myassetmanager.Classes.Equipment;
  import no.hin.student.myassetmanager.Classes.WebAPI;
@@ -38,9 +44,9 @@ import no.hin.student.myassetmanager.Classes.AssetManagerAdapter;
 
 
 public class FragmentAddEquipment extends Fragment implements View.OnClickListener {
-     private Context context;
-     private Category selectedCategory = null;
-     private Equipment equipment;
+     private Context context;                       // ActivityMain context
+     private Category selectedCategory = null;      // Selected category
+     private Equipment equipment;                   //
      private Boolean addNewEquipment = true;
      static final int REQUEST_TAKE_PHOTO = 1001;
      String mCurrentPhotoPath;
@@ -58,183 +64,183 @@ public class FragmentAddEquipment extends Fragment implements View.OnClickListen
      public void onStart() {
          super.onStart();
 
-         ImageButton btnEquipmentCamera = (ImageButton)getView().findViewById(R.id.btnEquipmentCamera);
+         ImageButton btnEquipmentCamera = (ImageButton) getView().findViewById(R.id.btnEquipmentCamera);
          btnEquipmentCamera.setOnClickListener(this);
 
-         ImageButton btnEquipmentSave = (ImageButton)getView().findViewById(R.id.btnEquipmentSave);
+         ImageButton btnEquipmentSave = (ImageButton) getView().findViewById(R.id.btnEquipmentSave);
          btnEquipmentSave.setOnClickListener(this);
      }
 
      @Override
-      public void onActivityResult(int requestCode, int resultCode, Intent data) {
-         ActivityMain activityMain = ((ActivityMain)getActivity());
+     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+         ActivityMain activityMain = ((ActivityMain) getActivity());
 
-         if (requestCode ==  REQUEST_TAKE_PHOTO) {
+         if (requestCode == REQUEST_TAKE_PHOTO) {
              Log.d(App.TAG, "Picture taken");
              if (!mCurrentPhotoPath.equals("")) {
                  ScalePictureAsyncTask task = new ScalePictureAsyncTask(mCurrentPhotoPath);
                  task.execute();
              }
              Log.d(App.TAG, "Image file" + mCurrentPhotoPath);
-      } else
-         Log.d(App.TAG,"Picture not taken");
-      }
+         } else
+             Log.d(App.TAG, "Picture not taken");
+     }
 
 
-    class ScalePictureAsyncTask extends AsyncTask<Integer, Void, Bitmap> {
-                 private Bitmap bitmap = null;
-                 private String imageFile;
+     class ScalePictureAsyncTask extends AsyncTask<Integer, Void, Bitmap> {
+         private Bitmap bitmap = null;
+         private String imageFile;
 
-                  public ScalePictureAsyncTask(String imageFile) {
-                      this.imageFile = imageFile;
-                  }
+         public ScalePictureAsyncTask(String imageFile) {
+             this.imageFile = imageFile;
+         }
 
 
-                  @Override
-                  // TODO: BUG -  Image doesn't rotate when in portrait
-                  protected Bitmap doInBackground(Integer... params) {
-                      bitmap = BitmapFactory.decodeFile(imageFile);
+         @Override
+         // TODO: BUG - Image doesn't rotate when in portrait
+         protected Bitmap doInBackground(Integer... params) {
+             bitmap = BitmapFactory.decodeFile(imageFile);
 
-                      int width = bitmap.getWidth();
-                      int height = bitmap.getHeight();
-                      if (width > height) {
-                          return Bitmap.createScaledBitmap(bitmap, 150, height / (width / 150), false);
-                      } else {
-                          return Bitmap.createScaledBitmap(bitmap, width / (height / 150), height, false);
-                      }
-                  }
+             int width = bitmap.getWidth();
+             int height = bitmap.getHeight();
+             if (width > height) {
+                 return Bitmap.createScaledBitmap(bitmap, 150, height / (width / 150), false);
+             } else {
+                 return Bitmap.createScaledBitmap(bitmap, width / (height / 150), height, false);
+             }
+         }
 
-                  @Override
-                  protected void onPostExecute(Bitmap bitmap) {
-                      ImageView ivAddEquipmentPicture = ((ImageView) getView().findViewById(R.id.ivAddEquipmentPicture));
+         @Override
+         protected void onPostExecute(Bitmap bitmap) {
+             ImageView ivAddEquipmentPicture = ((ImageView) getView().findViewById(R.id.ivAddEquipmentPicture));
 
-                      ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                      bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream);
-                      byte[] image = stream.toByteArray();
+             ByteArrayOutputStream stream = new ByteArrayOutputStream();
+             bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream);
+             byte[] image = stream.toByteArray();
 
-                      ivAddEquipmentPicture.setImageBitmap(BitmapFactory.decodeByteArray(image, 0, image.length));
-                      equipment.setImage(image);
-                  }
-              }
+             ivAddEquipmentPicture.setImageBitmap(BitmapFactory.decodeByteArray(image, 0, image.length));
+             equipment.setImage(image);
+         }
+     }
 
      private File createImageFile() throws IOException {
-                     try {
-                         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-                         String imageFileName = "JPEG_" + timeStamp + "_";
-                         File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-                         File image = File.createTempFile(imageFileName, ".jpg", storageDir);
+         try {
+             String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+             String imageFileName = "JPEG_" + timeStamp + "_";
+             File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+             File image = File.createTempFile(imageFileName, ".jpg", storageDir);
 
-                         mCurrentPhotoPath = image.getAbsolutePath();
-                         return image;
-                     } catch (Exception e) {
-                         Log.d(App.TAG, e.toString());
-                     }
-                     return null;
-                 }
+             mCurrentPhotoPath = image.getAbsolutePath();
+             return image;
+         } catch (Exception e) {
+             Log.d(App.TAG, e.toString());
+         }
+         return null;
+     }
 
      public void editEquipment(Equipment equipment) {
-                     this.addNewEquipment = false;
-                     this.equipment = equipment;
+         this.addNewEquipment = false;
+         this.equipment = equipment;
 
-                     ((TextView) getView().findViewById(R.id.etAddEquipmentBrand)).setText(this.equipment.getBrand());
-                     ((TextView) getView().findViewById(R.id.etAddEquipmentModel)).setText(this.equipment.getModel());
-                     ((TextView) getView().findViewById(R.id.etAddEquipmentItNumber)).setText(this.equipment.getIt_no());
-                     ((TextView) getView().findViewById(R.id.etAddEquipmentDescription)).setText(this.equipment.getDescription());
-                     ImageView ivAddEquipmentPicture = ((ImageView) getView().findViewById(R.id.ivAddEquipmentPicture));
-                     ivAddEquipmentPicture.setImageBitmap(BitmapFactory.decodeByteArray(this.equipment.getImage(), 0, this.equipment.getImage().length));
-                     populateListViewWithCategories(getView().getContext());
-                 }
+         ((TextView) getView().findViewById(R.id.etAddEquipmentBrand)).setText(this.equipment.getBrand());
+         ((TextView) getView().findViewById(R.id.etAddEquipmentModel)).setText(this.equipment.getModel());
+         ((TextView) getView().findViewById(R.id.etAddEquipmentItNumber)).setText(this.equipment.getIt_no());
+         ((TextView) getView().findViewById(R.id.etAddEquipmentDescription)).setText(this.equipment.getDescription());
+         ImageView ivAddEquipmentPicture = ((ImageView) getView().findViewById(R.id.ivAddEquipmentPicture));
+         ivAddEquipmentPicture.setImageBitmap(BitmapFactory.decodeByteArray(this.equipment.getImage(), 0, this.equipment.getImage().length));
+         populateListViewWithCategories(getView().getContext());
+     }
 
      public void newEquipment() {
-                     this.addNewEquipment = true;
-                     this.equipment = new Equipment();
+         this.addNewEquipment = true;
+         this.equipment = new Equipment();
 
-                     ((TextView) getView().findViewById(R.id.etAddEquipmentBrand)).setText("");
-                     ((TextView) getView().findViewById(R.id.etAddEquipmentModel)).setText("");
-                     ((TextView) getView().findViewById(R.id.etAddEquipmentItNumber)).setText("");
-                     ((TextView) getView().findViewById(R.id.etAddEquipmentDescription)).setText("");
-                     populateListViewWithCategories(getView().getContext());
-                 }
+         ((TextView) getView().findViewById(R.id.etAddEquipmentBrand)).setText("");
+         ((TextView) getView().findViewById(R.id.etAddEquipmentModel)).setText("");
+         ((TextView) getView().findViewById(R.id.etAddEquipmentItNumber)).setText("");
+         ((TextView) getView().findViewById(R.id.etAddEquipmentDescription)).setText("");
+         populateListViewWithCategories(getView().getContext());
+     }
 
 
      public void populateListViewWithCategories(Context context) {
-                     this.context = context;
+         this.context = context;
 
-                     final ListView lwAddEquipmentCategory = (ListView)getView().findViewById(R.id.lwAddEquipmentCategory);
-                     final AssetManagerAdapter adapter = new AssetManagerAdapter(context, Category.getCategories());
-                     lwAddEquipmentCategory.setAdapter(adapter);
+         final ListView lwAddEquipmentCategory = (ListView) getView().findViewById(R.id.lwAddEquipmentCategory);
+         final AssetManagerAdapter adapter = new AssetManagerAdapter(context, Category.getCategories());
+         lwAddEquipmentCategory.setAdapter(adapter);
 
-                     lwAddEquipmentCategory.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                         public void onItemClick(AdapterView<?> myAdapter, View myView, int myItemInt, long mylng) {
-                             selectedCategory =(Category) (lwAddEquipmentCategory.getItemAtPosition(myItemInt));
+         lwAddEquipmentCategory.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+             public void onItemClick(AdapterView<?> myAdapter, View myView, int myItemInt, long mylng) {
+                 selectedCategory = (Category) (lwAddEquipmentCategory.getItemAtPosition(myItemInt));
 
-                             equipment.setType(selectedCategory.getName());
-                         }
-                     });
-                 }
+                 equipment.setType(selectedCategory.getName());
+             }
+         });
+     }
 
      @Override
-                 public void onClick(View v) {
+     public void onClick(View v) {
+         try {
+             ActivityMain activityMain = ((ActivityMain) getActivity());
+             switch (v.getId()) {
+                 case R.id.btnEquipmentSave:
                      try {
-                         ActivityMain activityMain = ((ActivityMain)getActivity());
-                         switch(v.getId()) {
-                             case R.id.btnEquipmentSave:
-                                 try {
-                                     String brand = ((TextView) getView().findViewById(R.id.etAddEquipmentBrand)).getText().toString();
-                                     String model = ((TextView) getView().findViewById(R.id.etAddEquipmentModel)).getText().toString();
-                                     String it_no = ((TextView) getView().findViewById(R.id.etAddEquipmentItNumber)).getText().toString();
-                                     String description = ((TextView) getView().findViewById(R.id.etAddEquipmentDescription)).getText().toString();
-                                     String date = new SimpleDateFormat("dd.MM.yyyy").format(new java.util.Date());
-                                     String category = "";
-                                     if (selectedCategory != null)
-                                         category = selectedCategory.getName();
+                         String brand = ((TextView) getView().findViewById(R.id.etAddEquipmentBrand)).getText().toString();
+                         String model = ((TextView) getView().findViewById(R.id.etAddEquipmentModel)).getText().toString();
+                         String it_no = ((TextView) getView().findViewById(R.id.etAddEquipmentItNumber)).getText().toString();
+                         String description = ((TextView) getView().findViewById(R.id.etAddEquipmentDescription)).getText().toString();
+                         String date = new SimpleDateFormat("dd.MM.yyyy").format(new java.util.Date());
+                         String category = "";
+                         if (selectedCategory != null)
+                             category = selectedCategory.getName();
 
-                                     if (brand.equals("") || model.equals("") || it_no.equals("") || category.equals("")) {
-                                         Toast.makeText(v.getContext(), "Vennligst fyll ut alle felter og velg en kategori.", Toast.LENGTH_LONG).show();
-                                     } else {
-                                         if (addNewEquipment) {
-                                             equipment.setBrand(((TextView) getView().findViewById(R.id.etAddEquipmentBrand)).getText().toString());
-                                             equipment.setModel(((TextView) getView().findViewById(R.id.etAddEquipmentModel)).getText().toString());
-                                             equipment.setIt_no(((TextView) getView().findViewById(R.id.etAddEquipmentItNumber)).getText().toString());
-                                             equipment.setAquired(date);
-                                             equipment.setDescription(((TextView) getView().findViewById(R.id.etAddEquipmentDescription)).getText().toString());
-                                             WebAPI.doAddEquipment(context, equipment);
-                                         } else {
-                                             equipment.setBrand(((TextView) getView().findViewById(R.id.etAddEquipmentBrand)).getText().toString());
-                                             equipment.setModel(((TextView) getView().findViewById(R.id.etAddEquipmentModel)).getText().toString());
-                                             equipment.setIt_no(((TextView) getView().findViewById(R.id.etAddEquipmentItNumber)).getText().toString());
-                                             equipment.setDescription(((TextView) getView().findViewById(R.id.etAddEquipmentDescription)).getText().toString());
-                                             WebAPI.doUpdateEquipment(v.getContext(), equipment);
-                                         }
-                                     }
-                                 } catch (Exception e) {
-                                     Log.e(App.TAG, e.toString());
-                                 }
-                                 break;
-                             case R.id.btnEquipmentCamera:
-                                 //TODO: BUG - when cancel camera intent crashes app
-                                  Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                                  if (takePictureIntent.resolveActivity(activityMain.getPackageManager()) != null) {
-                                      File photoFile = null;
-                                      try {
-                                          photoFile = createImageFile();
-                                      } catch (Exception e) {
-                                        Log.d(App.TAG, e.toString());
-                                      }
-                                      if (photoFile != null) {
-                                         try {
-                                          takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
-                                          startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
-                                         } catch (Exception e) {
-                                             Log.d(App.TAG, e.toString());
-                                         }
-                                      }
-                                  }
-
-                                 break;
+                         if (brand.equals("") || model.equals("") || it_no.equals("") || category.equals("")) {
+                             Toast.makeText(v.getContext(), "Vennligst fyll ut alle felter og velg en kategori.", Toast.LENGTH_LONG).show();
+                         } else {
+                             if (addNewEquipment) {
+                                 equipment.setBrand(((TextView) getView().findViewById(R.id.etAddEquipmentBrand)).getText().toString());
+                                 equipment.setModel(((TextView) getView().findViewById(R.id.etAddEquipmentModel)).getText().toString());
+                                 equipment.setIt_no(((TextView) getView().findViewById(R.id.etAddEquipmentItNumber)).getText().toString());
+                                 equipment.setAquired(date);
+                                 equipment.setDescription(((TextView) getView().findViewById(R.id.etAddEquipmentDescription)).getText().toString());
+                                 WebAPI.doAddEquipment(context, equipment);
+                             } else {
+                                 equipment.setBrand(((TextView) getView().findViewById(R.id.etAddEquipmentBrand)).getText().toString());
+                                 equipment.setModel(((TextView) getView().findViewById(R.id.etAddEquipmentModel)).getText().toString());
+                                 equipment.setIt_no(((TextView) getView().findViewById(R.id.etAddEquipmentItNumber)).getText().toString());
+                                 equipment.setDescription(((TextView) getView().findViewById(R.id.etAddEquipmentDescription)).getText().toString());
+                                 WebAPI.doUpdateEquipment(v.getContext(), equipment);
+                             }
                          }
                      } catch (Exception e) {
-                         Log.d("-log", e.toString());
+                         Log.e(App.TAG, e.toString());
                      }
-                 }
+                     break;
+                 case R.id.btnEquipmentCamera:
+                     //TODO: BUG - when cancel camera intent crashes app
+                     Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                     if (takePictureIntent.resolveActivity(activityMain.getPackageManager()) != null) {
+                         File photoFile = null;
+                         try {
+                             photoFile = createImageFile();
+                         } catch (Exception e) {
+                             Log.d(App.TAG, e.toString());
+                         }
+                         if (photoFile != null) {
+                             try {
+                                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
+                                 startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+                             } catch (Exception e) {
+                                 Log.d(App.TAG, e.toString());
+                             }
+                         }
+                     }
+
+                     break;
+             }
+         } catch (Exception e) {
+             Log.d(App.TAG, e.toString());
+         }
+     }
  }
