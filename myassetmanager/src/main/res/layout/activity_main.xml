@@ -42,16 +42,6 @@ android:weightSum="1">
                      android:layout_width="wrap_content"
                      android:layout_height="fill_parent" />
                 <ImageButton
-                    android:id="@+id/ivUserStatus"
-                    android:background="@drawable/button"
-                    android:src="@drawable/admin"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:adjustViewBounds="true"
-                    android:scaleType="fitCenter"
-                    android:padding="10dp"
-                    />
-                <ImageButton
                     android:background="@drawable/button"
                     android:id="@+id/btnMenu"
                     android:src="@drawable/button_menu"

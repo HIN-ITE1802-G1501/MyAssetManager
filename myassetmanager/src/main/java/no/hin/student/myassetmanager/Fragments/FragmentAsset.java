@@ -37,6 +37,7 @@ public class FragmentAsset extends Fragment implements View.OnClickListener {
     /**
      * Default constructor
      */
+    // TODO: IMPROVEMENT - Updated GUI with picture and add labels for user
      public FragmentAsset() {
 
      }
