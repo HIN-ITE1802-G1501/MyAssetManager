@@ -618,7 +618,7 @@ public class ActivityMain extends Activity {
                  alertDialog.setTitle(getString(R.string.DIALOG_FRAGMENT_LOAN_OUT_TITLE));
                  alertDialog.setMessage(String.format(getString(R.string.DIALOG_FRAGMENT_LOAN_OUT_MESSAGE), clickedUser.getFirstname(), currentlyViewedEquipment.getModel()));
 
-                 alertDialog.setPositiveButton(getString(R.string.dialog_no), new DialogInterface.OnClickListener()
+                 alertDialog.setPositiveButton(getString(R.string.dialog_yes), new DialogInterface.OnClickListener()
                  {
                      @Override
                      public void onClick(DialogInterface dialog, int which)
@@ -630,7 +630,7 @@ public class ActivityMain extends Activity {
                      }
                  });
 
-                 alertDialog.setNegativeButton(getString(R.string.dialog_yes), new DialogInterface.OnClickListener() {
+                 alertDialog.setNegativeButton(getString(R.string.dialog_no), new DialogInterface.OnClickListener() {
                      @Override
                      public void onClick(DialogInterface dialog, int which)
                      {
