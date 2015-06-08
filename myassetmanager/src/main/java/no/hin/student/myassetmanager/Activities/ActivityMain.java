@@ -7,51 +7,50 @@
 package no.hin.student.myassetmanager.Activities;
 
 import android.app.Activity;
- import android.app.AlertDialog;
- import android.app.Fragment;
- import android.app.FragmentManager;
- import android.app.FragmentTransaction;
- import android.content.DialogInterface;
- import android.os.Bundle;
- import android.os.Environment;
- import android.util.Log;
- import android.view.ContextMenu;
- import android.view.Menu;
- import android.view.MenuItem;
- import android.view.View;
- import android.widget.AdapterView;
- import android.widget.ArrayAdapter;
- import android.widget.EditText;
- import android.widget.ListView;
- import android.widget.PopupMenu;
- import android.widget.Spinner;
- import android.widget.TextView;
- import android.widget.Toast;
+import android.app.AlertDialog;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.content.DialogInterface;
+import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
+import android.view.ContextMenu;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.PopupMenu;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
-import java.awt.font.TextAttribute;
 import java.io.File;
- import java.util.ArrayList;
+import java.util.ArrayList;
 
- import no.hin.student.myassetmanager.Classes.App;
- import no.hin.student.myassetmanager.Classes.AssetManagerAdapter;
- import no.hin.student.myassetmanager.Classes.AssetManagerObjects;
- import no.hin.student.myassetmanager.Classes.Category;
- import no.hin.student.myassetmanager.Classes.Equipment;
- import no.hin.student.myassetmanager.Classes.EquipmentStatus;
- import no.hin.student.myassetmanager.Classes.LogEntry;
- import no.hin.student.myassetmanager.Classes.Login;
- import no.hin.student.myassetmanager.Classes.User;
- import no.hin.student.myassetmanager.Classes.UserLogEntries;
- import no.hin.student.myassetmanager.Classes.WebAPI;
- import no.hin.student.myassetmanager.Fragments.FragmentAccountSettings;
- import no.hin.student.myassetmanager.Fragments.FragmentAddEquipment;
- import no.hin.student.myassetmanager.Fragments.FragmentAsset;
- import no.hin.student.myassetmanager.Fragments.FragmentList;
- import no.hin.student.myassetmanager.Fragments.FragmentLoan;
- import no.hin.student.myassetmanager.Fragments.FragmentLogin;
- import no.hin.student.myassetmanager.Fragments.FragmentRegister;
- import no.hin.student.myassetmanager.Fragments.FragmentUser;
- import no.hin.student.myassetmanager.R;
+import no.hin.student.myassetmanager.Classes.App;
+import no.hin.student.myassetmanager.Classes.AssetManagerAdapter;
+import no.hin.student.myassetmanager.Classes.AssetManagerObjects;
+import no.hin.student.myassetmanager.Classes.Category;
+import no.hin.student.myassetmanager.Classes.Equipment;
+import no.hin.student.myassetmanager.Classes.EquipmentStatus;
+import no.hin.student.myassetmanager.Classes.LogEntry;
+import no.hin.student.myassetmanager.Classes.Login;
+import no.hin.student.myassetmanager.Classes.User;
+import no.hin.student.myassetmanager.Classes.UserLogEntries;
+import no.hin.student.myassetmanager.Classes.WebAPI;
+import no.hin.student.myassetmanager.Fragments.FragmentAccountSettings;
+import no.hin.student.myassetmanager.Fragments.FragmentAddEquipment;
+import no.hin.student.myassetmanager.Fragments.FragmentAsset;
+import no.hin.student.myassetmanager.Fragments.FragmentList;
+import no.hin.student.myassetmanager.Fragments.FragmentLoan;
+import no.hin.student.myassetmanager.Fragments.FragmentLogin;
+import no.hin.student.myassetmanager.Fragments.FragmentRegister;
+import no.hin.student.myassetmanager.Fragments.FragmentUser;
+import no.hin.student.myassetmanager.R;
 
 
 public class ActivityMain extends Activity {
@@ -120,6 +119,8 @@ public class ActivityMain extends Activity {
      public AssetManagerAdapter adapter;
 
      private Equipment currentlyViewedEquipment;
+
+    private FragmentManager fragmentManager;
 
      // InstanceState definitions
      static final String STATE_CURRENT_EQUIPMENT = "equipment";
@@ -302,15 +303,31 @@ public class ActivityMain extends Activity {
      * @param fragment the fragment we should replace with in the container
      */
      public void replaceFragmentContainerFragmentWith(Fragment fragment) {
-         FragmentManager fragmentManager = getFragmentManager();
+         fragmentManager = getFragmentManager();
          FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
          fragmentTransaction.replace(R.id.fragment_container, fragment);
-         // TODO: IMPROVEMENT - Add back button functionality for fragments
-         //fragmentTransaction.addToBackStack(null);
+         fragmentTransaction.addToBackStack(fragment.getClass().getSimpleName());
          fragmentTransaction.commit();
          fragmentManager.executePendingTransactions();
          fragmentCurrent = fragment;
      }
+
+    /**
+     * Handles back navigation
+     */
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        fragmentCurrent = fragmentManager.findFragmentById(R.id.fragment_container);
+
+        if (fragmentCurrent instanceof FragmentList) {
+            if (Login.getUserRole() == Login.UserRole.LOGGED_OUT)
+                WebAPI.doGetEquipmentWithoutLogin(this);
+            else
+                addToList(Category.getCategories());
+        }
+    }
 
 
 
@@ -456,7 +473,7 @@ public class ActivityMain extends Activity {
      *
      * @param objects to add to listview
      */
-     public void addToList(final ArrayList<AssetManagerObjects> objects) {
+     public void addToList(final ArrayList<? extends AssetManagerObjects> objects) {
          addToList(objects, true);
      }
 
@@ -467,7 +484,7 @@ public class ActivityMain extends Activity {
      * @param updateSpinner to add to listview
      */
     // TODO: IMPROVEMENT - Move method to FragmentList class
-    public void addToList(final ArrayList<AssetManagerObjects> objects, Boolean updateSpinner) {
+    public void addToList(final ArrayList<? extends AssetManagerObjects> objects, Boolean updateSpinner) {
          try {
              replaceFragmentContainerFragmentWith(fragmentList);
              ListView lvList = (ListView) fragmentList.getView().findViewById(R.id.lvList);
