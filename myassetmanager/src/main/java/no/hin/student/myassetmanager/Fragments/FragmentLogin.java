@@ -64,7 +64,7 @@ public class FragmentLogin extends Fragment  implements View.OnClickListener
                     Login.setPassword( ((EditText) activityMain.fragmentLogin.getView().findViewById(R.id.editTextPassword)).getText().toString() );
                     Login.setAdmin(((CheckBox) activityMain.fragmentLogin.getView().findViewById(R.id.checkBoxIsAdmin)).isChecked());
 
-                    activityMain.attemptLogin(Login.getUsername(), Login.getPassword(), Login.getAdmin());
+                    Login.attemptLogin(activityMain, Login.getUsername(), Login.getPassword(), Login.getAdmin());
                     break;
                 case R.id.btnRegister: // When the user clicks the register button
                     activityMain.replaceFragmentContainerFragmentWith(activityMain.fragmentRegister);

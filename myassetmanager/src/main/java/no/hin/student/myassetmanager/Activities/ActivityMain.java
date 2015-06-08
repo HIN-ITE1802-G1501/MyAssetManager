@@ -188,12 +188,12 @@ public class ActivityMain extends Activity {
                  WebAPI.doGetEquipmentWithoutLogin(this);
              } else if ( (fragmentCurrent == null) && !Login.getUsername().equals("") && !Login.getPassword().equals("") ) {
                  Log.d(App.TAG, "Not resuming, trying to log in");
-                 attemptLogin(Login.getUsername(), Login.getPassword(), Login.getAdmin());
+                 Login.attemptLogin(this, Login.getUsername(), Login.getPassword(), Login.getAdmin());
                  replaceFragmentContainerFragmentWith(fragmentList);
                  addToList(Category.getCategories());
              } else {
                  Log.d(App.TAG, "Resuming, getting equipment");
-                 attemptLogin(Login.getUsername(), Login.getPassword(), Login.getAdmin());
+                 Login.attemptLogin(this, Login.getUsername(), Login.getPassword(), Login.getAdmin());
                  replaceFragmentContainerFragmentWith(fragmentCurrent);
              }
          } catch (Exception e) {
@@ -633,15 +633,6 @@ public class ActivityMain extends Activity {
              }
          });
      }
-
-    //TODO: IMPROVEMENT - Planning to move this method to Login class, problem with getting ActivityMain context
-    public void attemptLogin(String username, String password, boolean isAdmin) {
-        if (isAdmin)
-            WebAPI.doLoginAdmin(this, username, password);
-        else
-            WebAPI.doLogin(this, username, password);
-    }
-
 
      public Equipment getCurrentlyViewedEquipment() {
          return this.currentlyViewedEquipment;

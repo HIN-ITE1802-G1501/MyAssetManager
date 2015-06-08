@@ -152,4 +152,11 @@ public class Login {
             }
         }
     }
+
+    public static void attemptLogin(Context context, String username, String password, boolean isAdmin) {
+        if (isAdmin)
+            WebAPI.doLoginAdmin(context, username, password);
+        else
+            WebAPI.doLogin(context, username, password);
+    }
  }
