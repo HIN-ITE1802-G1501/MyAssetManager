@@ -26,7 +26,6 @@ import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -118,7 +117,7 @@ public class ActivityMain extends Activity {
      public Fragment fragmentCurrent = null;
      public AssetManagerAdapter adapter;
 
-     private Equipment currentlyViewedEquipment;
+    private Equipment currentlyViewedEquipment;
 
     private FragmentManager fragmentManager;
 
@@ -560,34 +559,6 @@ public class ActivityMain extends Activity {
          } catch (Exception e) {
              Log.d(App.TAG, e.toString());
          }
-     }
-
-
-
-    // TODO: IMPROVEMENT - Move method to FragmentList class
-     public void onClickUpdateUserInfoButton(View buttonView) {
-         String firstname = ((EditText)fragmentAccountSettings.getView().findViewById(R.id.editTextSettingsFirstname)).getText().toString();
-         String lastname = ((EditText)fragmentAccountSettings.getView().findViewById(R.id.editTextSettingsLastname)).getText().toString();
-         String phoneNumber = ((EditText)fragmentAccountSettings.getView().findViewById(R.id.editTextSettingsPhonenumber)).getText().toString();
-         String username = ((EditText)fragmentAccountSettings.getView().findViewById(R.id.editTextSettingsUsername)).getText().toString();
-
-         Login.getLoggedInUser().setFirstname(firstname);
-         Login.getLoggedInUser().setLastname(lastname);
-         Login.getLoggedInUser().setPhone(phoneNumber);
-         Login.getLoggedInUser().setUserName(username);
-
-         WebAPI.doUpdateUser(this, Login.getLoggedInUser());
-     }
-
-    // TODO: IMPROVEMENT - Move method to FragmentList class
-     public void onClickUpdateUserPasswordButton(View buttonView) {
-         String password = ((EditText)fragmentAccountSettings.getView().findViewById(R.id.editTextSettingsNewPassword)).getText().toString();
-         String repeatedPassword = ((EditText)fragmentAccountSettings.getView().findViewById(R.id.editTextSettingsRepeatPassword)).getText().toString();
-
-         if (!password.equals(repeatedPassword))
-             Toast.makeText(this, "Passord matchet ikke hverandre. Prøv på nytt", Toast.LENGTH_LONG).show();
-         else
-             WebAPI.doChangeUserPassword(this, Login.getLoggedInUser().getU_id(), password);
      }
 
 
