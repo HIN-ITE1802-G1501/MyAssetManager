@@ -445,29 +445,6 @@ public class ActivityMain extends Activity {
      };
 
 
-
-
-    //TODO: IMPROVEMENT - Move this to Login class
-    /**
-     * Method for logging in user
-     *
-     * @param user represents the user that we should log in
-     * @param success if login is success
-     * @param userStatus user status of the login
-     */
-     public void logIn(User user, boolean success, Login.UserRole userStatus) {
-         Log.d(App.TAG, "User logged in: " + user.getFirstname() + " " + user.getLastname());
-         Login.setUserRole(userStatus);
-         Login.setLoggedInUser(user);
-
-         if (fragmentCurrent instanceof FragmentLogin) {
-             replaceFragmentContainerFragmentWith(fragmentList);
-             addToList(Category.getCategories());
-             EquipmentStatus.getUpdateFromDatabase(this);
-         }
-     }
-
-
     /**
      * Method for adding objects to Listview
      *

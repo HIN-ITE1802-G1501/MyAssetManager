@@ -11,7 +11,6 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.util.Pair;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -173,12 +172,12 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
                 switch (method) {
                     case LOG_IN:
                         if (response.getMessage().contains("512")) {
-                            ((ActivityMain) context).logIn(null, false, Login.UserRole.LOGGED_OUT);
+                            Login.logIn(context, null, false, Login.UserRole.LOGGED_OUT);
                             closeSession();
                         } else {
                             EquipmentStatus.getUpdateFromDatabase(context);
                             User log_in = gson.fromJson(response.getJsonResponse(), User.class);
-                            ((ActivityMain) context).logIn(log_in, true, Login.UserRole.REGULAR_USER);
+                            Login.logIn(context, log_in, true, Login.UserRole.REGULAR_USER);
                             Login.saveUserLoginToApp();
                         }
                         break;
@@ -189,7 +188,7 @@ public class WebAPI extends AsyncTask<Pair<List<NameValuePair>, HttpClient>, Voi
                         } else {
                             EquipmentStatus.getUpdateFromDatabase(context);
                             User log_in_admin = gson.fromJson(response.getJsonResponse(), User.class);
-                            ((ActivityMain) context).logIn(log_in_admin, true, Login.UserRole.ADMIN_USER);
+                            Login.logIn(context, log_in_admin, true, Login.UserRole.ADMIN_USER);
                             Login.saveUserLoginToApp();
                         }
                         break;
